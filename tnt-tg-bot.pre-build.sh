@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 
-echo "
+source "$(dirname "$0")/scripts/lib/const.sh"
+source "$(dirname "$0")/scripts/lib/customize.sh"
+
+Cecho "
  _________ _       _________  _________ _______    ______   _______ _________
  \__   __/( (    /|\__   __/  \__   __/(  ____ \  (  ___ \ (  ___  )\__   __/
     ) (   |  \  ( |   ) (        ) (   | (    \/  | (   ) )| (   ) |   ) (
@@ -10,45 +14,38 @@ echo "
     | |   | | \   |   | |        | |   | | \_  )  | (  \ \ | |   | |   | |
     | |   | )  \  |   | |        | |   | (___) |  | )___) )| (___) |   | |
     )_(   |/    )_)   )_(        )_(   (_______)  |/ \___/ (_______)   )_(
-
- By uriid1
- GitHub github.com/uriid1/tnt-tg-bot
 "
 
-readonly C_RESET="\033[0m"
-readonly C_ERROR="\033[1;31m"
-readonly C_INFO="\033[1;32m"
-readonly C_INSTALL="\033[4;34m"
-readonly C_WARNING="\033[1;33m"
+Uline "By uriid1"
+Uline "GitHub: https://github.com/uriid1/tnt-tg-bot"
+echo
 
-error() {
-  printf "Error: ${1} ${C_ERROR}Not found${C_RESET}\n"
+found_tool() {
+  local tool_name=$1
+  if [ "$(which -a "$tool_name" . 2>/dev/null)" ]; then
+    return 1
+  fi
+  return 0
 }
 
-info() {
-  printf "Done: ${1} ${C_INFO}Found${C_RESET}\n"
-}
-
-warning() {
-  printf "Warning: ${C_WARNING}${1}${C_RESET}\n"
-}
-
-install() {
-  printf "Install ${C_INSTALL}${1}${C_RESET}...\n"
-}
-
-basic_programs=(tarantool tt luarocks unzip lua git gcc)
-optional_programs=(ldoc luacheck curl openssl)
+readonly base_tools=(tarantool tt luarocks unzip git gcc)
+readonly optional_tools=(ldoc luacheck curl luajit openssl)
 errs=0
 
-for ((i = 0; i < ${#basic_programs[*]}; ++i)); do
-  programm="${basic_programs[$i]}"
+# Found base tools
+echo "------------------------"
+echo "Found base tools...     "
+echo "------------------------"
 
-  if ! [ "$(which -a $programm . 2>/dev/null)" ]; then
-    error "${programm}"
+for ((i = 0; i < ${#base_tools[*]}; ++i)); do
+  tool="${base_tools[$i]}"
+
+  if found_tool "${tool}"; then
+    Recho "Not found: ${tool}"
+
     errs=$((errs+1))
   else
-    info "${programm}"
+    Gecho "Found: ${tool}"
   fi
 done
 
@@ -56,33 +53,49 @@ if [ $errs -ge 1 ]; then
   exit 1
 fi
 
-for ((i = 0; i < ${#optional_programs[*]}; ++i)); do
-  programm="${optional_programs[$i]}"
+# Found optional tools
+echo
+echo "------------------------"
+echo "Found optional tools... "
+echo "------------------------"
 
-  if [ "$(which -a $programm . 2>/dev/null)" ]; then
-    info "${programm} (optional)"
+for ((i = 0; i < ${#optional_tools[*]}; ++i)); do
+  tool="${optional_tools[$i]}"
+
+  if found_tool "${tool}"; then
+    Yecho "Not found: ${tool}"
   else
-    warning "${programm} not found"
+    Gecho "Found: ${tool}"
   fi
 done
 
-# Install all rocks
+# Install rocks
 echo
-install "http"
+echo "------------------------"
+echo "Install Rocks...        "
+echo "------------------------"
+
+# https://github.com/tarantool/http
+printf "Install: " && Gecho "http"
 tt rocks install http
 
-install "lua-multipart-post"
-luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 lua-multipart-post 1.0-0
+# github.com/uriid1/lua-multipart-post
+printf "Install: " && Gecho "lua-multipart-post"
+luarocks install --local \
+  --tree=$PWD/.rocks \
+  --lua-version 5.1 \
+  lua-multipart-post
 
-install "luaosll"
-CC="gcc -std=gnu99" luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 luaossl
+# https://github.com/wahern/luaossl
+printf "Install: " && Gecho "luaossl"
+CC="gcc -std=gnu99" luarocks install --local \
+  --tree=$PWD/.rocks \
+  --lua-version 5.1 \
+  luaossl
 
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    -o | --optional)
-      install "pimp"
-      luarocks install pimp
-      shift 1
-    ;;
-  esac
-done
+# github.com/uriid1/pimp-lua
+printf "Install: " && Gecho "pimp"
+luarocks install --local \
+  --tree=$PWD/.rocks \
+  --lua-version 5.1 \
+  pimp
