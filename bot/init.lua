@@ -261,7 +261,7 @@ end
   -- @param opts.port (number) Port to listen on (default is 9091)
   -- @param opts.path (string) Route path ('/' string by default)
   -- @param opts.routes (table) Routes table
-  -- @param opts.maintenance_mode (string) Maintenance mode eq 'maint'
+  -- @param opts.maintenance (bool) Maintenance mode
   -- @param opts.allowed_updates (array)
 function bot:startWebHook(opts)
   local http_server = require('http.server')
@@ -309,7 +309,7 @@ function bot:startWebHook(opts)
 
   log.info('[HTTP Server] %s', 'listening', host..':'..port)
 
-  if opts.maintenance_mode ~= 'maint' then
+  if opts.certificate then
     local res = bot.send_certificate(opts)
 
     if res and not res.ok then
@@ -321,7 +321,7 @@ function bot:startWebHook(opts)
     end
   end
 
-  self.maintenance = opts.maintenance_mode == 'maint'
+  self.maintenance = opts.maintenance and true or false
 end
 
 local getUpdates

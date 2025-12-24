@@ -12,33 +12,54 @@ bot:cfg({
 })
 
 --[[
-curl -X GET 0.0.0.0:7081/v1/payments
+curl -X GET 0.0.0.0:8081/v1/payments
 
-curl -X POST -d '{ "score": 100 }' -H "application/json" 0.0.0.0:7081/v1/score
+curl -X POST -d '{ "score": 100 }' -H "application/json" 0.0.0.0:8081/v1/score
+]]
+
+local routes = {
+  { path = '/v1/payments', method = 'GET',  callback = getPayments },
+  { path = '/v1/score',    method = 'POST', callback = setScore }
+}
+
+-- If longpolling is used:
+--[[
+bot:debugRoutes({
+  host = '0.0.0.0',
+  port = 8081,
+  routes = routes
+})
+
+bot:startLongPolling {
+  allowed_updates = {
+    'message',
+    'chat_member',
+    'my_chat_member',
+    'callback_query',
+    'pre_checkout_query'
+  }
+}
 ]]
 
 bot:startWebHook({
-  -- maintenance mode is needed for testing, it will not send data to telegram
-  maintenance_mode = 'maint',
   -- https://core.telegram.org/bots/api#setwebhook
   drop_pending_updates = true,
 
   -- Server setup
   host = '0.0.0.0',
-  port = 7081,
+  port = 8081,
+
   -- Bot setup
   bot_url = '0.0.0.0/bot_location',
+
   allowed_updates = {
-    "message",
-    "chat_member",
-    "my_chat_member",
-    "callback_query",
-    "pre_checkout_query"
+    'message',
+    'chat_member',
+    'my_chat_member',
+    'callback_query',
+    'pre_checkout_query'
   },
 
   -- Custom routes
-  routes = {
-    { path = '/v1/payments', method = 'GET',  callback = getPayments },
-    { path = '/v1/score',    method = 'POST', callback = setScore }
-  },
+  routes = routes
 })
