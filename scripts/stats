@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+source "$(dirname "$0")/lib/customize.sh"
+
+stats() {
+  local dir="$1"
+
+  files=0
+  lines=0
+
+  for file in $(find ${dir} -type f \( -name '*.lua' -o -name '*.conf' -o -name '*.sh' \) -not -path '*/\.*'); do
+    files=$((files + 1))
+    lines=$((lines + $(wc -l < "$file")))
+  done
+
+  echo "Files: ${files}"
+  echo "Lines: ${lines}"
+}
+
+Cecho "Stats directory: bot/"
+stats bot
+echo
+Cecho "Stats directory: examples/"
+stats examples
+echo
+Cecho "Stats directory: spec/"
+stats spec
