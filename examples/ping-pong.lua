@@ -4,7 +4,6 @@ local log = require('log')
 local bot = require('bot')
 local parse_mode = require('bot.enums.parse_mode')
 local entity_type = require('bot.enums.entity_type')
-local methods = require('bot.enums.methods')
 
 bot:cfg({
   token = os.getenv('BOT_TOKEN'),
@@ -12,10 +11,10 @@ bot:cfg({
 })
 
 bot.commands['/ping'] = function(ctx)
-  local _, err = bot.call(methods.sendMessage, {
+  local _, err = bot:sendMessage {
     text = 'pong',
     chat_id = ctx:getChatId()
-  })
+  }
 
   if err then
     log.error({
