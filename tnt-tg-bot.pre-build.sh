@@ -28,7 +28,7 @@ found_tool() {
   return 0
 }
 
-readonly base_tools=(tarantool luarocks unzip git gcc)
+readonly base_tools=(tarantool tt luarocks unzip git gcc)
 readonly optional_tools=(ldoc luacheck curl luajit openssl)
 errs=0
 
@@ -77,10 +77,7 @@ echo "------------------------"
 
 # https://github.com/tarantool/http
 printf "Install: " && Gecho "http"
-luarocks --server=https://rocks.tarantool.org/ --local \
-  --tree=$PWD/.rocks \
-  --lua-version 5.1 \
-  install http
+tt rocks install http
 
 # github.com/uriid1/lua-multipart-post
 printf "Install: " && Gecho "lua-multipart-post"
