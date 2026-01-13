@@ -141,7 +141,7 @@ function bot.Command(ctx)
 
   ctx.__command = command
 
-  log.verbose('[Command]', command)
+  log.verbose('[Command] %s', command)
 
   return bot.commands[command], username
 end
