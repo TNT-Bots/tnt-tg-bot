@@ -7,7 +7,7 @@ install_tt() {
   local rock="$1"
   local version="$2"
 
-  if [[ -z $(tt rocks list --local --tree=$PWD/.rocks | grep -q "^${rock}") ]]; then
+  if tt rocks list --local --tree=$PWD/.rocks | grep -q "^${rock}"; then
     echo -e "Already installed: ${C_GREEN}${rock}${C_DEF}"
     return 0
   fi
@@ -24,7 +24,7 @@ install_luarocks() {
   local rock="$1"
   local version="$2"
 
-  if [[ -z $(luarocks list --local --tree=$PWD/.rocks | grep -q "^${rock}") ]]; then
+  if luarocks list --local --tree=$PWD/.rocks | grep -q "^${rock}"; then
     echo -e "Already installed: ${C_GREEN}${rock}${C_DEF}"
     return 0
   fi
