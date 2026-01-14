@@ -28,7 +28,7 @@ found_tool() {
   return 0
 }
 
-readonly base_tools=(tarantool tt luarocks unzip git gcc)
+readonly base_tools=(tarantool tt unzip git gcc)
 readonly optional_tools=(ldoc luacheck curl luajit openssl)
 errs=0
 
@@ -77,25 +77,34 @@ echo "------------------------"
 
 # https://github.com/tarantool/http
 printf "Install: " && Gecho "http"
-tt rocks install http
+tt rocks install \
+  --local \
+  --tree=$PWD/.rocks \
+  http 1.9.0
 
 # github.com/uriid1/lua-multipart-post
 printf "Install: " && Gecho "lua-multipart-post"
-luarocks install --local \
+tt rocks install \
+  --server https://luarocks.org \
+  --local \
   --tree=$PWD/.rocks \
   --lua-version 5.1 \
-  lua-multipart-post
+  lua-multipart-post 1.0-0
 
 # https://github.com/wahern/luaossl
 printf "Install: " && Gecho "luaossl"
-CC="gcc -std=gnu99" luarocks install --local \
+CC="gcc -std=gnu99" tt rocks install \
+  --server https://luarocks.org \
+  --local \
   --tree=$PWD/.rocks \
   --lua-version 5.1 \
-  luaossl
+  luaossl 20250929-0
 
 # github.com/uriid1/pimp-lua
 printf "Install: " && Gecho "pimp"
-luarocks install --local \
+tt rocks install \
+  --server https://luarocks.org \
+  --local \
   --tree=$PWD/.rocks \
   --lua-version 5.1 \
-  pimp
+  pimp 2.1-2
