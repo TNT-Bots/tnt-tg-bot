@@ -76,13 +76,13 @@ Yecho " Install Rocks...          "
 echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
 # https://github.com/tarantool/http
-install_tt http 1.9.0
+install_tt "http" "1.9.0"
 
 # github.com/uriid1/lua-multipart-post
-install_luarocks lua-multipart-post 1.0-0
+install_luarocks "lua-multipart-post" "1.0-0"
 
 # https://github.com/wahern/luaossl
-CC="gcc -std=gnu99" install_luarocks luaossl 20250929-0
+CC="gcc -std=gnu99" install_luarocks "luaossl" "20250929-0"
 
 # github.com/uriid1/pimp-lua
-install_luarocks pimp 2.1-2
+install_luarocks "pimp" "2.1-2"
