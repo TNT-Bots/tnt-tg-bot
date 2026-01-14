@@ -4,6 +4,7 @@ set -euo pipefail
 
 source "$(dirname "$0")/scripts/lib/const.sh"
 source "$(dirname "$0")/scripts/lib/customize.sh"
+source "$(dirname "$0")/scripts/lib/tt-tools.sh"
 
 Cecho "
  _________ _       _________  _________ _______    ______   _______ _________
@@ -16,8 +17,8 @@ Cecho "
     )_(   |/    )_)   )_(        )_(   (_______)  |/ \___/ (_______)   )_(
 "
 
-Uline "By uriid1"
-Uline "GitHub: https://github.com/uriid1/tnt-tg-bot"
+printf "> " && HighlightPink "By uriid1"
+printf "> " && HighlightPink "GitHub: https://github.com/uriid1/tnt-tg-bot"
 echo
 
 found_tool() {
@@ -28,14 +29,14 @@ found_tool() {
   return 0
 }
 
-readonly base_tools=(tarantool tt unzip git gcc)
+readonly base_tools=(tarantool luarocks tt unzip git gcc)
 readonly optional_tools=(ldoc luacheck curl luajit openssl)
 errs=0
 
 # Found base tools
-echo "------------------------"
-echo "Found base tools...     "
-echo "------------------------"
+echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+Yecho " Found base tools...       "
+echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
 for ((i = 0; i < ${#base_tools[*]}; ++i)); do
   tool="${base_tools[$i]}"
@@ -55,9 +56,9 @@ fi
 
 # Found optional tools
 echo
-echo "------------------------"
-echo "Found optional tools... "
-echo "------------------------"
+echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+Yecho " Found optional tools... "
+echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
 for ((i = 0; i < ${#optional_tools[*]}; ++i)); do
   tool="${optional_tools[$i]}"
@@ -69,42 +70,19 @@ for ((i = 0; i < ${#optional_tools[*]}; ++i)); do
   fi
 done
 
-# Install rocks
 echo
-echo "------------------------"
-echo "Install Rocks...        "
-echo "------------------------"
+echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+Yecho " Install Rocks...          "
+echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
 # https://github.com/tarantool/http
-printf "Install: " && Gecho "http"
-tt rocks install \
-  --local \
-  --tree=$PWD/.rocks \
-  http 1.9.0
+install_tt http 1.9.0
 
 # github.com/uriid1/lua-multipart-post
-printf "Install: " && Gecho "lua-multipart-post"
-tt rocks install \
-  --server https://luarocks.org \
-  --local \
-  --tree=$PWD/.rocks \
-  --lua-version 5.1 \
-  lua-multipart-post 1.0-0
+install_luarocks lua-multipart-post 1.0-0
 
 # https://github.com/wahern/luaossl
-printf "Install: " && Gecho "luaossl"
-CC="gcc -std=gnu99" tt rocks install \
-  --server https://luarocks.org \
-  --local \
-  --tree=$PWD/.rocks \
-  --lua-version 5.1 \
-  luaossl 20250929-0
+CC="gcc -std=gnu99" install_luarocks luaossl 20250929-0
 
 # github.com/uriid1/pimp-lua
-printf "Install: " && Gecho "pimp"
-tt rocks install \
-  --server https://luarocks.org \
-  --local \
-  --tree=$PWD/.rocks \
-  --lua-version 5.1 \
-  pimp 2.1-2
+install_luarocks pimp 2.1-2
