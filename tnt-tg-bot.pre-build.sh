@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+# -e - прекращает выполнение скрипта если команда завершилась ошибкой, выводит в stderr строку с ошибкой.
+# -u - прекращает выполнение скрипта, если встретилась несуществующая переменная.
+# -o pipefail - прекращает выполнение скрипта, даже если одна из частей пайпа завершилась ошибкой.
+set -eu -o pipefail
 
 source "$(dirname "$0")/scripts/lib/const.sh"
 source "$(dirname "$0")/scripts/lib/customize.sh"
@@ -17,8 +20,8 @@ Cecho "
     )_(   |/    )_)   )_(        )_(   (_______)  |/ \___/ (_______)   )_(
 "
 
-printf "> " && HighlightPink "By uriid1"
-printf "> " && HighlightPink "GitHub: https://github.com/uriid1/tnt-tg-bot"
+echo "> $(HighlightPink "By uriid1")"
+echo "> $(HighlightPink "GitHub: https://github.com/uriid1/tnt-tg-bot")"
 echo
 
 found_tool() {
@@ -42,11 +45,11 @@ for ((i = 0; i < ${#base_tools[*]}; ++i)); do
   tool="${base_tools[$i]}"
 
   if found_tool "${tool}"; then
-    Recho "Not found: ${tool}"
+    echo "Not found: $(Recho ${tool})"
 
     errs=$((errs+1))
   else
-    Gecho "Found: ${tool}"
+    echo "Found: $(Gecho ${tool})"
   fi
 done
 
@@ -64,9 +67,9 @@ for ((i = 0; i < ${#optional_tools[*]}; ++i)); do
   tool="${optional_tools[$i]}"
 
   if found_tool "${tool}"; then
-    Yecho "Not found: ${tool}"
+    echo "Not found: $(Yecho ${tool})"
   else
-    Gecho "Found: ${tool}"
+    echo "Found: $(Gecho ${tool})"
   fi
 done
 
