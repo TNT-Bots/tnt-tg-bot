@@ -12,6 +12,13 @@ It provides interfaces for working with the Telegram Bot API.
 >
 > The `master` branch may contain API changes or be partially incompatible with release versions.
 
+> [!WARNING]
+> The master branch may receive force pushes, hard resets, and errors.  
+>
+> Please use the stable branch or the latest releases.
+
+![Screenshot](examples/img/konsole.png)
+
 ## Features
 - Simple and clear interfaces
 - Asynchronous request processing
