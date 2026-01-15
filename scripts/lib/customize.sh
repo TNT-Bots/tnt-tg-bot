@@ -26,83 +26,107 @@ readonly BG_WHITE='\033[47m'
 readonly BG_BLACK='\033[40m'
 
 Success() {
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "[${C_GREEN}$1${C_DEF}]"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "[${C_GREEN}$1${C_DEF}]"
+  fi
 }
 
 Failed() {
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "[${C_RED}$1${C_DEF}]"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "[${C_RED}$1${C_DEF}]"
+  fi
 }
 
 # Жёлтый
 Yecho() {  
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "${C_YELLOW}$1${C_DEF}"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "${C_YELLOW}$1${C_DEF}"
+  fi
 }
 
 # Красный
 Recho() {
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "${C_RED}$1${C_DEF}"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "${C_RED}$1${C_DEF}"
+  fi
 }
 
 # Зелёный
 Gecho() {
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "${C_GREEN}$1${C_DEF}"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "${C_GREEN}$1${C_DEF}"
+  fi
 }
 
 # Синий
 Becho() {
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "${C_BLUE}$1${C_DEF}"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "${C_BLUE}$1${C_DEF}"
+  fi
 }
 
 # Циан
 Cecho() {
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "${C_CYAN}$1${C_DEF}"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "${C_CYAN}$1${C_DEF}"
+  fi
 }
 
 # Магента
 Mecho() {
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "${C_MAGENTA}$1${C_DEF}"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "${C_MAGENTA}$1${C_DEF}"
+  fi
 }
 
 # Жирный (акцент)
 Bold() {
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "${C_BOLD}$1${C_DEF}"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "${C_BOLD}$1${C_DEF}"
+  fi
 }
 
 # Подчёркнутый текст
 Uline() {
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "${C_UNDERLINE}$1${C_DEF}"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "${C_UNDERLINE}$1${C_DEF}"
+  fi
 }
 
 # Выделение фоном (жёлтый фон + чёрный текст)
 Highlight() {
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "${BG_YELLOW}${C_BLACK}$1${C_DEF}"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "${BG_YELLOW}${C_BLACK}$1${C_DEF}"
+  fi
 }
 
 # Выделение фоном (черный фон + розовый текст)
 HighlightPink() {
-  [[ "$TERM" != *256color* ]] && echo -e $1
-
-  echo -e "${BG_BLACK}${C_PINK}$1${C_DEF}"
+  if [[ "$TERM" != *256color* ]]; then
+    echo -e $1
+  else
+    echo -e "${BG_BLACK}${C_PINK}$1${C_DEF}"
+  fi
 }
