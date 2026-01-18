@@ -163,7 +163,7 @@ require('strict').on()
 ├── bot                          - tnt-tg-bot library
 ├── pre-build.sh                 - Dependency installation script
 ├── conf                         - Configs
-├── scripts                      - Scripts (run, lint, etc.)
+├── bin                          - Scripts (run, lint, etc.)
 ├── src                          - Main bot source directory
 │   ├── classes                  - Classes
 │   ├── enums                    - Enums
@@ -189,7 +189,7 @@ require('strict').on()
 
 ## <a name='gen-doc'>Documentation Generation</a>
 ```bash
-bash scripts/ldoc
+bash bin/ldoc
 ```
 
 ## Contributing

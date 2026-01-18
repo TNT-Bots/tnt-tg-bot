@@ -1,4 +1,8 @@
-#!/usr/bin/env bash
+# lib/customize.sh
+#
+
+[[ -n "${CUSTOMIZE_SH_LOADED:-}" ]] && return
+readonly CUSTOMIZE_SH_LOADED=1
 
 # Цветовые коды
 readonly C_DEF='\033[0m'
@@ -29,7 +33,7 @@ Success() {
   if [[ "$TERM" != *256color* ]]; then
     echo -e $1
   else
-    echo -e "[${C_GREEN}$1${C_DEF}]"
+    echo -e "${C_GREEN}$1${C_DEF}"
   fi
 }
 
@@ -37,7 +41,7 @@ Failed() {
   if [[ "$TERM" != *256color* ]]; then
     echo -e $1
   else
-    echo -e "[${C_RED}$1${C_DEF}]"
+    echo -e "${C_RED}$1${C_DEF}"
   fi
 }
 
