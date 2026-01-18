@@ -269,6 +269,8 @@ function bot:startWebHook(opts)
   local port = opts.port or 9091
   local httpd = http_server.new(host, port)
 
+  self.maintenance = opts.maintenance and true or false
+
   local route = {
     path = opts.path or '/',
     method = 'POST',
@@ -310,18 +312,14 @@ function bot:startWebHook(opts)
   log.info('[HTTP Server] %s', 'listening', host..':'..port)
 
   if opts.certificate then
-    local res = bot.send_certificate(opts)
-
-    if res and not res.ok then
-      log.error('[Long Polling] %s | %s',
-        'Code: ' .. res.error_code,
-        'Description: ' .. res.description)
-
-      os.exit(1)
-    end
+    return bot.send_certificate(opts)
+  else
+    return bot.call('setWebhook', {
+      url = opts.bot_url,
+      drop_pending_updates = opts.drop_pending_updates or false,
+      allowed_updates = opts.allowed_updates
+    })
   end
-
-  self.maintenance = opts.maintenance and true or false
 end
 
 local getUpdates
