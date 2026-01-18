@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
-# -e - Прекращает выполнение скрипта если команда завершилась ошибкой, выводит в stderr строку с ошибкой.
-# -u - Прекращает выполнение скрипта, если встретилась несуществующая переменная.
+set -u
 
 source "$(dirname "$0")/bin/lib/consts.sh"
 source "$(dirname "$0")/bin/lib/customize.sh"
@@ -41,7 +39,7 @@ echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 Yecho " Found optional tools...   "
 echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
-tools::found_tool "ldoc"
+tools::found_tool "ld1oc"
 tools::found_tool "luacheck"
 tools::found_tool "curl"
 tools::found_tool "luajit"
