@@ -3,7 +3,11 @@
 [[ -n "${TOOLS_SH_LOADED:-}" ]] && return
 readonly TOOLS_SH_LOADED=1
 
-source "$(dirname "$0")/bin/lib/customize.sh"
+__TOOLS_DIR="$(
+  cd "$(dirname "${BASH_SOURCE[0]}")" && pwd
+)"
+
+source "$__TOOLS_DIR/customize.sh"
 
 # pipefail не совместим с grep -q, head, sed -n 1p без обработки SIGPIPE
 # поэтому локально отключается
