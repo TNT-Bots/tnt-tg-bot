@@ -39,7 +39,7 @@ echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 Yecho " Found optional tools...   "
 echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
-tools::found_tool "ld1oc"
+tools::found_tool "ldoc"
 tools::found_tool "luacheck"
 tools::found_tool "curl"
 tools::found_tool "luajit"
