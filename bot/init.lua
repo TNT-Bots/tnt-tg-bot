@@ -363,8 +363,13 @@ function bot:startLongPolling(opts)
     local res = client:request('GET', table.concat(url))
 
     if res and res.body == nil then
-      log.verbose('[Long Polling] Empty body recived')
+      log.verbose('[Long Polling] Empty body recived | Status: %s | Reason: %s',
+        res.status, res.reason)
+
+      log.verbose('[Server] timeout')
       fiber.sleep(1)
+
+      goto continue
     end
 
     local body = json.decode(res.body)
@@ -384,6 +389,8 @@ function bot:startLongPolling(opts)
         end
       end
     end
+
+    ::continue::
   end
 end
 
