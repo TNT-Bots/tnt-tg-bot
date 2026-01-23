@@ -381,7 +381,7 @@ getUpdates = function(opts)
 
   -- Get new updates
   return getUpdates({
-    fisrt_start = true,
+    first_start = true,
     offset = offset,
     timeout = timeout,
     token = token,
@@ -428,7 +428,7 @@ function bot:startLongPolling(opts)
   log.info('[Long Polling] %s', 'Running | Updates: '..table.concat(allowed_updates, ', '))
 
   getUpdates({
-    fisrt_start = false,
+    first_start = false,
     offset = offset,
     timeout = polling_timeout,
     token = self.token,
