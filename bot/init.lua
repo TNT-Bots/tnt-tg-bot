@@ -271,45 +271,35 @@ function bot:startWebHook(opts)
 
   self.maintenance = not not opts.maintenance
 
-  local route = {
-    path = opts.path or '/',
-    method = 'POST',
-  }
-
   -- Bot route setup
   --
   local function default_callback(req)
     fiber.create(function ()
-      local data = req:json()
-
-      switch(data)
+      switch(req:json())
     end)
 
     return {
-      status = 200,
-      headers = {
-        ['content-type'] = 'text/plain'
-      },
-      body = [[OK]]
+      status = 200
     }
   end
 
-  httpd:route(route, default_callback)
+  httpd:route({
+    path = opts.path or '/',
+    method = 'POST',
+  }, default_callback)
   --
 
   -- Declaration custom routes
   if opts.routes then
     for i = 1, #opts.routes do
-      -- luacheck: ignore route
       local route = opts.routes[i]
-
       httpd:route({ path = route.path, method = route.method }, route.callback)
     end
   end
 
   httpd:start()
 
-  log.info('[HTTP Server] %s', 'listening', host..':'..port)
+  log.info('[HTTP Server] Listening | Host: %s | Port: %d', host, port)
 
   if opts.certificate then
     return bot.send_certificate(opts)
