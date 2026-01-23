@@ -353,7 +353,7 @@ function bot:startLongPolling(opts)
     local res = client:request('GET', table.concat(url))
 
     if res and res.body == nil then
-      log.verbose('[Long Polling] Empty body recived | Status: %s | Reason: %s',
+      log.verbose('[Long Polling] Empty body received | Status: %s | Reason: %s',
         res.status, res.reason)
 
       log.verbose('[Server] timeout')
