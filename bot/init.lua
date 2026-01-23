@@ -269,7 +269,7 @@ function bot:startWebHook(opts)
   local port = opts.port or 9091
   local httpd = http_server.new(host, port)
 
-  self.maintenance = opts.maintenance and true or false
+  self.maintenance = not not opts.maintenance
 
   local route = {
     path = opts.path or '/',
@@ -322,74 +322,6 @@ function bot:startWebHook(opts)
   end
 end
 
-local getUpdates
-getUpdates = function(opts)
-  local first_start = opts.first_start
-  local offset = opts.offset
-  local timeout = opts.timeout
-  local token = opts.token
-  local client = opts.client
-  local allowed_updates = opts.allowed_updates
-  local api_url = bot.api_url
-
-  local url
-  if allowed_updates then
-      url = string.format(
-        api_url..'%s/getUpdates?offset=%d&timeout=%d&allowed_updates=%s',
-        token,
-        offset,
-        timeout,
-        json.encode(allowed_updates))
-  else
-    url = string.format(
-      api_url..'%s/getUpdates?offset=%d&timeout=%d',
-      token,
-      offset,
-      timeout)
-  end
-
-  local res = client:request('GET', url)
-  local body = json.decode(res.body)
-
-  -- First start
-  if not first_start then
-    if not body.ok then
-      log.error('[Long Polling] %s | %s',
-        'Code: ' .. body.error_code,
-        'Description: ' .. body.description)
-
-      return
-    end
-
-    log.verbose('[Long Polling] %s', 'Received updates')
-  end
-
-  if body.ok and body.result then
-    for i = 1, #body.result do
-      local data = body.result[i]
-
-      fiber.create(function ()
-        switch(data)
-      end)
-
-      offset = data.update_id + 1
-    end
-  else
-    -- Debug
-    log.error(json.encode{ err = body.error })
-  end
-
-  -- Get new updates
-  return getUpdates({
-    first_start = true,
-    offset = offset,
-    timeout = timeout,
-    token = token,
-    client = client,
-    allowed_updates = allowed_updates
-  })
-end
-
 local DEFAULT_ALLOWED_UPDATES = {
   'message',
   'chat_member',
@@ -409,33 +341,50 @@ local DEFAULT_ALLOWED_UPDATES = {
 function bot:startLongPolling(opts)
   opts = opts or {}
 
+  local offset = opts.offset or -1
+  local timeout = opts.timeout or 60
+  local allowed_updates = json.encode(opts.allowed_updates or DEFAULT_ALLOWED_UPDATES)
+
   local http = require('http.client')
   local client = http.new({
-    max_connections = opts and opts.max_connections or 1
+    max_connections = opts and opts.max_connections or -1
   })
 
-  -- Set opts
-  local offset = -1
-  local polling_timeout = 60
+  log.info('[Long Polling] %s', 'Running | Updates: ' .. allowed_updates)
 
-  if opts then
-    offset = opts.offset or -1
-    polling_timeout = opts.timeout or 60
+  while true do
+    local url = {
+      self.api_url, self.token,
+      '/getUpdates?offset=', offset,
+      '&timeout=', timeout,
+      '&allowed_updates=', allowed_updates
+    }
+
+    local res = client:request('GET', table.concat(url))
+
+    if res and res.body == nil then
+      log.verbose('[Long Polling] Empty body recived')
+      fiber.sleep(1)
+    end
+
+    local body = json.decode(res.body)
+
+    if body.ok == false then
+      log.error(res)
+    else
+      if body.result then
+        for i = 1, #body.result do
+          local data = body.result[i]
+
+          fiber.create(function ()
+            switch(data)
+          end)
+
+          offset = data.update_id + 1
+        end
+      end
+    end
   end
-
-  local allowed_updates = opts.allowed_updates or DEFAULT_ALLOWED_UPDATES
-
-  log.info('[Long Polling] %s', 'Running | Updates: '..table.concat(allowed_updates, ', '))
-
-  getUpdates({
-    first_start = false,
-    offset = offset,
-    timeout = polling_timeout,
-    token = self.token,
-    client = client,
-    allowed_updates = opts.allowed_updates or DEFAULT_ALLOWED_UPDATES,
-    api_url = self.api_url
-  })
 end
 
 return bot
