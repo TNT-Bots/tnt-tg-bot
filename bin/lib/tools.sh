@@ -12,8 +12,8 @@ source "$__TOOLS_DIR/customize.sh"
 # pipefail не совместим с grep -q, head, sed -n 1p без обработки SIGPIPE
 # поэтому локально отключается
 
-LUAROCK_ROCKS_SERVER="https://luarocks.org"
-TARANTOOL_ROCK_SERVER="http://rocks.tarantool.org"
+luarocks_rocks_server="${LUAROCKS_ROCKS_SERVER:-https://luarocks.org}"
+tarantool_rocks_server="${TARANTOOL_ROCKS_SERVER:-http://rocks.tarantool.org}"
 
 #
 # Установка пакета через tt
@@ -40,7 +40,7 @@ tools::tt_install() {
 
   tt rocks install \
     --local \
-    --server "${TARANTOOL_ROCK_SERVER}" \
+    --server "${tarantool_rocks_server}" \
     --tree=$PWD/.rocks \
     ${rock} ${version}
 }
@@ -79,7 +79,7 @@ tools::luarocks_install() {
   echo -e "[tt] Install: ${C_GREEN}${rock}${C_DEF}"
 
   luarocks install \
-    --server "${LUAROCK_ROCKS_SERVER}" \
+    --server "${luarocks_rocks_server}" \
     --local \
     --tree=$PWD/.rocks \
     --lua-version 5.1 \
