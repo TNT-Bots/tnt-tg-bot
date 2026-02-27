@@ -337,7 +337,7 @@ function bot:startLongPolling(opts)
 
   local http = require('http.client')
   local client = http.new({
-    max_connections = opts and opts.max_connections or -1
+    max_connections = opts.max_connections or -1
   })
 
   log.info('[Long Polling] %s', 'Running | Updates: ' .. allowed_updates)
