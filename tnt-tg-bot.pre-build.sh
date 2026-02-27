@@ -6,6 +6,12 @@ source "$(dirname "$0")/bin/lib/consts.sh"
 source "$(dirname "$0")/bin/lib/customize.sh"
 source "$(dirname "$0")/bin/lib/tools.sh"
 
+#
+# Mirrors
+#
+#LUAROCK_ROCKS_SERVER="https://rocks.niko-bot.ru"
+#TARANTOOL_ROCK_SERVER="https://rocks.niko-bot.ru"
+
 echo "$(Cecho "  _________ _       _________  _________ _______    ______   _______ _________ ")"
 echo "$(Cecho "  \__   __/( (    /|\__   __/  \__   __/(  ____ \  (  ___ \ (  ___  )\__   __/ ")"
 echo "$(Cecho "     ) (   |  \  ( |   ) (        ) (   | (    \/  | (   ) )| (   ) |   ) (    ")"
@@ -51,7 +57,7 @@ Yecho " Install Rocks...          "
 echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
 # https://github.com/tarantool/http
-tools::tt_install "http" "1.9.0"
+tools::tt_install "http" "scm-1"
 
 # https://github.com/uriid1/lua-multipart-post
 tools::luarocks_install "lua-multipart-post" "1.0-0"
