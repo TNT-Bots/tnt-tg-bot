@@ -180,6 +180,62 @@ function sql.update(space, fields, where)
   return box.execute(sqlQuery, data)
 end
 
+--- Upsert record (atomic insert or update by primary key)
+-- Uses box.space:upsert() directly
+-- If record doesn't exist — inserts default_fields as a full tuple
+-- If record exists — applies update operations only to update_fields
+-- @param space (string) space
+-- @param default_fields (table) full record for insert case
+-- @param update_fields (table) fields to update if record exists
+-- @return[1] true
+-- @return[2] error
+function sql.upsert(space, default_fields, update_fields)
+  if box.space[space] == nil then
+    error(('Space: %s not found'):format(space), 1)
+  end
+  if default_fields == nil then
+    error('default_fields == nil', 1)
+  end
+  if update_fields == nil then
+    error('update_fields == nil', 1)
+  end
+
+  local spaceFormat = box.space[space]:format()
+
+  -- Build full tuple for insert case
+  local tuple = {}
+  for i = 1, #spaceFormat do
+    local format = spaceFormat[i]
+    local fieldValue = default_fields[format.name]
+
+    if fieldValue == nil or fieldValue == box.NULL then
+      tuple[i] = box.NULL
+    else
+      tuple[i] = fieldValue
+    end
+  end
+
+  -- Build update operations for existing record
+  local ops = {}
+  for i = 1, #spaceFormat do
+    local format = spaceFormat[i]
+    local fieldValue = update_fields[format.name]
+
+    if fieldValue ~= nil then
+      table.insert(ops, { '=', i, fieldValue })
+    end
+  end
+
+  log.verbose('[SQL] upsert into %s', space)
+
+  local ok, err = pcall(box.space[space].upsert, box.space[space], tuple, ops)
+  if not ok then
+    return nil, err
+  end
+
+  return true, nil
+end
+
 setmetatable(sql, {
   __call = function(_, ...)
     return sql.execute(...)
