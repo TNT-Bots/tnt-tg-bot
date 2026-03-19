@@ -28,6 +28,9 @@ local function cast(value, field_type)
 
   elseif field_type == 'string' then
     return string.format("CAST(%s AS STRING)", escape(value))
+
+  elseif field_type == 'boolean' then
+    return string.format("CAST(%s AS BOOLEAN)", value and 'TRUE' or 'FALSE')
   end
 
   return value
