@@ -4,7 +4,7 @@
 -- Licence MIT                   --
 -- ----------------------------- --
 --- @module bot
-local bot = { _version = '1.2.6' }
+local bot = { _version = '2.0' }
 
 package.path = package.path .. ';.rocks/share/lua/5.1/?.lua'
 package.cpath = package.cpath .. ';.rocks/lib/lua/5.1/?.so'
@@ -61,6 +61,14 @@ function bot:cfg(opts)
     end
   })
 
+  --- Wrap mehods
+  --
+  for method,_ in pairs(methods) do
+    self[method] = function (_, fields, opts)
+      return self.call(method, fields, opts)
+    end
+  end
+
   return self
 end
 
@@ -94,14 +102,6 @@ function bot.call(method, fields, opts)
   end
 
   return request.send(params)
-end
-
---- Wrap mehods
---
-for method,_ in pairs(methods) do
-  bot[method] = function (_, fields, opts)
-    return bot.call(method, fields, opts)
-  end
 end
 
 --- A simplified version of the sendPhoto method
@@ -293,7 +293,11 @@ function bot:startWebHook(opts)
   if opts.routes then
     for i = 1, #opts.routes do
       local route = opts.routes[i]
-      httpd:route({ path = route.path, method = route.method }, route.callback)
+
+      httpd:route({
+        path = route.path,
+        method = route.method
+      }, route.callback)
     end
   end
 

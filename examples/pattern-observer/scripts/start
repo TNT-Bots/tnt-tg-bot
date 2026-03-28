@@ -1,7 +1,0 @@
-#!/bin/env bash
-
-mkdir -p var/storage/xlog
-mkdir -p var/storage/snap
-mkdir -p var/log
-
-tarantool app.lua $@
