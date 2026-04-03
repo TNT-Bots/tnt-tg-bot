@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(wc -l /home/uriid1/Organisations/TNT-bots/tnt-tg-bot/bot/enums/*.lua)",
-      "Bash(grep:*)"
-    ]
-  }
-}
