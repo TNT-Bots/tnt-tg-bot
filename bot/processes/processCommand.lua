@@ -1,11 +1,11 @@
---- Обработчик команд
+--- Command handler
 --
 local bot = require('bot')
 local command_flags = require('bot.enums.command_flags')
 local chat_type = require('bot.enums.chat_type')
 
--- TODO: Обработчик таймаута нажатий на callback
--- TODO: Антифлуддер
+-- TODO: Callback press timeout handler
+-- TODO: Anti-flood
 
 local function processCommand(ctx, opts)
   local commandName
@@ -17,11 +17,11 @@ local function processCommand(ctx, opts)
     goto text_command
   end
 
-  -- Нажали на callback кнопку
+  -- Callback button pressed
   if ctx.is_callback_query then
     commandName = ctx:getArguments({ count = 1 })[1]
   else
-    -- Выполняем команды бота
+    -- Execute bot commands
     local entities = ctx:getEntities()
     if entities then
       commandName = ctx.message.text:split(' ', 1)[1]
@@ -35,10 +35,10 @@ local function processCommand(ctx, opts)
 
   ::text_command::
 
-  -- Пользователь выполнивший
+  -- User who triggered the command
   local ufrom = ctx:getUserFrom()
 
-  -- Определение типа команд
+  -- Check command type flags
   --
   if command:has_flag(command_flags.PRIVATE) then
     if ctx:getChatType() ~= chat_type.PRIVATE then
@@ -46,20 +46,20 @@ local function processCommand(ctx, opts)
     end
   end
 
-  -- (По-умолчанию) Запрещаем сторонним ботам выполнять команды
+  -- (Default) Deny other bots from executing commands
   --
   if ufrom.is_bot then
     return
   end
 
-  -- (По-умолчанию) Не разрешать каналам использовать команды
+  -- (Default) Deny channels from using commands
   --
   local senderChat = ctx:getSenderChat()
   if senderChat then
     return
   end
 
-  -- Выполнение команды
+  -- Execute the command
   command.call(ctx)
 end
 

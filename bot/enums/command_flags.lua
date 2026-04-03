@@ -2,11 +2,11 @@
 --
 local flags = {}
 
-flags.PRIVATE      = 0b000001  -- 1
-flags.PUBLIC       = 0b000010  -- 2
-flags.CALLBACK     = 0b000100  -- 4
-flags.REPLY        = 0b001000  -- 8
-flags.NO_REPLY     = 0b010000  -- 16
-flags.MAINTENANCE  = 0b100000  -- 32
+flags.PRIVATE      = 1   -- 0b000001
+flags.PUBLIC       = 2   -- 0b000010
+flags.CALLBACK     = 4   -- 0b000100
+flags.REPLY        = 8   -- 0b001000
+flags.NO_REPLY     = 16  -- 0b010000
+flags.MAINTENANCE  = 32  -- 0b100000
 
 return flags

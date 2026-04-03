@@ -22,43 +22,43 @@ end
 --- @param init_data (string)
 --- @param bot_token (string)
 local function parseInitData(init_data, bot_token)
-  -- Парсинг исходной строки
+  -- Parse the init_data query string
   local parsed = parse_query(init_data)
   local received_hash = parsed.hash or ""
   parsed.hash = nil
 
-  -- Если поле user существует, попробуем распарсить JSON
+  -- Try to parse user field as JSON if present
   local userData
   if parsed.user then
     local user = url_decode(parsed.user)
     userData = json.decode(user)
   end
 
-  -- Сортировка ключей
+  -- Sort keys alphabetically
   local keys = {}
   for k in pairs(parsed) do
     table.insert(keys, k)
   end
   table.sort(keys)
 
-  -- Формирование data_check_string: ключ=значение, разделённых \n
+  -- Build data_check_string: key=value pairs joined by \n
   local parts = {}
   for _, key in ipairs(keys) do
     table.insert(parts, key .. "=" .. url_decode(parsed[key]))
   end
   local data_check_string = table.concat(parts, "\n")
 
-  -- Вычисление секретного ключа: HMAC_SHA256(bot_token, "WebAppData")
+  -- Compute secret key: HMAC_SHA256(bot_token, "WebAppData")
   local secret_hmac = openssl_hmac.new("WebAppData", "sha256")
   secret_hmac:update(bot_token)
-  local secret_key = secret_hmac:final()  -- бинарная строка
+  local secret_key = secret_hmac:final()  -- binary string
 
-  -- Вычисление HMAC от data_check_string с ключом secret_key
+  -- Compute HMAC of data_check_string with secret_key
   local hmac_obj = openssl_hmac.new(secret_key, "sha256")
   hmac_obj:update(data_check_string)
-  local calc_hash_bin = hmac_obj:final()  -- бинарная строка
+  local calc_hash_bin = hmac_obj:final()  -- binary string
 
-  -- Преобразование бинарного хэша в шестнадцатеричное представление (нижний регистр)
+  -- Convert binary hash to lowercase hex string
   local expected_hash = calc_hash_bin:gsub('.', function(c)
     return string.format('%02x', string.byte(c))
   end)

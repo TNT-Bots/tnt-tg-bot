@@ -9,15 +9,15 @@ local bot = { _version = '2.0' }
 package.path = package.path .. ';.rocks/share/lua/5.1/?.lua'
 package.cpath = package.cpath .. ';.rocks/lib/lua/5.1/?.so'
 
-local fio = require('fio')
-local json = require('json')
-local fiber = require('fiber')
 local config = require('bot.config')
-local request = require('bot.middlewares.request')
 local processMessage = require('bot.processes.processMessage')
 local log = require('bot.libs.logger')
-local inputFile = require('bot.libs.inputFile')
 local methods = require('bot.enums.methods')
+local api = require('bot.api')
+local cmds = require('bot.commands')
+local longpolling = require('bot.transport.longpolling')
+local webhook = require('bot.transport.webhook')
+local debugTransport = require('bot.transport.debug')
 
 local switch = function (ctx)
   if bot.events.onGetUpdate then
@@ -61,331 +61,37 @@ function bot:cfg(opts)
     end
   })
 
-  --- Wrap mehods
+  --- Wrap methods
   --
-  for method,_ in pairs(methods) do
-    self[method] = function (_, fields, opts)
-      return self.call(method, fields, opts)
-    end
-  end
+  api.wrapMethods(self)
 
   return self
 end
 
---- Executes a Telegram Bot API method.
---
--- @param method (string) TG API method to execute
--- @param fields (table) Method fields
--- @param opts (table) Options
--- @param[optchain] opts.request_param (table) { multipart_post = true }
---
--- @usage
--- bot.call("sendMessage", {
---  text = 'Hello!',
---  chat_id = 123456789,
--- })
---
--- @return (table) Response from the Telegram Bot API
--- @return (table) Error object
-function bot.call(method, fields, opts)
-  if method == nil then
-    error('bot.call method is nil')
-  end
+-- API
+bot.call = api.call
+bot.sendImage = api.sendImage
 
-  local params = {
-    method = method,
-    fields = fields,
-  }
-
-  if opts and opts.multipart_post then
-    params.is_multipart = true
-  end
-
-  return request.send(params)
-end
-
---- A simplified version of the sendPhoto method
---
--- @param data (table) Method fields
--- @param data.filepath Path to image
--- @param data.url URL to image
-function bot.sendImage(data)
-  if data.filepath then
-    data.photo = inputFile(data.filepath)
-    data.filepath = nil
-  elseif data.url then
-    data.photo = data.url
-    data.url = nil
-  end
-
-  bot.call(methods.sendPhoto, data, { multipart_post = true })
-end
-
---- Handles a command via text (ctx.message.text)
---
--- @param ctx (table) Message object
---
--- @return Command func
--- @return Bot username
+-- Commands
 function bot.Command(ctx)
-  local command = ctx:getArguments({ count = 1 })[1]
-
-  local username
-  if command:find('@') then
-    command, username = command:match("(/.+)@(.+)")
-  end
-
-  if not bot.commands[command] then
-    return nil, nil
-  end
-
-  ctx.__command = command
-
-  log.verbose('[Command] %s', command)
-
-  return bot.commands[command], username
+  return cmds.Command(bot, ctx)
 end
 
---- Handles a callback query
---
--- @param ctx (table) Callback query object
---
--- @return Command func
 function bot.CallbackCommand(ctx)
-  local command = ctx:getArguments({ count = 1 })[1]
-  if not bot.commands[command] then
-    return
-  end
-
-  ctx.__command = command
-
-  log.info('[Callback] %s', command)
-
-  return bot.commands[command]
+  return cmds.CallbackCommand(bot, ctx)
 end
 
---- Sends a certificate for webhook setup
---
--- @param opts (table) Options table
-  -- @param opts.url (string) URL for the webhook
-  -- @param opts.certificate (string) Path to the certificate file
-  -- @param opts.drop_pending_updates (boolean) Whether to drop pending updates (false by default)
-  -- @param opts.allowed_updates (table) List of allowed updates (nil by default)
---
--- @return (table) Response data
-function bot.send_certificate(opts)
-  if type(opts) ~= 'table' or
-    type(opts.bot_url) ~= 'string'
-  then
-    log.error('[WebHook] %s', 'Invalid opts')
-
-    return
-  end
-
-  -- Read certificate
-  local data
-  if opts.certificate then
-    if not fio.path.exists(opts.certificate) then
-      log.error('[WebHook] %s', 'Certificate not found: '..opts.certificate)
-
-      return
-    end
-
-    local cert = fio.open(opts.certificate, 'O_RDONLY')
-
-    data = {
-      filename = opts.certificate:match('[^/]*.$'),
-      data = cert:read()
-    }
-
-    cert:close()
-  end
-
-  if type(opts.allowed_updates) == 'table' then
-    opts.allowed_updates = json.encode(opts.allowed_updates)
-  end
-
-  -- Set webhook
-  return bot.call('setWebhook', {
-    url = opts.bot_url,
-    certificate = data,
-    drop_pending_updates = opts.drop_pending_updates or false,
-    allowed_updates = opts.allowed_updates
-  }, { multipart_post = true })
-end
-
---- Debug routes while Long Polling is running
--- @param opts (table) Options table
-  -- @param opts.host (string) Host to bind to (default is '0.0.0.0')
-  -- @param opts.port (number) Port to listen on (default is 9091)
-  -- @param opts.routes (table) Routes table
+-- Transport
 function bot:debugRoutes(opts)
-  local http_server = require('http.server')
-  local host = opts.host or '0.0.0.0'
-  local port = opts.port or 9091
-  local httpd = http_server.new(host, port)
-
-  -- Declaration custom routes
-  if opts.routes then
-    for i = 1, #opts.routes do
-      local route = opts.routes[i]
-
-      httpd:route(
-        {
-          path = route.path,
-          method = route.method
-        },
-        route.callback
-      )
-    end
-  end
-
-  httpd:start()
-
-  if not self.debug then
-    self.debug =  {}
-  end
-
-  self.debug = {
-    host = host,
-    port = port
-  }
-
-  log.info('[HTTP Server] %s', 'listening', host..':'..port)
+  return debugTransport.start(self, opts)
 end
 
---- Start the webhook
---
--- @param opts (table) opts table
-  -- @param opts.host (string) Host to bind to (default is '0.0.0.0')
-  -- @param opts.port (number) Port to listen on (default is 9091)
-  -- @param opts.path (string) Route path ('/' string by default)
-  -- @param opts.routes (table) Routes table
-  -- @param opts.maintenance (bool) Maintenance mode
-  -- @param opts.allowed_updates (array)
 function bot:startWebHook(opts)
-  local http_server = require('http.server')
-  local host = opts.host or '0.0.0.0'
-  local port = opts.port or 9091
-  local httpd = http_server.new(host, port)
-
-  self.maintenance = not not opts.maintenance
-
-  -- Bot route setup
-  --
-  local function default_callback(req)
-    fiber.create(function ()
-      switch(req:json())
-    end)
-
-    return {
-      status = 200
-    }
-  end
-
-  httpd:route({
-    path = opts.path or '/',
-    method = 'POST',
-  }, default_callback)
-  --
-
-  -- Declaration custom routes
-  if opts.routes then
-    for i = 1, #opts.routes do
-      local route = opts.routes[i]
-
-      httpd:route({
-        path = route.path,
-        method = route.method
-      }, route.callback)
-    end
-  end
-
-  httpd:start()
-
-  log.info('[HTTP Server] Listening | Host: %s | Port: %d', host, port)
-
-  if opts.certificate then
-    return bot.send_certificate(opts)
-  else
-    return bot.call('setWebhook', {
-      url = opts.bot_url,
-      drop_pending_updates = opts.drop_pending_updates or false,
-      allowed_updates = opts.allowed_updates
-    })
-  end
+  return webhook.start(self, opts, switch)
 end
 
-local DEFAULT_ALLOWED_UPDATES = {
-  'message',
-  'chat_member',
-  'my_chat_member',
-  'callback_query',
-  'pre_checkout_query'
-}
-
---- Start long polling
---
--- @param[opt] opts (table) opts table
-  -- @param[opt] opts.offset (number) Update offset (default is -1)
-  -- @param[opt] opts.timeout (number) Polling timeout in seconds (default is 60)
-  -- @param[opt] opts.max_connections (number) (default is 1)
-  -- @param[opt] opts.allowed_updates (array)
-  -- @param[opt] opts.api_url (string)
 function bot:startLongPolling(opts)
-  opts = opts or {}
-
-  local offset = opts.offset or -1
-  local timeout = opts.timeout or 60
-  local allowed_updates = json.encode(opts.allowed_updates or DEFAULT_ALLOWED_UPDATES)
-
-  local http = require('http.client')
-  local client = http.new({
-    max_connections = opts.max_connections or -1
-  })
-
-  log.info('[Long Polling] %s', 'Running | Updates: ' .. allowed_updates)
-
-  while true do
-    local url = {
-      self.api_url, self.token,
-      '/getUpdates?offset=', offset,
-      '&timeout=', timeout,
-      '&allowed_updates=', allowed_updates
-    }
-
-    local res = client:request('GET', table.concat(url))
-
-    if res and res.body == nil then
-      log.verbose('[Long Polling] Empty body received | Status: %s | Reason: %s',
-        res.status, res.reason)
-
-      log.verbose('[Server] timeout')
-      fiber.sleep(1)
-
-      goto continue
-    end
-
-    local body = json.decode(res.body)
-
-    if body.ok == false then
-      log.error(res)
-    else
-      if body.result then
-        for i = 1, #body.result do
-          local data = body.result[i]
-
-          fiber.create(function ()
-            switch(data)
-          end)
-
-          offset = data.update_id + 1
-        end
-      end
-    end
-
-    ::continue::
-  end
+  return longpolling.start(self, opts, switch)
 end
 
 return bot

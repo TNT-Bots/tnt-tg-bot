@@ -1,0 +1,11 @@
+{
+    "diagnostics.disable": [
+        "assign-type-mismatch"
+    ],
+    "diagnostics.globals": [
+        "box",
+        "_TARANTOOL",
+        "utf8"
+    ],
+    "runtime.version": "LuaJIT"
+}

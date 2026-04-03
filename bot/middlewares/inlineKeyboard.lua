@@ -1,6 +1,5 @@
 --- Inline keyboard middleware
 --
--- see bot.examples.simple-callback-2.lua
 -- @module bot.middlewares.inlineKeyoard
 local InlineKeyboardMarkup = require('bot.types.InlineKeyboardMarkup')
 local InlineKeyboardButton = require('bot.types.InlineKeyboardButton')

@@ -107,7 +107,7 @@ end
 --- Convert a Telegram User object to a mention link
 -- @param user (table) User object
 -- @return (string) Formatted user mention link
-local MAX_USERNAME_LENGHT = 25
+local MAX_USERNAME_LENGTH = 25
 
 function M.user(user, opts)
   if not user then
@@ -115,7 +115,7 @@ function M.user(user, opts)
   end
 
   local name = user.first_name or user.username or 'Аноним'
-  name = utf8.sub(name, 1, opts and opts.len or MAX_USERNAME_LENGHT)
+  name = utf8.sub(name, 1, opts and opts.len or MAX_USERNAME_LENGTH)
 
   if opts then
     if opts.no_link then
@@ -129,14 +129,14 @@ end
 --- Convert a Telegram Chat object to a mention link
 -- @param Chat (table) Chat object
 -- @return (string) Formatted chat mention link
-local MAX_CHAT_TITLE_LENGHT = 32
+local MAX_CHAT_TITLE_LENGTH = 32
 
 function M.chat(Chat, opts)
   if not Chat or not Chat.id or not Chat.title then
     return 'Nil'
   end
 
-  local title = utf8.sub(Chat.title, 1, opts and opts.len or MAX_CHAT_TITLE_LENGHT)
+  local title = utf8.sub(Chat.title, 1, opts and opts.len or MAX_CHAT_TITLE_LENGTH)
 
   if opts and opts.no_link then
     return M.format(title)
