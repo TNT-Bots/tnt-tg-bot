@@ -7,7 +7,7 @@
 local bot = { _version = '2.0' }
 
 package.path = package.path .. ';.rocks/share/lua/5.1/?.lua'
-package.cpath = package.cpath .. ';.rocks/lib/lua/5.1/?.so'
+package.cpath = package.cpath .. ";.rocks/lib/tarantool/?.so;.rocks/lib/lua/5.1/?.so"
 
 local config = require('bot.config')
 local processMessage = require('bot.processes.processMessage')
@@ -88,6 +88,10 @@ end
 
 function bot:startWebHook(opts)
   return webhook.start(self, opts, switch)
+end
+
+function bot:sendCertificate(opts)
+  return webhook.sendCertificate(self, opts)
 end
 
 function bot:startLongPolling(opts)

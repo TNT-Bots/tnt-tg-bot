@@ -2,15 +2,15 @@
 
 set -u
 
-source "$(dirname "$0")/bin/lib/consts.sh"
-source "$(dirname "$0")/bin/lib/customize.sh"
-source "$(dirname "$0")/bin/lib/tools.sh"
-
 #
 # Mirrors
 #
 #LUAROCKS_ROCKS_SERVER="https://rocks.niko-bot.ru"
 #TARANTOOL_ROCKS_SERVER="https://rocks.niko-bot.ru"
+
+source "$(dirname "$0")/bin/lib/consts.sh"
+source "$(dirname "$0")/bin/lib/customize.sh"
+source "$(dirname "$0")/bin/lib/tools.sh"
 
 echo "$(Cecho "  _________ _       _________  _________ _______    ______   _______ _________ ")"
 echo "$(Cecho "  \__   __/( (    /|\__   __/  \__   __/(  ____ \  (  ___ \ (  ___  )\__   __/ ")"
