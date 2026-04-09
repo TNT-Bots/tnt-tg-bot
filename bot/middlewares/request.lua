@@ -10,6 +10,7 @@ local log = require('bot.libs.logger')
 local mpEncode = require('multipart-post')
 
 local MAX_RETRIES = 3
+local API_URL_FMT = config.api_url..'%s/%s'
 
 local function build_body(params)
   local opts = {}
@@ -49,8 +50,7 @@ end
 function request.send(params)
   local body, opts = build_body(params)
 
-  local urlFmt = config.api_url..'%s/%s'
-  local url = urlFmt:format(config.token, params.method)
+  local url = API_URL_FMT:format(config.token, params.method)
 
   for attempt = 1, MAX_RETRIES do
     local raw = http.post(url, body, opts)
@@ -72,7 +72,10 @@ function request.send(params)
           return nil, err
         end
 
-        return nil, { description = 'Empty data received', __method = params.method }
+        return nil, {
+          description = 'Empty data received',
+          __method = params.method
+        }
       end
     else
       local data = json.decode(raw.body)
@@ -126,7 +129,11 @@ function request.send(params)
     end
   end
 
-  return nil, { ok = false, description = 'Max retries exceeded', __method = params.method }
+  return nil, {
+    ok = false,
+    description = 'Max retries exceeded',
+    __method = params.method
+  }
 end
 
 return request

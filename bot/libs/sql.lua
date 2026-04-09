@@ -1,6 +1,6 @@
 --- Wrapper for execute sql (tarantool > 3.x only)
 -- @module bot.ext.sql
-local log = require('bot.libs.logger')
+local log = require('log')
 local uuid = require('uuid')
 
 if _TARANTOOL then
@@ -10,13 +10,8 @@ if _TARANTOOL then
   end
 end
 
---- Example
---[=[
-local rows = sql("SELECT * FROM SEQSCAN users WHERE name = ${name}", { name = 'Alex' })
-if rows == nil then
-  log.error('No rows')
-end
---]=]
+-- TODO: Tarantool прямо поддерживает и рекомендует передачу параметров -
+-- через box.execute(sql, extra-parameters)
 
 local function escape(value)
   return string.format("'%s'", value:gsub("'", "''"))
@@ -33,6 +28,9 @@ local function cast(value, field_type)
     return string.format("CAST(%s AS BOOLEAN)", value and 'TRUE' or 'FALSE')
   end
 
+  -- TODO: array, map, int, ...
+  -- See: https://www.tarantool.io/en/doc/latest/reference/reference_sql/sql_user_guide/#operand-data-types
+
   return value
 end
 
@@ -43,6 +41,11 @@ local sql = {}
 -- @param values (table) Table of values
 -- @return[1] result
 -- @return[1] error
+-- @usage
+  -- local rows = sql.execute("SELECT * FROM SEQSCAN users WHERE name = ${name}", { name = 'Alex' })
+  -- if rows == nil then
+  --   log.error('No rows')
+  -- end
 function sql.execute(sql_query, values)
   local query
   if values then
@@ -237,6 +240,46 @@ function sql.upsert(space, default_fields, update_fields)
   end
 
   return true, nil
+end
+
+--- Атомарное выполнение нескольких операций в транзакции
+-- При ошибке любой операции внутри fn все изменения откатываются.
+-- Функция fn должна бросать error() при ошибке, чтобы сработал откат.
+-- Вспомогательная функция sql.check() упрощает проверку.
+-- @param fn (function)
+-- @return[1] result
+-- @return[2] error
+-- @usage
+  -- local ok, err = sql.atomic(function()
+  --   sql.check(sql.create('users', userData))
+  --   sql.check(sql.create('user_credentials', credentials))
+  --   sql.check(sql.create('sessions', session))
+  -- end)
+
+  -- if err then
+  --   -- все операции откачены
+  -- end
+function sql.atomic(fn)
+  local ok, err = pcall(box.atomic, fn)
+
+  if not ok then
+    return nil, err
+  end
+
+  return true, nil
+end
+
+--- Проверка результата SQL-операции для использования внутри sql.atomic
+-- Если операция вернула ошибку — бросает error для отката транзакции
+-- @param result Первый возврат sql.create/sql.execute/sql.update
+-- @param err Второй возврат (ошибка)
+-- @return result
+function sql.check(result, err)
+  if err then
+    error(err, 2)
+  end
+
+  return result
 end
 
 setmetatable(sql, {
