@@ -1,5 +1,5 @@
 local bot = require('bot')
-local commandLoader = require('bot.ext.commandLoader')
+local commandLoader = require('bot.utils.commandLoader')
 
 bot:cfg {
   token = os.getenv('BOT_TOKEN')

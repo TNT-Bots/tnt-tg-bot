@@ -1,7 +1,7 @@
 -- Example of paginated inline keyboard with nested detail pages
 --
 local bot = require('bot')
-local pagination = require('bot.ext.pagination')
+local pagination = require('bot.utils.pagination')
 local inlineKeyboard = require('bot.middlewares.inlineKeyboard')
 
 bot:cfg({

@@ -1,4 +1,5 @@
-local bot = require('bot')
+---
+--
 local Command = require('bot.classes.Command')
 
 local command = Command:new {
@@ -7,10 +8,7 @@ local command = Command:new {
 }
 
 function command.call(ctx)
-  bot:sendMessage {
-    text = '...HELP MESSAGE...',
-    chat_id = ctx:getChatId()
-  }
+  ctx:reply('This is "help message"')
 end
 
 return command
