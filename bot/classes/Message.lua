@@ -198,6 +198,23 @@ function message:reply(fields)
   return api.call('sendMessage', fields)
 end
 
+--
+--
+function message:replyToMessage(fields)
+  if type(fields) == 'string' then
+    fields = {
+      text = fields,
+      reply_parameters = {
+        message_id = self:getMessageId()
+      }
+    }
+  end
+
+  fields.chat_id = fields.chat_id or self:getChatId()
+
+  return api.call('sendMessage', fields)
+end
+
 setmetatable(message, {
   __call = message.new
 })

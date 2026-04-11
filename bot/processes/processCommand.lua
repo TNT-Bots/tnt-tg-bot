@@ -7,6 +7,21 @@ local chat_type = require('bot.enums.chat_type')
 -- TODO: Callback press timeout handler
 -- TODO: Anti-flood
 
+local function build_kv_arguments(ctx, command)
+  local arguments = {}
+  local schema = command.arguments_schema
+
+  if ctx.is_callback_query then
+    local arrArgs = ctx:getArguments({ count = 64 })
+
+    for i = 1, #schema do
+      arguments[schema[i]] = arrArgs[i + 1]
+    end
+  end
+
+  return arguments
+end
+
 local function processCommand(ctx, opts)
   local commandName
   local command
@@ -59,8 +74,23 @@ local function processCommand(ctx, opts)
     return
   end
 
+  -- Build commad arguments
+  if command.arguments_schema then
+    command.arguments = build_kv_arguments(ctx, command)
+  end
+
+  -- Pre call command event
+  if bot.events.preCallCommand then
+    bot.events.preCallCommand(ctx, command)
+  end
+
   -- Execute the command
   command.call(ctx)
+
+  -- Post call command event
+  if bot.events.postCallCommand then
+    bot.events.postCallCommand(ctx, command)
+  end
 end
 
 return processCommand

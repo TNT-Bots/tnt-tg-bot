@@ -17,13 +17,14 @@ local function build_flags(list)
 end
 
 function Command:new(cfg)
-  local _command = {}
+  local command = {}
 
-  _command.commands = cfg.commands
-  _command.info = cfg.info
-  _command.flags = build_flags(cfg.flags)
+  command.commands = cfg.commands
+  command.info = cfg.info
+  command.flags = build_flags(cfg.flags)
+  command.arguments_schema = cfg.arguments_schema
 
-  return setmetatable(_command, self)
+  return setmetatable(command, self)
 end
 
 function Command:has_flag(flag)

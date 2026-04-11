@@ -13,6 +13,7 @@ local config = require('bot.config')
 local processMessage = require('bot.processes.processMessage')
 local log = require('bot.libs.logger')
 local methods = require('bot.enums.methods')
+local allowed_updates = require('bot.enums.allowed_updates')
 local api = require('bot.api')
 local cmds = require('bot.commands')
 local longpolling = require('bot.transport.longpolling')
@@ -47,6 +48,10 @@ function bot:cfg(opts)
   self.logger = opts.logger or log
   self.commands = {}
 
+  self.enums = {
+    allowed_updates = allowed_updates
+  }
+
   config.token = opts.token
   config.api_url = opts.api_url or config.api_url
   config.parse_mode = opts.parse_mode or config.parse_mode
@@ -66,6 +71,27 @@ function bot:cfg(opts)
   api.wrapMethods(self)
 
   return self
+end
+
+--- Helper for require
+-- @param deep (number)
+-- @param (path|any)
+function bot.subdir(deep, ...)
+  local sep
+  local path = tostring(select(1, ...))
+
+  if string.find(path, '/') then
+    sep = '/'
+  elseif string.find(path, '\\') then
+    sep = '\\'
+  else
+    sep = '%.'
+  end
+
+  -- ^(.-)%.[%w%d_]+%.?$
+  local re = "^(.-)"..sep..('[%w%d_]+'..sep):rep(deep).."?$"
+
+  return path:match(re)
 end
 
 -- API
