@@ -3,10 +3,10 @@
 local config = require('bot.config')
 local request = {}
 
+local log = require('log')
 local json = require('json')
 local http = require('http.client')
 local fiber = require('fiber')
-local log = require('bot.libs.logger')
 local mpEncode = require('multipart-post')
 
 local MAX_RETRIES = 3

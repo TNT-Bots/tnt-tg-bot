@@ -1,9 +1,9 @@
 --- Webhook transport
 -- @module bot.transport.webhook
+local log = require('log')
 local fio = require('fio')
 local json = require('json')
 local fiber = require('fiber')
-local log = require('bot.libs.logger')
 
 local webhook = {}
 

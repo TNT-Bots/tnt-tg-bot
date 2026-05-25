@@ -1,7 +1,7 @@
 --- bot/utils/commandLoader.lua
 --
+local log = require('log')
 local bot = require('bot')
-local log = require('bot.libs.logger')
 
 local commandLoader = {
   path = ''

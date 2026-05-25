@@ -1,6 +1,6 @@
 --- Debug HTTP server
 -- @module bot.transport.debug
-local log = require('bot.libs.logger')
+local log = require('log')
 
 local debug = {}
 

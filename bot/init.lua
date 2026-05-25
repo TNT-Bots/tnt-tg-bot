@@ -9,13 +9,13 @@ local bot = { _version = '2.0' }
 package.path = package.path .. ';.rocks/share/lua/5.1/?.lua'
 package.cpath = package.cpath .. ";.rocks/lib/tarantool/?.so;.rocks/lib/lua/5.1/?.so"
 
-local config = require('bot.config')
-local processMessage = require('bot.processes.processMessage')
-local log = require('bot.libs.logger')
-local methods = require('bot.enums.methods')
-local allowed_updates = require('bot.enums.allowed_updates')
+local log = require('log')
 local api = require('bot.api')
+local config = require('bot.config')
+local methods = require('bot.enums.methods')
 local cmds = require('bot.commands')
+local processMessage = require('bot.processes.processMessage')
+local allowed_updates = require('bot.enums.allowed_updates')
 local longpolling = require('bot.transport.longpolling')
 local webhook = require('bot.transport.webhook')
 local debugTransport = require('bot.transport.debug')
@@ -45,7 +45,6 @@ function bot:cfg(opts)
   self.parse_mode = opts.parse_mode or config.parse_mode
   self.username = opts.username
   self.methods = methods
-  self.logger = opts.logger or log
   self.commands = {}
 
   self.enums = {

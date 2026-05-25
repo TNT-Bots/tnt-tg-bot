@@ -1,8 +1,8 @@
 --- Long polling transport
 -- @module bot.transport.longpolling
+local log = require('log')
 local json = require('json')
 local fiber = require('fiber')
-local log = require('bot.libs.logger')
 
 local longpolling = {}
 

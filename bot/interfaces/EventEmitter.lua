@@ -1,6 +1,6 @@
 --- EventEmitter
 --
-local log = require('bot.libs.logger')
+local log = require('log')
 
 local EventEmitter = {}
 EventEmitter.__index = EventEmitter
@@ -13,7 +13,7 @@ function EventEmitter:new()
 end
 
 function EventEmitter:on(event, fn)
-  log.info('[EventEmitter] init event: %-40s | fn %s', event, fn)
+  log.verbose('[EventEmitter] init event: %-40s | fn %s', event, fn)
 
   if not self.handlers[event] then
     self.handlers[event] = {}

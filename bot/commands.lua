@@ -1,6 +1,6 @@
 --- Command parsing module
 -- @module bot.commands
-local log = require('bot.libs.logger')
+local log = require('log')
 
 local commands = {}
 
