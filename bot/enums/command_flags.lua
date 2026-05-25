@@ -2,11 +2,14 @@
 --
 local flags = {}
 
-flags.PRIVATE      = 1   -- 0b000001
-flags.PUBLIC       = 2   -- 0b000010
-flags.CALLBACK     = 4   -- 0b000100
-flags.REPLY        = 8   -- 0b001000
-flags.NO_REPLY     = 16  -- 0b010000
-flags.MAINTENANCE  = 32  -- 0b100000
+flags.PRIVATE        = 1
+flags.PUBLIC         = 2
+flags.IN_CHAT        = 4
+flags.REPLY          = 8
+flags.NO_REPLY       = 16
+flags.CALLBACK       = 32
+flags.MAINTENANCE    = 64
+flags.MODERATION     = 128
+flags.ADMINISTRATIVE = 256
 
 return flags

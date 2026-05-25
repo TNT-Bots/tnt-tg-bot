@@ -52,10 +52,12 @@ function request.send(params)
 
   local url = API_URL_FMT:format(config.token, params.method)
 
+  -- Retry только для сетевых ошибок (HTTP-ответа не пришло).
+  -- На любой ответ API (включая 429) — отдаём как есть, решение за caller'ом.
+  -- За соблюдением Telegram rate-limit'ов отвечает client-side limiter (bot.libs.rateLimiter).
   for attempt = 1, MAX_RETRIES do
     local raw = http.post(url, body, opts)
 
-    -- Network error (no body)
     if raw.body == nil then
       if attempt < MAX_RETRIES then
         local delay = math.pow(2, attempt - 1)
@@ -80,60 +82,35 @@ function request.send(params)
     else
       local data = json.decode(raw.body)
 
-      -- Rate limited (429)
-      if data.ok == false and data.error_code == 429 then
-        if attempt < MAX_RETRIES then
-          local retry_after = data.parameters
-            and data.parameters.retry_after or 1
-
-          log.warn('[Request] 429 Too Many Requests, retry after %ds (attempt %d/%d)',
-            retry_after, attempt, MAX_RETRIES)
-
-          fiber.sleep(retry_after)
-        else
-          data.__method = params.method
-          return nil, data
-        end
-
-      -- Other errors
-      elseif data.ok == false then
-        local err = data
-        err.__method = params.method
-        return nil, err
-
-      -- Success
-      else
-        -- Proxy
-        -- tg: data.result.object.key
-        -- proxy: result.object.key
-        --
-        setmetatable(data, {
-          __index = function(t, key)
-            if key == nil then
-              return rawget(t, 'result')
-            end
-
-            local _raw_t = rawget(t, 'result')
-            if _raw_t and _raw_t[key] then
-              return _raw_t[key]
-            end
-          end,
-
-          __newindex = function(tbl, key, value)
-            rawget(tbl, 'result')[key] = value
-          end,
-        })
-
-        return data, nil
+      if data.ok == false then
+        data.__method = params.method
+        return nil, data
       end
+
+      -- Proxy
+      -- tg: data.result.object.key
+      -- proxy: result.object.key
+      --
+      setmetatable(data, {
+        __index = function(t, key)
+          if key == nil then
+            return rawget(t, 'result')
+          end
+
+          local _raw_t = rawget(t, 'result')
+          if _raw_t and _raw_t[key] then
+            return _raw_t[key]
+          end
+        end,
+
+        __newindex = function(tbl, key, value)
+          rawget(tbl, 'result')[key] = value
+        end,
+      })
+
+      return data, nil
     end
   end
-
-  return nil, {
-    ok = false,
-    description = 'Max retries exceeded',
-    __method = params.method
-  }
 end
 
 return request

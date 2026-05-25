@@ -211,6 +211,9 @@ function message:replyToMessage(fields)
   end
 
   fields.chat_id = fields.chat_id or self:getChatId()
+  fields.reply_parameters = {
+      message_id = self:getMessageId()
+  }
 
   return api.call('sendMessage', fields)
 end

@@ -14,39 +14,39 @@ local html_escape_map = {
 
 M.sep = "<code>··············</code>"
 
---- Format HTML-unsafe characters as HTML entities
+--- Escape HTML-unsafe characters as HTML entities
 -- @param text (string) text
--- @return (string) Formatted text
-function M.format(text)
+-- @return (string) Escaped text
+function M.escape(text)
   text = tostring(text)
   return string.gsub(text, "[<>&\"']", html_escape_map)
 end
 
 --- Wrap the input text in <b> tags for bold formatting.</b>
 -- @param text (string) text
--- @return (string) Formatted text
+-- @return (string) Escaped text
 function M.bold(text)
-  return "<b>"..M.format(text).."</b>"
+  return "<b>"..M.escape(text).."</b>"
 end
 
 --- Wrap the input text in <i> tags for italic formatting.</i>
 -- @param text (string) text
--- @return (string) Formatted text
+-- @return (string) Escaped text
 function M.italic(text)
-  return "<i>"..M.format(text).."</i>"
+  return "<i>"..M.escape(text).."</i>"
 end
 
 --- Wrap like <b><i>Text</i></b>
 -- @param text (string) text
--- @return (string) Formatted text
+-- @return (string) Escaped text
 function M.bi(text)
-  return "<b><i>"..M.format(text).."</i></b>"
+  return "<b><i>"..M.escape(text).."</i></b>"
 end
 
 --- TODO
 -- @param text_1 (string) text
 -- @param text_2 (string) text
--- @return (string) Formatted text
+-- @return (string) Escaped text
 function M.title(text_1, text_2)
   if text_2 then
     text_1 = text_1..' '..text_2
@@ -57,27 +57,27 @@ end
 
 --- Wrap the input text in "code" tags for monospaced formatting
 -- @param text (string) text
--- @return (string) Formatted text
+-- @return (string) Escaped text
 function M.monospaced(text)
-  return "<code>"..M.format(text).."</code>"
+  return "<code>"..M.escape(text).."</code>"
 end
 
 function M.mono(text)
-  return "<code>"..M.format(text).."</code>"
+  return "<code>"..M.escape(text).."</code>"
 end
 
 --- Wrap the input text in <strike> tags for strike-through formatting.</strike>
 -- @param text (string) text
--- @return (string) Formatted text
+-- @return (string) Escaped text
 function M.strike(text)
-  return "<strike>"..M.format(text).."</strike>"
+  return "<strike>"..M.escape(text).."</strike>"
 end
 
 --- Wrap the input text in <u> tags for underline formatting.</u>
 -- @param text (string) text
--- @return (string) Formatted text
+-- @return (string) Escaped text
 function M.underline(text)
-  return "<u>"..M.format(text).."</u>"
+  return "<u>"..M.escape(text).."</u>"
 end
 
 --- Generate a "pre" code block with a specified language for code formatting.
@@ -93,7 +93,7 @@ end
 -- @param name   (string) Link text
 -- @return (string) Formatted hyperlink
 function M.url(url, name)
-  return ('<a href="%s">%s</a>'):format(url, M.format(name))
+  return ('<a href="%s">%s</a>'):format(url, M.escape(name))
 end
 
 --- Generate a Telegram user mention link
@@ -101,7 +101,7 @@ end
 -- @param link_name (string) Link text
 -- @return (string) Formatted user mention link
 function M.user_url(id, link_name)
-  return ('<a href="tg://user?id=%s">%s</a>'):format(id, M.format(link_name))
+  return ('<a href="tg://user?id=%s">%s</a>'):format(id, M.escape(link_name))
 end
 
 --- Convert a Telegram User object to a mention link
@@ -119,11 +119,11 @@ function M.user(user, opts)
 
   if opts then
     if opts.no_link then
-      return M.format(name)
+      return M.escape(name)
     end
   end
 
-  return ('<a href="tg://user?id=%s">%s</a>'):format(user.id, M.format(name))
+  return ('<a href="tg://user?id=%s">%s</a>'):format(user.id, M.escape(name))
 end
 
 --- Convert a Telegram Chat object to a mention link
@@ -139,11 +139,11 @@ function M.chat(Chat, opts)
   local title = utf8.sub(Chat.title, 1, opts and opts.len or MAX_CHAT_TITLE_LENGTH)
 
   if opts and opts.no_link then
-    return M.format(title)
+    return M.escape(title)
   end
 
   if Chat.username then
-    return ('<a href="https://t.me/%s">%s</a>'):format(Chat.username, M.format(title))
+    return ('<a href="https://t.me/%s">%s</a>'):format(Chat.username, M.escape(title))
   end
 
   return M.mono(title)
@@ -155,14 +155,14 @@ end
 -- @param link_name (string) Link text
 -- @return (string) Formatted message URL
 function M.message_url(username, id, link_name)
-  return ('<a href="https://t.me/%s/%s">%s</a>'):format(username, id, M.format(link_name))
+  return ('<a href="https://t.me/%s/%s">%s</a>'):format(username, id, M.escape(link_name))
 end
 
 --- Wrap the input text in "tg-spoiler" tags for spoiler formatting
 -- @param text (string) text
--- @return (string) Formatted text
+-- @return (string) Escaped text
 function M.spoiler(text)
-  return ("<tg-spoiler>%s</tg-spoiler>"):format(M.format(text))
+  return ("<tg-spoiler>%s</tg-spoiler>"):format(M.escape(text))
 end
 
 return M

@@ -1,11 +1,31 @@
 --- Command handler
 --
+local log = require('log')
 local bot = require('bot')
 local command_flags = require('bot.enums.command_flags')
 local chat_type = require('bot.enums.chat_type')
+local RateLimiter = require('bot.libs.rateLimiter')
+
+-- Антифлуд: per (user_id, chat_id). У юзера свой бюджет в каждом чате,
+-- юзеры друг друга не аффектят. TODO: вынести цифры в bot.cfg.
+local antiflood = RateLimiter.new({ capacity = 2, refill_per_sec = 1 })
 
 -- TODO: Callback press timeout handler
--- TODO: Anti-flood
+
+local function build_kv_arguments(ctx, command)
+  local arguments = {}
+  local schema = command.arguments_schema
+
+  if ctx.is_callback_query then
+    local arrArgs = ctx:getArguments({ count = 64 })
+
+    for i = 1, #schema do
+      arguments[schema[i]] = arrArgs[i + 1]
+    end
+  end
+
+  return arguments
+end
 
 local function build_kv_arguments(ctx, command)
   local arguments = {}
@@ -55,7 +75,7 @@ local function processCommand(ctx, opts)
 
   -- Check command type flags
   --
-  if command:has_flag(command_flags.PRIVATE) then
+  if command:hasFlag(command_flags.PRIVATE) then
     if ctx:getChatType() ~= chat_type.PRIVATE then
       return
     end
@@ -74,6 +94,24 @@ local function processCommand(ctx, opts)
     return
   end
 
+  -- Антифлуд per (user, chat)
+  --
+  local chat_id = ctx:getChatId()
+  local key = ufrom.id..':'..chat_id
+  local allowed, wait = antiflood:allow(key)
+
+  if not allowed then
+    log.warn('[processCommand] antiflood user=%s chat=%s wait=%.2fs',
+      ufrom.id, chat_id, wait)
+
+    if ctx.is_callback_query then
+      if opts and opts.antiflood_answer and opts.antiflood_answer(ctx) then end
+    end
+
+    return
+  end
+  --
+
   -- Build commad arguments
   if command.arguments_schema then
     command.arguments = build_kv_arguments(ctx, command)
@@ -81,7 +119,10 @@ local function processCommand(ctx, opts)
 
   -- Pre call command event
   if bot.events.preCallCommand then
-    bot.events.preCallCommand(ctx, command)
+    local hasRun = bot.events.preCallCommand(ctx, command)
+    if hasRun == false then
+      return
+    end
   end
 
   -- Execute the command

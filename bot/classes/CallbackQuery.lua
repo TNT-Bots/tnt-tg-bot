@@ -152,7 +152,10 @@ end
 -- ctx:answer({ text = 'Error!', show_alert = true })
 function callback:answer(fields)
   if type(fields) == 'string' then
-    fields = { text = fields }
+    fields = {
+      text = fields,
+      show_alert = false,
+    }
   elseif fields == nil then
     fields = {}
   end

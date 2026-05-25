@@ -186,6 +186,61 @@ function sql.update(space, fields, where)
   return box.execute(sqlQuery, data)
 end
 
+--- Update record by primary key через box.space:update (NoSQL API).
+-- В отличие от sql.update работает с map/array/любыми типами Tarantool —
+-- SQL UPDATE для них непригоден (см. ограничения map в SQL).
+-- where ДОЛЖЕН содержать все поля первичного ключа.
+-- @param space (string) space name
+-- @param fields (table) { field_name = new_value, ... }
+-- @param where (table) полный первичный ключ { pk_field = value, ... }
+-- @return[1] true
+-- @return[2] error
+function sql.update_nosql(space, fields, where)
+  if box.space[space] == nil then
+    error(('Space: %s not found'):format(space), 1)
+  end
+  if fields == nil then
+    error('fields == nil', 1)
+  end
+  if where == nil then
+    error('where == nil', 1)
+  end
+
+  local space_obj = box.space[space]
+
+  -- Достаём первичный ключ из where в правильном порядке частей индекса
+  local primary_index = space_obj.index[0]
+  if primary_index == nil then
+    error(('Space: %s has no primary index'):format(space), 1)
+  end
+
+  local space_format = space_obj:format()
+  local key = {}
+  for i, part in ipairs(primary_index.parts) do
+    local field_name = part.field or space_format[part.fieldno].name
+    local value = where[field_name]
+    if value == nil then
+      error(('where missing primary key field: %s'):format(field_name), 1)
+    end
+    key[i] = value
+  end
+
+  -- Операции присваивания: {'=', field_name, value}
+  local ops = {}
+  for field_name, value in pairs(fields) do
+    table.insert(ops, { '=', field_name, value })
+  end
+
+  log.verbose('[box] %s:update', space)
+
+  local ok, err = pcall(space_obj.update, space_obj, key, ops)
+  if not ok then
+    return nil, err
+  end
+
+  return true, nil
+end
+
 --- Upsert record (atomic insert or update by primary key)
 -- Uses box.space:upsert() directly
 -- If record doesn't exist — inserts default_fields as a full tuple

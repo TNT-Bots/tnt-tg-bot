@@ -61,7 +61,7 @@ function bot:cfg(opts)
   self.events = setmetatable({}, {
     __index = function(_, key)
       return function ()
-        log.warn(string.format('[Event] "%s" is not defined', key))
+        log.verbose(string.format('[Event] "%s" is not defined', key))
       end
     end
   })

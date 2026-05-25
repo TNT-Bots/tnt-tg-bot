@@ -27,7 +27,7 @@ function Command:new(cfg)
   return setmetatable(command, self)
 end
 
-function Command:has_flag(flag)
+function Command:hasFlag(flag)
   return bit.band(self.flags, flag) ~= 0
 end
 

@@ -1,21 +1,30 @@
 --- Inline callback keyboard middleware
 --
 -- @module bot.middlewares.inlineCallbackKeyboard
+local bot = require('bot')
 local InlineKeyboardMarkup = require('bot.types.InlineKeyboardMarkup')
 local InlineKeyboardButton = require('bot.types.InlineKeyboardButton')
 
 local function build_callback_data(item)
   local callback = item.callback
-  local callback_data = string.format('%s ', callback.command)
+  local arguments = { callback.command }
 
-  local arguments = {}
-  for _, arg in pairs(callback.arguments) do
-    table.insert(arguments, arg)
+  -- Порядок аргументов диктует arguments_schema команды
+  local cmd = bot.commands[callback.command]
+  local schema = cmd and cmd.arguments_schema
+
+  if schema then
+    for _, key in ipairs(schema) do
+      table.insert(arguments, callback.arguments[key])
+    end
+  else
+    -- Fallback: позиционные аргументы (массив без именованных ключей)
+    for _, arg in ipairs(callback.arguments) do
+      table.insert(arguments, arg)
+    end
   end
 
-  callback_data = callback_data .. table.concat(arguments, ' ')
-
-  return callback_data
+  return table.concat(arguments, ' ')
 end
 
 local function build_button(item)
