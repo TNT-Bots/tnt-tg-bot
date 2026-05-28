@@ -97,6 +97,16 @@ end
 bot.call = api.call
 bot.sendImage = api.sendImage
 
+local botId
+--- Helper for get bot id
+function bot:getBotId()
+  if not botId then
+    botId = tonumber((self.token or ''):match('^%d+'))
+  end
+
+  return botId
+end
+
 -- Commands
 function bot.Command(ctx)
   return cmds.Command(bot, ctx)
