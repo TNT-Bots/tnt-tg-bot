@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
-luacheck bot/
+docker run --rm \
+  -v "$(pwd):/app" \
+  -w /app \
+  ghcr.io/lunarmodules/luacheck:latest \
+    bot/

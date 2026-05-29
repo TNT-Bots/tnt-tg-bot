@@ -90,6 +90,7 @@ local function processCommand(ctx, opts)
       ufrom.id, chat_id, wait)
 
     if ctx.is_callback_query then
+      -- luacheck: ignore
       if opts and opts.antiflood_answer and opts.antiflood_answer(ctx) then end
     end
 
