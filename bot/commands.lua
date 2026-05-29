@@ -11,7 +11,7 @@ local commands = {}
 --
 -- @return Command func
 -- @return Bot username
-function commands.Command(bot, ctx)
+function commands.command(bot, ctx)
   local command = ctx:getArguments({ count = 1 })[1]
 
   local username
@@ -36,7 +36,7 @@ end
 -- @param ctx (table) Callback query object
 --
 -- @return Command func
-function commands.CallbackCommand(bot, ctx)
+function commands.callbackCommand(bot, ctx)
   local command = ctx:getArguments({ count = 1 })[1]
   if not bot.commands[command] then
     return

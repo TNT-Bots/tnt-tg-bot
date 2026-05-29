@@ -108,12 +108,12 @@ function bot:getBotId()
 end
 
 -- Commands
-function bot.Command(ctx)
-  return cmds.Command(bot, ctx)
+function bot.command(ctx)
+  return cmds.command(bot, ctx)
 end
 
-function bot.CallbackCommand(ctx)
-  return cmds.CallbackCommand(bot, ctx)
+function bot.callbackCommand(ctx)
+  return cmds.callbackCommand(bot, ctx)
 end
 
 -- Transport

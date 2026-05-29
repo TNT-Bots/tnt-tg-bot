@@ -10,22 +10,7 @@ local RateLimiter = require('bot.libs.rateLimiter')
 -- юзеры друг друга не аффектят. TODO: вынести цифры в bot.cfg.
 local antiflood = RateLimiter.new({ capacity = 2, refill_per_sec = 1 })
 
--- TODO: Callback press timeout handler
-
-local function build_kv_arguments(ctx, command)
-  local arguments = {}
-  local schema = command.arguments_schema
-
-  if ctx.is_callback_query then
-    local arrArgs = ctx:getArguments({ count = 64 })
-
-    for i = 1, #schema do
-      arguments[schema[i]] = arrArgs[i + 1]
-    end
-  end
-
-  return arguments
-end
+-- TODO: Callback press timeout handler?
 
 local function build_kv_arguments(ctx, command)
   local arguments = {}
