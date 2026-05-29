@@ -79,7 +79,7 @@ tools::luarocks_install() {
     return 0
   fi
 
-  echo -e "[tt] Install: ${C_GREEN}${rock}${C_DEF}"
+  echo -e "[luarocks] Install: ${C_GREEN}${rock}${C_DEF}"
 
   luarocks install \
     --server "${luarocks_rocks_server}" \
