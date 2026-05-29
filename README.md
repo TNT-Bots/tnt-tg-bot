@@ -92,10 +92,23 @@ luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 luaossl
 ```
 
 ## Examples
-Run any example with your bot token:
+
+### Run with Docker (recommended)
+
+The only requirement is Docker. [`bin/tarantool`](bin/tarantool) builds the
+`tnt-tg-bot` image — which installs the rocks **inside** the container (no host
+setup, and the native rock ABI matches the runtime) — then runs the example in it:
+
 ```bash
-BOT_TOKEN="YOUR_BOT_TOKEN" tarantool examples/echo-bot.lua
+env BOT_TOKEN="BOT_TOKEN_HERE" ./bin/tarantool examples/echo-bot-new-ctx.lua
 ```
+
+The first run builds the image; later runs use the cache. `bot/` and `examples/`
+are mounted live, so you can edit them without rebuilding. The image **skips
+`luaossl`** (WebApp/initData) by default — to enable it, add `libssl-dev` and
+`liblua5.1-0-dev` to the [`Dockerfile`](Dockerfile) and uncomment luaossl in
+[`tnt-tg-bot.pre-build.sh`](tnt-tg-bot.pre-build.sh).
+
 
 | Example | What it shows |
 |---------|---------------|

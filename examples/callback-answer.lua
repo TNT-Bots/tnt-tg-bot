@@ -16,6 +16,7 @@ function bot.events.onGetUpdate(ctx)
     if data == 'greet' then
       ctx:answer('Button pressed!')
       ctx:reply('You pressed the greet button.')
+
     elseif data == 'alert' then
       ctx:answer({ text = 'This is an alert!', show_alert = true })
     end
@@ -25,7 +26,9 @@ function bot.events.onGetUpdate(ctx)
 
   -- Handle /start command
   local text = ctx:getText()
-  if not text or text ~= '/start' then return end
+  if not text or text ~= '/start' then
+    return
+  end
 
   local keyboard = inlineKeyboard({
     { text = 'Greet', callback_data = 'greet' },

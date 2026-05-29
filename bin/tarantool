@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
+set -e
 
-bash tnt-tg-bot.pre-build.sh
+IMAGE="tnt-tg-bot"
+
+# Образ ставит нужные роки внутри себя (см. Dockerfile).
+# После первой сборки — из кэша (быстро).
+docker build -t "$IMAGE" .
 
 docker run -it --rm \
   --network host \
@@ -10,9 +15,7 @@ docker run -it --rm \
   \
   -v "$(pwd)/bot:/opt/tarantool/bot:ro" \
   -v "$(pwd)/examples:/opt/tarantool/examples:ro" \
-  -v "$(pwd)/.rocks:/opt/tarantool/.rocks:ro" \
   \
   -w /opt/tarantool \
   \
-  tarantool/tarantool tarantool $@
-
+  "$IMAGE" tarantool "$@"

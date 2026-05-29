@@ -9,7 +9,9 @@ bot:cfg({
 
 function bot.events.onGetUpdate(ctx)
   local text = ctx:getText()
-  if not text then return end
+  if not text then
+    return
+  end
 
   local _, err = ctx:reply(text)
 

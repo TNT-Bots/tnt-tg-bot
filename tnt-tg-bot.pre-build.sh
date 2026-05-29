@@ -52,7 +52,7 @@ Yecho " Install Rocks...          "
 echo  "-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
 # https://github.com/tarantool/http
-# tools::tt_install "http" "scm-1"
+tools::tt_install "http" "scm-1"
 
 # https://github.com/uriid1/lua-multipart-post
 tools::luarocks_install "lua-multipart-post" "1.0-0"

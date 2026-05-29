@@ -90,9 +90,11 @@ luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 luaossl
 ```
 
 ## Примеры
-Запуск любого примера со своим токеном:
+
+Запуск примера через docker (рекомендуется):
+
 ```bash
-BOT_TOKEN="YOUR_BOT_TOKEN" tarantool examples/echo-bot.lua
+env BOT_TOKEN="BOT_TOKEN_HERE" ./bin/tarantool examples/echo-bot-new-ctx.lua
 ```
 
 | Пример | Что показывает |
