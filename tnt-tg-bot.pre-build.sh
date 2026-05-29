@@ -5,22 +5,17 @@ set -u
 #
 # Mirrors
 #
-#LUAROCKS_ROCKS_SERVER="https://rocks.niko-bot.ru"
-#TARANTOOL_ROCKS_SERVER="https://rocks.niko-bot.ru"
+LUAROCKS_ROCKS_SERVER="https://rocks.niko-bot.ru"
+TARANTOOL_ROCKS_SERVER="https://rocks.niko-bot.ru"
 
 source "$(dirname "$0")/bin/lib/consts.sh"
 source "$(dirname "$0")/bin/lib/customize.sh"
 source "$(dirname "$0")/bin/lib/tools.sh"
 
-echo "$(Cecho "  _________ _       _________  _________ _______    ______   _______ _________ ")"
-echo "$(Cecho "  \__   __/( (    /|\__   __/  \__   __/(  ____ \  (  ___ \ (  ___  )\__   __/ ")"
-echo "$(Cecho "     ) (   |  \  ( |   ) (        ) (   | (    \/  | (   ) )| (   ) |   ) (    ")"
-echo "$(Cecho "     | |   |   \ | |   | |        | |   | |        | (__/ / | |   | |   | |    ")"
-echo "$(Cecho "     | |   | (\ \) |   | |        | |   | | ____   |  __ (  | |   | |   | |    ")"
-echo "$(Cecho "     | |   | )  \  |   | |        | |   | (___) |  | )___) )| (___) |   | |    ")"
-echo "$(Cecho "     )_(   |/    )_)   )_(        )_(   (_______)  |/ \___/ (_______)   )_(    ")"
-echo "> $(HighlightPink "By uriid1")"
-echo "> $(HighlightPink "GitHub: https://github.com/uriid1/tnt-tg-bot")"
+echo "$(Cecho "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")"
+echo "> $(HighlightPink "Author: uriid1")"
+echo "> $(HighlightPink "Repo:   https://github.com/TNT-Bots/tnt-tg-bot")" 
+echo "$(Cecho "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")"
 echo
 
 readonly base_tools=(tarantool luarocks tt unzip git gcc)

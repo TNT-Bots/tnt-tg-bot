@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+bash tnt-tg-bot.pre-build.sh
+
+docker run -it --rm \
+  --network host \
+  -p 4401:3301 \
+  \
+  -e BOT_TOKEN="${BOT_TOKEN:-"WHERE_TOKEN?"}" \
+  \
+  -v "$(pwd)/bot:/opt/tarantool/bot:ro" \
+  -v "$(pwd)/examples:/opt/tarantool/examples:ro" \
+  -v "$(pwd)/.rocks:/opt/tarantool/.rocks:ro" \
+  \
+  -w /opt/tarantool \
+  \
+  tarantool/tarantool tarantool $@
+

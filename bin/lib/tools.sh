@@ -15,6 +15,9 @@ source "$__TOOLS_DIR/customize.sh"
 luarocks_rocks_server="${LUAROCKS_ROCKS_SERVER:-https://luarocks.org}"
 tarantool_rocks_server="${TARANTOOL_ROCKS_SERVER:-http://rocks.tarantool.org}"
 
+echo $(Highlight "[mirror] luarocks: ${luarocks_rocks_server}")
+echo $(Highlight "[mirror] tarantool: ${tarantool_rocks_server}")
+
 #
 # Установка пакета через tt
 # Аргументы:
