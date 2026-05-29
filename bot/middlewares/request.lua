@@ -3,14 +3,16 @@
 local config = require('bot.config')
 local request = {}
 
+local log = require('log')
 local json = require('json')
 local http = require('http.client')
+local fiber = require('fiber')
 local mpEncode = require('multipart-post')
 
---- Send an HTTP request to the Telegram Bot API.
--- @param params The request parameters.
--- @return The response from the API, or nil if there was an error.
-function request.send(params)
+local MAX_RETRIES = 3
+local API_URL_FMT = config.api_url..'%s/%s'
+
+local function build_body(params)
   local opts = {}
   local body
 
@@ -39,62 +41,76 @@ function request.send(params)
     end
   end
 
-  -- Request
-  local urlFmt = config.api_url..'%s/%s'
-  local data = http.post(urlFmt:format(config.token, params.method), body, opts)
+  return body, opts
+end
 
-  -- Handle error
-  if data.body == nil then
-    local err
-    if data and data.ok == false then
-      err = data
-      err.__method = params.method
+--- Send an HTTP request to the Telegram Bot API.
+-- @param params The request parameters.
+-- @return The response from the API, or nil if there was an error.
+function request.send(params)
+  local body, opts = build_body(params)
+
+  local url = API_URL_FMT:format(config.token, params.method)
+
+  -- Retry только для сетевых ошибок (HTTP-ответа не пришло).
+  -- На любой ответ API (включая 429) — отдаём как есть, решение за caller'ом.
+  -- За соблюдением Telegram rate-limit'ов отвечает client-side limiter (bot.libs.rateLimiter).
+  for attempt = 1, MAX_RETRIES do
+    local raw = http.post(url, body, opts)
+
+    if raw.body == nil then
+      if attempt < MAX_RETRIES then
+        local delay = math.pow(2, attempt - 1)
+
+        log.warn('[Request] Network error, retry after %ds (attempt %d/%d)',
+          delay, attempt, MAX_RETRIES)
+
+        fiber.sleep(delay)
+      else
+        if raw.ok == false then
+          local err = raw
+          err.__method = params.method
+
+          return nil, err
+        end
+
+        return nil, {
+          description = 'Empty data received',
+          __method = params.method
+        }
+      end
     else
-      err = 'Empty data received'
-    end
+      local data = json.decode(raw.body)
 
-    return nil, err
-  end
-
-  -- Decode JSON response
-  -- luacheck: ignore data
-  local data = json.decode(data.body)
-
-  -- Handle error
-  if data.ok == false then
-    local err
-    if data then
-      err = data
-      err.__method = params.method
-    else
-      err = 'Empty data received'
-    end
-
-    return nil, err
-  end
-
-  -- Proxy
-  -- tg: data.result.object.key
-  -- proxy: result.object.key
-  --
-  setmetatable(data, {
-    __index = function(t, key)
-      if key == nil then
-        return rawget(t, 'result')
+      if data.ok == false then
+        data.__method = params.method
+        return nil, data
       end
 
-      local _raw_t = rawget(t, 'result')
-      if _raw_t and _raw_t[key] then
-        return _raw_t[key]
-      end
-    end,
+      -- Proxy
+      -- tg: data.result.object.key
+      -- proxy: result.object.key
+      --
+      setmetatable(data, {
+        __index = function(t, key)
+          if key == nil then
+            return rawget(t, 'result')
+          end
 
-    __newindex = function(tbl, key, value)
-      rawget(tbl, 'result')[key] = value
-    end,
-  })
+          local _raw_t = rawget(t, 'result')
+          if _raw_t and _raw_t[key] then
+            return _raw_t[key]
+          end
+        end,
 
-  return data, nil
+        __newindex = function(tbl, key, value)
+          rawget(tbl, 'result')[key] = value
+        end,
+      })
+
+      return data, nil
+    end
+  end
 end
 
 return request

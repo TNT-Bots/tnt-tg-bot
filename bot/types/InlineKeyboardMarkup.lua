@@ -2,7 +2,7 @@
   -- https://core.telegram.org/bots/api#replykeyboardmarkup
   --
 -- @module bot.types.InlineKeyboardMarkup
-local json = require 'json'
+local json = require('json')
 
 local function InlineKeyboardMarkup(data)
   if data and type(data) ~= 'table' then

@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-luacheck bot/ \
-         src/

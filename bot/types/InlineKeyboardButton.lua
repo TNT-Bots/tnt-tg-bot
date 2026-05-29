@@ -20,6 +20,24 @@ local function inlineKeyboardButton(keyboard, data)
     button.text = tostring(data.text)
   end
 
+  -- Optional. Unique identifier of the custom emoji shown before the text of the button.
+  -- Can only be used by bots that purchased additional usernames on Fragment
+  -- or in the messages directly sent by the bot to private,
+  -- group and supergroup chats if the owner of the bot has a Telegram Premium subscription.
+  if data.icon_custom_emoji_id then
+    button.icon_custom_emoji_id = tostring(data.icon_custom_emoji_id)
+  end
+
+  -- Optional. Style of the button.
+  -- Must be one of:
+  -- “danger” (red)
+  -- “success” (green)
+  -- “primary” (blue).
+  -- If omitted, then an app-specific style is used.
+  if data.style then
+    button.style = tostring(data.style)
+  end
+
   -- Optional. HTTP or tg:// URL to be opened when the button is pressed
   if data.url then
     button.url = tostring(data.url)
@@ -53,6 +71,13 @@ local function inlineKeyboardButton(keyboard, data)
     button.switch_inline_query = tostring(data.switch_inline_query)
   end
 
+  -- Optional. If set, pressing the button will insert the bot's username and -
+  -- the specified inline query in the current chat's input field. May be empty,
+  -- in which case only the bot's username will be inserted.
+  if data.switch_inline_query_current_chat then
+    button.switch_inline_query_current_chat = tostring(data.switch_inline_query_current_chat)
+  end
+
   -- Optional. If set, pressing the button will insert the bot's username and
   -- the specified inline query in the current chat's input field. May be empty,
   -- in which case only the bot's username will be inserted.
@@ -63,6 +88,11 @@ local function inlineKeyboardButton(keyboard, data)
   -- Optional. Description of the game that will be launched when the user presses the button
   if data.callback_game then
     button.callback_game = data.callback_game
+  end
+
+  -- Optional. Description of the button that copies the specified text to the clipboard.
+  if data.copy_text then
+    button.copy_text = tostring(button.copy_text)
   end
 
   -- Optional. Specify True, to send a Pay button
