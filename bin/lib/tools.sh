@@ -30,11 +30,12 @@ tools::tt_install() {
 
   set +o pipefail
 
-  if tt rocks list \
-    --local \
-    --tree=$PWD/.rocks \
-    | grep -q "^[[:space:]]*${rock}[[:space:]]*";
-  then
+  # Список читаем в переменную целиком: grep -q закрывает пайп на первом
+  # совпадении, а tt (Go-обёртка над luarocks) на оборванном пайпе зависает.
+  local installed_rocks
+  installed_rocks="$(tt rocks list --local --tree=$PWD/.rocks 2>/dev/null)"
+
+  if grep -q "^[[:space:]]*${rock}[[:space:]]*" <<< "$installed_rocks"; then
     echo -e "[tt] Already installed: ${C_GREEN}${rock}${C_DEF}"
     return 0
   fi
@@ -45,7 +46,7 @@ tools::tt_install() {
     --local \
     --server "${tarantool_rocks_server}" \
     --tree=$PWD/.rocks \
-    ${rock} ${version}
+    "${rock}" "${version}"
 }
 
 #
@@ -60,21 +61,20 @@ tools::luarocks_install() {
 
   set +o pipefail
 
-  if tt rocks list \
-    --local \
-    --tree=$PWD/.rocks \
-    | grep -q "^[[:space:]]*${rock}[[:space:]]*";
-  then
+  # Список читаем в переменную целиком: grep -q закрывает пайп на первом
+  # совпадении, а tt (Go-обёртка над luarocks) на оборванном пайпе зависает.
+  local tt_rocks
+  tt_rocks="$(tt rocks list --local --tree=$PWD/.rocks 2>/dev/null)"
+
+  if grep -q "^[[:space:]]*${rock}[[:space:]]*" <<< "$tt_rocks"; then
     echo -e "[tt] Already installed: ${C_GREEN}${rock}${C_DEF}"
     return 0
   fi
 
-  if luarocks list \
-    --local \
-    --tree=$PWD/.rocks \
-    --lua-version 5.1 \
-    | grep -q "^[[:space:]]*${rock}[[:space:]]*";
-  then
+  local lr_rocks
+  lr_rocks="$(luarocks list --local --tree=$PWD/.rocks --lua-version 5.1 2>/dev/null)"
+
+  if grep -q "^[[:space:]]*${rock}[[:space:]]*" <<< "$lr_rocks"; then
     echo -e "[luarocks] Already installed: ${C_GREEN}${rock}${C_DEF}"
     return 0
   fi
@@ -86,7 +86,7 @@ tools::luarocks_install() {
     --local \
     --tree=$PWD/.rocks \
     --lua-version 5.1 \
-    ${rock} ${version}
+    "${rock}" "${version}"
 }
 
 #
