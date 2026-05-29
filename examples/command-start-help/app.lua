@@ -8,9 +8,12 @@ bot:cfg {
 bot.events.onGetUpdate = require('src.events.onGetUpdate')
 bot.events.onGetEntities = require('src.events.onGetEntities')
 
+commandLoader.setPath('src.commands')
 commandLoader {
-  'src.commands.private.start',
-  'src.commands.private.help'
+  private = {
+    start = {},
+    help = {},
+  },
 }
 
 bot:startLongPolling()
