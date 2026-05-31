@@ -1,28 +1,22 @@
---- Ограничитель частоты вызовов по ключу.
+--- Token-bucket rate limiter keyed by an arbitrary value.
 --
--- Каждый ключ имеет "корзинку" с разрешениями (токенами). Каждый вызов
--- забирает 1 разрешение. Корзинка автоматически пополняется со скоростью
--- refill_per_sec штук в секунду, но не больше capacity.
---
--- Пример: capacity=3, refill_per_sec=1 - юзер может за раз сделать
--- всплеск из 3 вызовов подряд, потом не более 1 в секунду. Подходит для
--- ограничения частоты сообщений в Telegram (где per-chat лимит ~1/сек).
---
--- Хранение: таблица в памяти. Старые ключи (которые давно не дёргали,
--- корзинка успела полностью восстановиться) подчищает фоновая задача.
+-- Each key owns a bucket of tokens; every call spends one. Buckets refill at
+-- refill_per_sec tokens/sec up to capacity, allowing short bursts and then a
+-- steady rate - a good fit for Telegram's per-chat ~1 msg/sec limit. Idle
+-- buckets are swept by a background fiber. In-memory only.
 --
 local fiber = require('fiber')
 
---- Как часто фоновая задача сканирует корзинки, секунды.
+--- How often the sweeper scans buckets, in seconds.
 local CLEANUP_INTERVAL_SEC = 60
 
 local rateLimiter = {}
 rateLimiter.__index = rateLimiter
 
---- Создаёт новый ограничитель.
+--- Create a new limiter.
 -- @param opts (table)
--- @param opts.capacity (number) сколько вызовов разрешено всплеском
--- @param opts.refill_per_sec (number) скорость пополнения корзинки
+-- @param opts.capacity (number) burst size (tokens available at once)
+-- @param opts.refill_per_sec (number) refill rate
 function rateLimiter.new(opts)
   opts = opts or {}
 
@@ -32,10 +26,8 @@ function rateLimiter.new(opts)
     buckets = {},
   }, rateLimiter)
 
-  -- Через сколько секунд корзинку можно считать неактивной и удалить:
-  -- за capacity/refill_per_sec она точно успеет полностью восстановиться,
-  -- удваиваем для запаса (если юзер вернётся через минуту - корзинка ещё
-  -- здесь и у него full credit, как и должно быть).
+  -- A bucket fully refills in capacity/refill_per_sec seconds; double that
+  -- before treating it as idle, so a returning key still has full credit.
   self.idle_threshold_sec = (self.capacity / self.refill_per_sec) * 2
 
   self.cleaner_fiber = fiber.create(function()
@@ -50,8 +42,8 @@ function rateLimiter.new(opts)
   return self
 end
 
---- Удаляет корзинки, к которым не обращались дольше idle_threshold_sec.
--- @return (number) сколько ключей удалено
+--- Drop buckets untouched for longer than idle_threshold_sec.
+-- @return (number) how many keys were removed
 function rateLimiter:cleanup()
   local now = fiber.time()
   local removed = 0
@@ -66,10 +58,10 @@ function rateLimiter:cleanup()
   return removed
 end
 
---- Попытаться потратить 1 разрешение по ключу.
--- @param key (any) ключ (обычно chat_id или user_id..':'..chat_id)
--- @return (boolean) true если разрешено, false если корзинка пуста
--- @return (number) через сколько секунд появится следующее разрешение
+--- Try to spend one token for a key.
+-- @param key (any) usually chat_id or user_id..':'..chat_id
+-- @return (boolean) true if allowed, false if the bucket is empty
+-- @return (number) seconds until the next token becomes available
 function rateLimiter:allow(key)
   local now = fiber.time()
   local bucket = self.buckets[key]
