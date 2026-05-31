@@ -47,7 +47,7 @@ function is a plain field you assign yourself.
 
 > **Important:** `processCommand` itself enforces **only `PRIVATE`** (the command
 > runs only in private chats). It also denies other bots and channel (`sender_chat`)
-> senders, and applies antiflood. **All other flags are conventions** — they mean
+> senders, and applies antiflood. **All other flags are conventions** - they mean
 > nothing until *your* `preCallCommand` hook interprets them (e.g. mapping
 > `MODERATION`/`ADMINISTRATIVE` to role checks). The flags are just a typed bitmask
 > the library carries for you.
@@ -83,18 +83,18 @@ commandLoader {
 For `settings` above, the loader requires
 `src.commands.moderation.settings.cb_settings`,
 `src.commands.moderation.settings.cb_set_setting`, then
-`src.commands.moderation.settings` — and registers every string in each module's
+`src.commands.moderation.settings` - and registers every string in each module's
 `commands` field into `bot.commands`.
 
 ## Dispatching
 
 [`processCommand(ctx, opts)`](../../bot/processes/processCommand.lua) is the runtime. Call it from your update handlers (e.g. from `onGetEntities` / `onGetMessageText`). It:
 
-1. Resolves the command — by callback data, by the first text token, or from `opts.command` when `opts.is_text_command` is set.
+1. Resolves the command - by callback data, by the first text token, or from `opts.command` when `opts.is_text_command` is set.
 2. Enforces `PRIVATE`; denies bots and channel senders.
-3. Applies **antiflood** per `(user_id, chat_id)` — a token bucket (`capacity = 2`, `refill = 1/s`). On a callback, `opts.antiflood_answer(ctx)` is called if provided.
+3. Applies **antiflood** per `(user_id, chat_id)` - a token bucket (`capacity = 2`, `refill = 1/s`). On a callback, `opts.antiflood_answer(ctx)` is called if provided.
 4. For commands with an `arguments_schema`, fills `command.arguments` (see below).
-5. Calls `bot.events.preCallCommand(ctx, command)` — **if it returns `false`, the command is aborted.**
+5. Calls `bot.events.preCallCommand(ctx, command)` - **if it returns `false`, the command is aborted.**
 6. Runs `command.call(ctx)`.
 7. Calls `bot.events.postCallCommand(ctx, command)`.
 

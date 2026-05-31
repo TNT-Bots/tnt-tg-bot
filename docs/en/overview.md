@@ -12,7 +12,7 @@ tnt-tg-bot is a thin, explicit layer over the Telegram Bot API for Tarantool:
 - It exposes **every Bot API method** on the `bot` object (`bot:sendMessage{…}`).
 - It gives you the building blocks for **commands**, **keyboards**, **payments** and **WebApp**, but leaves the routing/architecture to you.
 
-It is deliberately unopinionated: the only event the runtime calls is `bot.events.onGetUpdate(ctx)`. Everything else — how you dispatch by update type, how you structure commands and events — is yours to design.
+It is deliberately unopinionated: the only event the runtime calls is `bot.events.onGetUpdate(ctx)`. Everything else - how you dispatch by update type, how you structure commands and events - is yours to design.
 
 ## Update lifecycle
 
@@ -68,7 +68,7 @@ Configured once via `bot:cfg{…}`. Key surface:
 | [`bot/config.lua`](../../bot/config.lua) | Library defaults: `api_url`, `parse_mode`, `token`. |
 | [`bot/classes/`](../../bot/classes) | Typed update contexts with getters and helpers: `Message`, `CallbackQuery`, `ChatMember`, `MyChatMember`, `PreCheckoutQuery`, `SuccessfulPayment`. See [Context & events](context.md). |
 | [`bot/enums/`](../../bot/enums) | Telegram constants: `methods`, `chat_type`, `chat_member_status`, `chat_permissions`, `command_flags`, `entity_type`, `parse_mode`, `allowed_updates`, `bot_command_scope`, `message_effect`, `errors`. |
-| [`bot/interfaces/`](../../bot/interfaces) | `EventEmitter` (`on`/`emit`) — the observer primitive for building your own event dispatch. |
+| [`bot/interfaces/`](../../bot/interfaces) | `EventEmitter` (`on`/`emit`) - the observer primitive for building your own event dispatch. |
 | [`bot/libs/`](../../bot/libs) | Helpers: `hdec` (HTML formatting), `sql` (Tarantool 3 SQL/NoSQL wrapper), `rateLimiter` (token bucket), `sendQueue` (per-chat outgoing queue), `parseInitData` (WebApp initData validation), `inputFile`, `getter`. See [Libraries](libs.md). |
 | [`bot/middlewares/`](../../bot/middlewares) | `request` (HTTP transport to the API, retries, parse-mode injection), `inlineKeyboard` and `inlineCallbackKeyboard` (keyboard builders). See [Keyboards](keyboards.md). |
 | [`bot/processes/`](../../bot/processes) | `processMessage` (raw update → typed ctx) and `processCommand` (command runtime: argument parsing, pre/post hooks, rate limiting). |
@@ -78,9 +78,9 @@ Configured once via `bot:cfg{…}`. Key surface:
 
 ## Where to go next
 
-- [Getting started](getting-started.md) — install and run a minimal bot.
-- [Commands](commands.md) — the `Command` class, flags, the loader, and callbacks.
-- [Context & events](context.md) — context objects, getters, and building your own event dispatch.
-- [Keyboards](keyboards.md) — inline and reply keyboards.
-- [Libraries](libs.md) — the helpers in `bot/libs` and `bot/utils`.
-- [Transport](transport.md) — long polling, webhook, and the debug server.
+- [Getting started](getting-started.md) - install and run a minimal bot.
+- [Commands](commands.md) - the `Command` class, flags, the loader, and callbacks.
+- [Context & events](context.md) - context objects, getters, and building your own event dispatch.
+- [Keyboards](keyboards.md) - inline and reply keyboards.
+- [Libraries](libs.md) - the helpers in `bot/libs` and `bot/utils`.
+- [Transport](transport.md) - long polling, webhook, and the debug server.

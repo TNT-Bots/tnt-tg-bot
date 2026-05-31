@@ -6,11 +6,11 @@
 
 - [Tarantool](https://www.tarantool.io/ru/download/os-installation)
 - `git`, `curl`, `lua 5.1`, `luarocks`
-- (опционально, только для WebApp) заголовки OpenSSL + Lua 5.1 — для rock'а `luaossl`
+- (опционально, только для WebApp) заголовки OpenSSL + Lua 5.1 - для rock'а `luaossl`
 
 ## Установка
 
-Самый быстрый путь — встроенный установщик:
+Самый быстрый путь - встроенный установщик:
 
 ```bash
 bash tnt-tg-bot.pre-build.sh
@@ -27,7 +27,7 @@ luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 lua-multipart-post
 luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 luaossl
 ```
 
-Детали про заголовки OpenSSL — в [README](../../README.md#installation).
+Детали про заголовки OpenSSL - в [README](../../README.md#installation).
 
 ## Первый бот
 
@@ -43,7 +43,7 @@ function bot.events.onGetUpdate(ctx)
   local text = ctx:getText()
   if not text then return end
 
-  local _, err = ctx:reply(text)   -- ctx:reply -- шорткат для sendMessage в этот чат
+  local _, err = ctx:reply(text)   -- ctx:reply - шорткат для sendMessage в этот чат
   if err then
     log.error(err)
   end
@@ -53,7 +53,7 @@ end
 bot:startLongPolling()
 ```
 
-`ctx` — типизированный контекст-объект (здесь `Message`). У него есть геттеры вроде
+`ctx` - типизированный контекст-объект (здесь `Message`). У него есть геттеры вроде
 `ctx:getText()` / `ctx:getChatId()` и хелперы вроде `ctx:reply(...)`. См.
 [Контекст и события](context.md).
 
@@ -116,13 +116,13 @@ commandLoader {
 bot:startLongPolling()
 ```
 
-Формат `commandLoader` и callback-команды — в [Командах](commands.md).
+Формат `commandLoader` и callback-команды - в [Командах](commands.md).
 
-> Совет: включи строгий режим, чтобы ловить случайные глобалы — `require('strict').on()`.
+> Совет: включи строгий режим, чтобы ловить случайные глобалы - `require('strict').on()`.
 
 ## Куда дальше
 
-- [Обзор](overview.md) — жизненный цикл апдейта и полная карта подсистем.
-- [Команды](commands.md) — класс `Command`, флаги, загрузчик, callback'и.
-- [Контекст и события](context.md) — контекст-объекты и своя диспетчеризация.
-- [Клавиатуры](keyboards.md) — inline- и reply-клавиатуры.
+- [Обзор](overview.md) - жизненный цикл апдейта и полная карта подсистем.
+- [Команды](commands.md) - класс `Command`, флаги, загрузчик, callback'и.
+- [Контекст и события](context.md) - контекст-объекты и своя диспетчеризация.
+- [Клавиатуры](keyboards.md) - inline- и reply-клавиатуры.

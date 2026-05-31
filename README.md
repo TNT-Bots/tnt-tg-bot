@@ -13,10 +13,10 @@ English | [Russian](docs/ru/README.md)</br>
 
 ## Features
 - Simple, explicit interfaces
-- Asynchronous update handling — one Tarantool fiber per update
+- Asynchronous update handling - one Tarantool fiber per update
 - All Telegram Bot API methods auto-wrapped onto the bot object (`bot:sendMessage{...}`)
 - Built-in command and callback-command handling
-- You name your own events — only `bot.events.onGetUpdate(ctx)` is provided out of the box
+- You name your own events - only `bot.events.onGetUpdate(ctx)` is provided out of the box
 - Long polling and webhook transports
 - Telegram Stars payments
 - WebApp (TWA): [initData validation](https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app) via [`bot/libs/parseInitData.lua`](bot/libs/parseInitData.lua) and HTTP routes
@@ -24,7 +24,7 @@ English | [Russian](docs/ru/README.md)</br>
 - Runnable examples
 
 ## Documentation
-Detailed docs live in [`docs/en/`](docs/en) (на русском — [`docs/ru/`](docs/ru)):
+Detailed docs live in [`docs/en/`](docs/en) (на русском - [`docs/ru/`](docs/ru)):
 
 | Topic | Description |
 |-------|-------------|
@@ -62,7 +62,7 @@ BOT_TOKEN="1348551682:AAFK..." tarantool examples/echo-bot.lua
 ### Automatic
 1. Install `git`, `curl`, `lua 5.1` and `luarocks`.
 2. Install [Tarantool](https://www.tarantool.io/en/download/os-installation).
-3. (Optional, for WebApp) install OpenSSL and Lua 5.1 dev headers — needed to build the `luaossl` rock.
+3. (Optional, for WebApp) install OpenSSL and Lua 5.1 dev headers - needed to build the `luaossl` rock.
 4. Run the dependency installer:
 ```bash
 bash tnt-tg-bot.pre-build.sh
@@ -91,8 +91,8 @@ luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 luaossl
 ### Run with Docker (recommended)
 
 The only requirement is Docker. [`bin/tarantool`](bin/tarantool) builds the
-`tnt-tg-bot` image — which installs the rocks **inside** the container (no host
-setup, and the native rock ABI matches the runtime) — then runs the example in it:
+`tnt-tg-bot` image - which installs the rocks **inside** the container (no host
+setup, and the native rock ABI matches the runtime) - then runs the example in it:
 
 ```bash
 env BOT_TOKEN="BOT_TOKEN_HERE" ./bin/tarantool examples/echo-bot-new-ctx.lua
@@ -100,7 +100,7 @@ env BOT_TOKEN="BOT_TOKEN_HERE" ./bin/tarantool examples/echo-bot-new-ctx.lua
 
 The first run builds the image; later runs use the cache. `bot/` and `examples/`
 are mounted live, so you can edit them without rebuilding. The image **skips
-`luaossl`** (WebApp/initData) by default — to enable it, add `libssl-dev` and
+`luaossl`** (WebApp/initData) by default - to enable it, add `libssl-dev` and
 `liblua5.1-0-dev` to the [`Dockerfile`](Dockerfile) and uncomment luaossl in
 [`tnt-tg-bot.pre-build.sh`](tnt-tg-bot.pre-build.sh).
 

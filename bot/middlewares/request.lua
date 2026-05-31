@@ -53,7 +53,7 @@ function request.send(params)
   local url = API_URL_FMT:format(config.token, params.method)
 
   -- Retry только для сетевых ошибок (HTTP-ответа не пришло).
-  -- На любой ответ API (включая 429) — отдаём как есть, решение за caller'ом.
+  -- На любой ответ API (включая 429) - отдаём как есть, решение за caller'ом.
   -- За соблюдением Telegram rate-limit'ов отвечает client-side limiter (bot.libs.rateLimiter).
   for attempt = 1, MAX_RETRIES do
     local raw = http.post(url, body, opts)

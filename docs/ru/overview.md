@@ -2,17 +2,17 @@
 
 # Обзор
 
-Эта страница объясняет, **что включает в себя tnt-tg-bot** и **как апдейт проходит через библиотеку**. Когда эта модель в голове — остальные доки это просто детали отдельных подсистем.
+Эта страница объясняет, **что включает в себя tnt-tg-bot** и **как апдейт проходит через библиотеку**. Когда эта модель в голове - остальные доки это просто детали отдельных подсистем.
 
 ## Что это
 
-tnt-tg-bot — тонкая и явная прослойка над Telegram Bot API для Tarantool:
+tnt-tg-bot - тонкая и явная прослойка над Telegram Bot API для Tarantool:
 
 - Превращает сырые апдейты Telegram в **типизированные контекст-объекты** (`Message`, `CallbackQuery`, …).
 - Выкладывает **все методы Bot API** на объект `bot` (`bot:sendMessage{…}`).
 - Даёт строительные блоки для **команд**, **клавиатур**, **платежей** и **WebApp**, но маршрутизацию/архитектуру оставляет на тебя.
 
-Библиотека намеренно без навязанных решений: единственное событие, которое вызывает рантайм, — `bot.events.onGetUpdate(ctx)`. Всё остальное — как раскладывать апдейты по типам, как строить команды и события — проектируешь сам.
+Библиотека намеренно без навязанных решений: единственное событие, которое вызывает рантайм, - `bot.events.onGetUpdate(ctx)`. Всё остальное - как раскладывать апдейты по типам, как строить команды и события - проектируешь сам.
 
 ## Жизненный цикл апдейта
 
@@ -35,7 +35,7 @@ bot.events.onGetUpdate(ctx)        ← единственная встроенн
 1. **Transport** (`longpolling` или `webhook`) получает сырые апдейты и выполняет каждый в отдельном fiber Tarantool, вызывая внутренний `switch`.
 2. **`switch`** делает ровно одно: `bot.events.onGetUpdate(processMessage(update))`.
 3. **`processMessage`** смотрит на апдейт и возвращает подходящий контекст-объект: `Message` (`message`), `CallbackQuery` (`callback_query`), `ChatMember` (`chat_member`), `MyChatMember` (`my_chat_member`), `PreCheckoutQuery` (`pre_checkout_query`). Всё прочее проходит как есть.
-4. **`bot.events.onGetUpdate(ctx)`** — твоя. Обычно она ветвится по типу апдейта и передаёт дальше в твои именованные события / процессор команд.
+4. **`bot.events.onGetUpdate(ctx)`** - твоя. Обычно она ветвится по типу апдейта и передаёт дальше в твои именованные события / процессор команд.
 
 > Обращаться к неопределённым событиям безопасно: `bot.events.someEvent` вернёт пустышку, которая логирует на уровне `verbose`. Поэтому можно звать `bot.events.onChatMessage(ctx)` ещё до того, как ты её определил.
 
@@ -68,7 +68,7 @@ bot.events.onGetUpdate(ctx)        ← единственная встроенн
 | [`bot/config.lua`](../../bot/config.lua) | Дефолты библиотеки: `api_url`, `parse_mode`, `token`. |
 | [`bot/classes/`](../../bot/classes) | Типизированные контексты апдейтов с геттерами и хелперами: `Message`, `CallbackQuery`, `ChatMember`, `MyChatMember`, `PreCheckoutQuery`, `SuccessfulPayment`. См. [Контекст и события](context.md). |
 | [`bot/enums/`](../../bot/enums) | Константы Telegram: `methods`, `chat_type`, `chat_member_status`, `chat_permissions`, `command_flags`, `entity_type`, `parse_mode`, `allowed_updates`, `bot_command_scope`, `message_effect`, `errors`. |
-| [`bot/interfaces/`](../../bot/interfaces) | `EventEmitter` (`on`/`emit`) — примитив-наблюдатель для построения своей диспетчеризации событий. |
+| [`bot/interfaces/`](../../bot/interfaces) | `EventEmitter` (`on`/`emit`) - примитив-наблюдатель для построения своей диспетчеризации событий. |
 | [`bot/libs/`](../../bot/libs) | Хелперы: `hdec` (HTML-форматирование), `sql` (обёртка над Tarantool 3 SQL/NoSQL), `rateLimiter` (токен-бакет), `sendQueue` (очередь исходящих на чат), `parseInitData` (валидация WebApp initData), `inputFile`, `getter`. См. [Библиотеки](libs.md). |
 | [`bot/middlewares/`](../../bot/middlewares) | `request` (HTTP-транспорт к API: ретраи, подстановка parse_mode), `inlineKeyboard` и `inlineCallbackKeyboard` (сборка клавиатур). См. [Клавиатуры](keyboards.md). |
 | [`bot/processes/`](../../bot/processes) | `processMessage` (сырой апдейт → типизированный ctx) и `processCommand` (рантайм команд: разбор аргументов, pre/post-хуки, rate-limit). |
@@ -78,9 +78,9 @@ bot.events.onGetUpdate(ctx)        ← единственная встроенн
 
 ## Куда дальше
 
-- [Начало работы](getting-started.md) — установка и запуск минимального бота.
-- [Команды](commands.md) — класс `Command`, флаги, загрузчик и callback'и.
-- [Контекст и события](context.md) — контекст-объекты, геттеры и своя диспетчеризация событий.
-- [Клавиатуры](keyboards.md) — inline- и reply-клавиатуры.
-- [Библиотеки](libs.md) — хелперы из `bot/libs` и `bot/utils`.
-- [Транспорт](transport.md) — long polling, webhook и отладочный сервер.
+- [Начало работы](getting-started.md) - установка и запуск минимального бота.
+- [Команды](commands.md) - класс `Command`, флаги, загрузчик и callback'и.
+- [Контекст и события](context.md) - контекст-объекты, геттеры и своя диспетчеризация событий.
+- [Клавиатуры](keyboards.md) - inline- и reply-клавиатуры.
+- [Библиотеки](libs.md) - хелперы из `bot/libs` и `bot/utils`.
+- [Транспорт](transport.md) - long polling, webhook и отладочный сервер.

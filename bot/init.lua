@@ -35,7 +35,7 @@ end
 -- @usage
 -- bot:cfg {
 --  token = '1234567:AABBccDDFF...',
---  parse_mode = 'HTML' -- Default: 'HTML'
+--  parse_mode = 'HTML' - Default: 'HTML'
 -- }
 --
 -- @return bot object

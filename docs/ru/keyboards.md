@@ -7,7 +7,7 @@
 ## Inline-клавиатура
 
 [`bot.middlewares.inlineKeyboard`](../../bot/middlewares/inlineKeyboard.lua)
-принимает массив. Обычная кнопка становится отдельной строкой; массив кнопок —
+принимает массив. Обычная кнопка становится отдельной строкой; массив кнопок -
 одной строкой:
 
 ```lua
@@ -33,7 +33,7 @@ ctx:reply({ text = 'Choose:', reply_markup = kb })
 ## Callback-клавиатура (типизированная callback_data)
 
 [`bot.middlewares.inlineCallbackKeyboard`](../../bot/middlewares/inlineCallbackKeyboard.lua)
-— та же форма, но кнопка нацелена на **зарегистрированную callback-команду**, и
+- та же форма, но кнопка нацелена на **зарегистрированную callback-команду**, и
 `callback_data` кодируется из `arguments_schema` этой команды:
 
 ```lua
@@ -86,7 +86,7 @@ Reply-кнопки могут и запрашивать данные: `request_u
 ## Пагинация
 
 Для длинных списков [`bot.utils.pagination`](../../bot/utils/pagination.lua)
-строит постраничную inline-клавиатуру с кнопками навигации — см.
+строит постраничную inline-клавиатуру с кнопками навигации - см.
 [Библиотеки](libs.md) и пример [`pagination.lua`](../../examples/pagination.lua).
 
 См. также: [Команды](commands.md), [Контекст и события](context.md).

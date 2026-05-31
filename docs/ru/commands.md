@@ -2,7 +2,7 @@
 
 # Команды
 
-Команда — это небольшой модуль: объект `Command` (его метаданные) плюс обработчик
+Команда - это небольшой модуль: объект `Command` (его метаданные) плюс обработчик
 `call`. Команды регистрируются в `bot.commands` (таблица `имя → команда`) и
 диспетчеризуются через [`processCommand`](../../bot/processes/processCommand.lua).
 
@@ -26,7 +26,7 @@ return command
 ```
 
 `Command:new(cfg)` хранит `commands`, `info`, `arguments_schema` и упаковывает
-`flags` в битовую маску. `command:hasFlag(flag)` проверяет флаг. Функция `call` —
+`flags` в битовую маску. `command:hasFlag(flag)` проверяет флаг. Функция `call` -
 обычное поле, которое ты присваиваешь сам.
 
 ## Флаги
@@ -47,9 +47,9 @@ return command
 
 > **Важно:** сам `processCommand` enforce-ит **только `PRIVATE`** (команда работает
 > лишь в личке). Ещё он отбивает других ботов и отправителей от лица канала
-> (`sender_chat`) и применяет антифлуд. **Все остальные флаги — конвенции**: они
+> (`sender_chat`) и применяет антифлуд. **Все остальные флаги - конвенции**: они
 > ничего не значат, пока их не трактует *твой* хук `preCallCommand` (например,
-> сопоставляя `MODERATION`/`ADMINISTRATIVE` с проверками ролей). Флаги — просто
+> сопоставляя `MODERATION`/`ADMINISTRATIVE` с проверками ролей). Флаги - просто
 > типизированная битовая маска, которую либа носит за тебя.
 
 ## Регистрация команд
@@ -83,26 +83,26 @@ commandLoader {
 Для `settings` выше загрузчик потребует
 `src.commands.moderation.settings.cb_settings`,
 `src.commands.moderation.settings.cb_set_setting`, затем
-`src.commands.moderation.settings` — и зарегистрирует каждую строку из поля
+`src.commands.moderation.settings` - и зарегистрирует каждую строку из поля
 `commands` каждого модуля в `bot.commands`.
 
 ## Диспетчеризация
 
-[`processCommand(ctx, opts)`](../../bot/processes/processCommand.lua) — это рантайм. Зови его из своих обработчиков апдейтов (например, из `onGetEntities` / `onGetMessageText`). Он:
+[`processCommand(ctx, opts)`](../../bot/processes/processCommand.lua) - это рантайм. Зови его из своих обработчиков апдейтов (например, из `onGetEntities` / `onGetMessageText`). Он:
 
-1. Находит команду — по callback-данным, по первому токену текста или из `opts.command`, если задан `opts.is_text_command`.
+1. Находит команду - по callback-данным, по первому токену текста или из `opts.command`, если задан `opts.is_text_command`.
 2. Enforce-ит `PRIVATE`; отбивает ботов и отправителей-каналы.
-3. Применяет **антифлуд** на `(user_id, chat_id)` — токен-бакет (`capacity = 2`, `refill = 1/сек`). На callback зовётся `opts.antiflood_answer(ctx)`, если передан.
+3. Применяет **антифлуд** на `(user_id, chat_id)` - токен-бакет (`capacity = 2`, `refill = 1/сек`). На callback зовётся `opts.antiflood_answer(ctx)`, если передан.
 4. Для команд с `arguments_schema` заполняет `command.arguments` (см. ниже).
-5. Зовёт `bot.events.preCallCommand(ctx, command)` — **если он вернул `false`, команда отменяется.**
+5. Зовёт `bot.events.preCallCommand(ctx, command)` - **если он вернул `false`, команда отменяется.**
 6. Выполняет `command.call(ctx)`.
 7. Зовёт `bot.events.postCallCommand(ctx, command)`.
 
-`preCallCommand` — место для авторизации, проверок ролей (по флагам), синка стафа и т.п. `bot.command(ctx)` / `bot.callbackCommand(ctx)` — низкоуровневые резолверы, просто возвращают команду по имени.
+`preCallCommand` - место для авторизации, проверок ролей (по флагам), синка стафа и т.п. `bot.command(ctx)` / `bot.callbackCommand(ctx)` - низкоуровневые резолверы, просто возвращают команду по имени.
 
 ## Callback-команды
 
-Команда может обрабатывать и нажатия inline-кнопок. Объяви `arguments_schema` —
+Команда может обрабатывать и нажатия inline-кнопок. Объяви `arguments_schema` -
 и позиционная `callback_data` разберётся обратно в именованный `command.arguments`:
 
 ```lua
@@ -120,9 +120,9 @@ function command.call(ctx)
 end
 ```
 
-`callback_data` — строка через пробел `cb_settings <page> <action>`. Схема
+`callback_data` - строка через пробел `cb_settings <page> <action>`. Схема
 сопоставляет позиции именам. Строй такие кнопки через
-[`inlineCallbackKeyboard`](keyboards.md) — он сам кодирует `callback_data` из
+[`inlineCallbackKeyboard`](keyboards.md) - он сам кодирует `callback_data` из
 `arguments_schema` команды.
 
 См. также: [Контекст и события](context.md), [Клавиатуры](keyboards.md).

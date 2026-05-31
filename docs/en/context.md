@@ -4,8 +4,8 @@
 
 ## Events
 
-`bot.events` holds your handlers. The runtime calls exactly one of them —
-`onGetUpdate(ctx)` — for every update. Everything else is yours to define and
+`bot.events` holds your handlers. The runtime calls exactly one of them -
+`onGetUpdate(ctx)` - for every update. Everything else is yours to define and
 call. Referencing an undefined event is safe: it returns a no-op that logs at
 `verbose` level, so you can wire `bot.events.onChatMessage(ctx)` before defining it.
 
@@ -85,7 +85,7 @@ local actor  = ctx:getUserFrom()    -- who performed the change
 ```
 
 `ChatMember` is for other users; `MyChatMember` is the bot's own status changes.
-The library emits neither into named sub-events — you build that yourself (see below).
+The library emits neither into named sub-events - you build that yourself (see below).
 
 ## Building your own dispatch
 

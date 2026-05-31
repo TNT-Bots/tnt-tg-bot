@@ -86,7 +86,7 @@ Reply buttons can also request data: `request_user`, `request_chat`,
 ## Pagination
 
 For long lists, [`bot.utils.pagination`](../../bot/utils/pagination.lua) builds a
-paginated inline keyboard with navigation buttons — see [Libraries](libs.md) and
+paginated inline keyboard with navigation buttons - see [Libraries](libs.md) and
 the [`pagination.lua`](../../examples/pagination.lua) example.
 
 See also: [Commands](commands.md), [Context & events](context.md).

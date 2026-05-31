@@ -118,11 +118,11 @@ bot:startLongPolling()
 
 See [Commands](commands.md) for the `commandLoader` format and callback commands.
 
-> Tip: enable strict mode to catch accidental globals — `require('strict').on()`.
+> Tip: enable strict mode to catch accidental globals - `require('strict').on()`.
 
 ## Next steps
 
-- [Overview](overview.md) — the update lifecycle and full subsystem map.
-- [Commands](commands.md) — the `Command` class, flags, the loader, callbacks.
-- [Context & events](context.md) — context objects and building your own dispatch.
-- [Keyboards](keyboards.md) — inline and reply keyboards.
+- [Overview](overview.md) - the update lifecycle and full subsystem map.
+- [Commands](commands.md) - the `Command` class, flags, the loader, callbacks.
+- [Context & events](context.md) - context objects and building your own dispatch.
+- [Keyboards](keyboards.md) - inline and reply keyboards.

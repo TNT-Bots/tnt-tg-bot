@@ -4,17 +4,17 @@
 [![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)](../../LICENSE)
 
 ## Описание
-**tnt-tg-bot** — библиотека на Lua для платформы [Tarantool](https://www.tarantool.io/), дающая интерфейс к [Telegram Bot API](https://core.telegram.org/bots/api). Текущая версия: `2.0`.
+**tnt-tg-bot** - библиотека на Lua для платформы [Tarantool](https://www.tarantool.io/), дающая интерфейс к [Telegram Bot API](https://core.telegram.org/bots/api). Текущая версия: `2.0`.
 
 > [!WARNING]
 > В `master` могут прилетать force push, hard reset и иногда поломки.
 
 ## Особенности
 - Простые и явные интерфейсы
-- Асинхронная обработка апдейтов — по одному fiber Tarantool на апдейт
+- Асинхронная обработка апдейтов - по одному fiber Tarantool на апдейт
 - Все методы Telegram Bot API автоматически навешиваются на объект бота (`bot:sendMessage{...}`)
 - Встроенная обработка команд и callback-команд
-- Имена событий задаёшь сам — из коробки только `bot.events.onGetUpdate(ctx)`
+- Имена событий задаёшь сам - из коробки только `bot.events.onGetUpdate(ctx)`
 - Транспорты long polling и webhook
 - Платежи в Telegram Stars
 - WebApp (TWA): [валидация initData](https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app) через [`bot/libs/parseInitData.lua`](../../bot/libs/parseInitData.lua) и HTTP-ручки
@@ -22,7 +22,7 @@
 - Готовые к запуску примеры
 
 ## Документация
-Подробные доки — в [`docs/ru/`](.) (English — [`docs/en/`](../en)):
+Подробные доки - в [`docs/ru/`](.) (English - [`docs/en/`](../en)):
 
 | Тема | Описание |
 |------|----------|
@@ -60,12 +60,12 @@ BOT_TOKEN="1348551682:AAFK..." tarantool examples/echo-bot.lua
 ### Автоматическая
 1. Установите `git`, `curl`, `lua 5.1` и `luarocks`.
 2. Установите [Tarantool](https://www.tarantool.io/ru/download/os-installation).
-3. (Опционально, для WebApp) установите заголовочные файлы OpenSSL и Lua 5.1 — нужны для сборки rock'а `luaossl`.
+3. (Опционально, для WebApp) установите заголовочные файлы OpenSSL и Lua 5.1 - нужны для сборки rock'а `luaossl`.
 4. Запустите установщик зависимостей:
 ```bash
 bash tnt-tg-bot.pre-build.sh
 ```
-5. Если не получилось — перейдите к ручной установке.
+5. Если не получилось - перейдите к ручной установке.
 
 > [!NOTE]
 > `luaossl` (биндинг к OpenSSL) требует заголовки OpenSSL и Lua 5.1. В Ubuntu:
@@ -117,7 +117,7 @@ bot/
 ├── types/          Сборщики payload'ов Telegram: клавиатуры, кнопки, медиа
 └── utils/          commandLoader, fstring (string.f), pagination, colors
 ```
-Полная карта подсистем и жизненный цикл — в [docs/ru/overview.md](overview.md).
+Полная карта подсистем и жизненный цикл - в [docs/ru/overview.md](overview.md).
 
 ## Генерация документации
 ```bash

@@ -187,7 +187,7 @@ function sql.update(space, fields, where)
 end
 
 --- Update record by primary key через box.space:update (NoSQL API).
--- В отличие от sql.update работает с map/array/любыми типами Tarantool —
+-- В отличие от sql.update работает с map/array/любыми типами Tarantool -
 -- SQL UPDATE для них непригоден (см. ограничения map в SQL).
 -- where ДОЛЖЕН содержать все поля первичного ключа.
 -- @param space (string) space name
@@ -243,8 +243,8 @@ end
 
 --- Upsert record (atomic insert or update by primary key)
 -- Uses box.space:upsert() directly
--- If record doesn't exist — inserts default_fields as a full tuple
--- If record exists — applies update operations only to update_fields
+-- If record doesn't exist - inserts default_fields as a full tuple
+-- If record exists - applies update operations only to update_fields
 -- @param space (string) space
 -- @param default_fields (table) full record for insert case
 -- @param update_fields (table) fields to update if record exists
@@ -312,7 +312,7 @@ end
   -- end)
 
   -- if err then
-  --   -- все операции откачены
+  --   - все операции откачены
   -- end
 function sql.atomic(fn)
   local ok, err = pcall(box.atomic, fn)
@@ -325,7 +325,7 @@ function sql.atomic(fn)
 end
 
 --- Проверка результата SQL-операции для использования внутри sql.atomic
--- Если операция вернула ошибку — бросает error для отката транзакции
+-- Если операция вернула ошибку - бросает error для отката транзакции
 -- @param result Первый возврат sql.create/sql.execute/sql.update
 -- @param err Второй возврат (ошибка)
 -- @return result

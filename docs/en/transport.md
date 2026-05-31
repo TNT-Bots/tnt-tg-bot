@@ -54,7 +54,7 @@ own.
 ## Debug server
 
 [`bot/transport/debug.lua`](../../bot/transport/debug.lua). Spin up an HTTP server
-with custom routes **while running long polling** — handy for WebApp routes or
+with custom routes **while running long polling** - handy for WebApp routes or
 local testing without switching to webhook:
 
 ```lua
@@ -88,7 +88,7 @@ function bot.events.onGetUpdate(ctx)
     return
   end
 
-  -- 2. Payment completed — arrives as a field on a message
+  -- 2. Payment completed - arrives as a field on a message
   if ctx.message and ctx.message.successful_payment then
     local sp = ctx:getSuccessfulPayment()
     -- sp:getTotalAmount(), sp:getCurrency(), sp:getInvoicePayload(),

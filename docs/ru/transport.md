@@ -53,7 +53,7 @@ bot:startWebHook({
 ## Отладочный сервер
 
 [`bot/transport/debug.lua`](../../bot/transport/debug.lua). Поднимает HTTP-сервер
-с произвольными ручками **во время long polling** — удобно для ручек WebApp или
+с произвольными ручками **во время long polling** - удобно для ручек WebApp или
 локальных тестов без перехода на webhook:
 
 ```lua
@@ -86,7 +86,7 @@ function bot.events.onGetUpdate(ctx)
     return
   end
 
-  -- 2. Платёж завершён — приходит полем в сообщении
+  -- 2. Платёж завершён - приходит полем в сообщении
   if ctx.message and ctx.message.successful_payment then
     local sp = ctx:getSuccessfulPayment()
     -- sp:getTotalAmount(), sp:getCurrency(), sp:getInvoicePayload(),
