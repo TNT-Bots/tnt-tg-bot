@@ -1,12 +1,21 @@
--- Example of paginated inline keyboard with nested detail pages
+-- Example: paginated inline keyboard with nested detail pages.
+--
+-- Uses bot.utils.pagination, which builds navigation through the project's
+-- callback convention: a registered command plus its arguments_schema. The
+-- keyboard encodes { command, arguments } into callback_data, and
+-- processCommand parses it back into command.arguments on each press.
 --
 local bot = require('bot')
+local Command = require('bot.classes.Command')
 local pagination = require('bot.utils.pagination')
-local inlineKeyboard = require('bot.middlewares.inlineKeyboard')
+local processCommand = require('bot.processes.processCommand')
+local inlineCallbackKeyboard = require('bot.middlewares.inlineCallbackKeyboard')
 
 bot:cfg({
-  token = os.getenv('BOT_TOKEN')
+  token = os.getenv('BOT_TOKEN'),
 })
+
+local PER_PAGE = 5
 
 -- Sample data
 local fruits = {
@@ -32,77 +41,93 @@ local fruits = {
   { name = 'Blueberry',  desc = 'A small dark blue berry rich in antioxidants.' },
 }
 
--- Show the fruit list page
-local function show_list(ctx, page, edit)
-  local keyboard = pagination({
+-- The list keyboard: item buttons open a detail page, nav buttons flip pages.
+local function listKeyboard(page)
+  return pagination({
     items = fruits,
     total = #fruits,
     page = page,
-    per_page = 5,
-    prefix = 'fruits',
-    make_button = function(item, i)
-      return { text = item.name, callback_data = 'fruit ' .. i .. ' ' .. page }
+    per_page = PER_PAGE,
+    command = 'cb_fruits',
+    arguments = { action = 'page' },  -- nav buttons inherit this; page is set per button
+    make_button = function(item, index)
+      return {
+        text = item.name,
+        callback = {
+          command = 'cb_fruits',
+          arguments = { action = 'open', page = page, index = index },
+        },
+      }
     end,
   })
+end
+
+-- Render the list: reply on first show, edit in place on navigation.
+local function showList(ctx, page, edit)
+  local view = {
+    text = 'Pick a fruit:',
+    reply_markup = listKeyboard(page),
+  }
 
   if edit then
-    bot:editMessageText({
-      chat_id = ctx:getChatId(),
-      message_id = ctx:getMessageId(),
-      text = 'Pick a fruit:',
-      reply_markup = keyboard,
-    })
+    view.chat_id = ctx:getChatId()
+    view.message_id = ctx:getMessageId()
+    bot:editMessageText(view)
   else
-    ctx:reply({
-      text = 'Pick a fruit:',
-      reply_markup = keyboard,
-    })
+    ctx:reply(view)
   end
 end
 
--- Show the fruit detail page
-local function show_detail(ctx, index, back_page)
+-- Render one fruit with a back button to the originating page.
+local function showDetail(ctx, index, backPage)
   local fruit = fruits[index]
 
-  local keyboard = inlineKeyboard({
-    { text = '🔄 Back', callback_data = 'back ' .. back_page },
+  local keyboard = inlineCallbackKeyboard({
+    {
+      text = '🔙 Back',
+      callback = { command = 'cb_fruits', arguments = { action = 'back', page = backPage } },
+    },
   })
 
   bot:editMessageText({
     chat_id = ctx:getChatId(),
     message_id = ctx:getMessageId(),
-    text = '<b>' .. fruit.name .. '</b>\n\n' .. fruit.desc,
+    text = '<b>'..fruit.name..'</b>\n\n'..fruit.desc,
     reply_markup = keyboard,
   })
 end
 
+-- Callback command: arguments_schema turns "cb_fruits open 2 3" into named args.
+local cbFruits = Command:new({
+  commands = { 'cb_fruits' },
+  flags = { Command.enum.CALLBACK },
+  arguments_schema = { 'action', 'page', 'index' },
+})
+
+function cbFruits.call(ctx)
+  local args = cbFruits.arguments
+  local page = tonumber(args.page)
+
+  if args.action == 'open' then
+    showDetail(ctx, tonumber(args.index), page)
+  else
+    -- 'page' (navigation) and 'back' both land on the list.
+    showList(ctx, page, true)
+  end
+
+  ctx:answer()
+end
+
+bot.commands['cb_fruits'] = cbFruits
+
 function bot.events.onGetUpdate(ctx)
   if ctx.is_callback_query then
-    local args = ctx:getArguments({ separator = ' ', count = 4 })
-    local action = args[1]
-
-    -- Pagination: "fruits page N"
-    if action == 'fruits' and args[2] == 'page' then
-      show_list(ctx, tonumber(args[3]), true)
-      ctx:answer()
-
-    -- Fruit detail: "fruit INDEX BACK_PAGE"
-    elseif action == 'fruit' then
-      show_detail(ctx, tonumber(args[2]), tonumber(args[3]))
-      ctx:answer()
-
-    -- Back to list: "back PAGE"
-    elseif action == 'back' then
-      show_list(ctx, tonumber(args[2]), true)
-      ctx:answer()
-    end
-
+    processCommand(ctx)
     return
   end
 
-  local text = ctx:getText()
-  if text == '/list' then
-    show_list(ctx, 1, false)
+  if ctx:getText() == '/list' then
+    showList(ctx, 1, false)
   end
 end
 
