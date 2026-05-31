@@ -95,12 +95,17 @@ inline keyboard (item buttons + `◀️`/`▶️` nav):
 ```lua
 local pagination = require('bot.utils.pagination')
 local kb = pagination({
-  items = list, total = #list, page = 1, per_page = 5, prefix = 'list',
-  make_button = function(item, i) return { text = item.name, callback_data = 'item '..i } end,
+  items = list, total = #list, page = 1, per_page = 5,
+  command = 'cb_list',                 -- a registered callback command (see Commands)
+  arguments = { action = 'page' },     -- nav buttons inherit this; page is set per button
+  make_button = function(item, i)
+    return { text = item.name, callback = { command = 'cb_list', arguments = { action = 'open', index = i } } }
+  end,
 })
 ```
 
-Nav buttons emit `callback_data` `"<prefix> page <n>"`. See the
+Built on `inlineCallbackKeyboard`: navigation and item buttons encode `callback_data`
+from the callback command's `arguments_schema`. See the
 [`pagination.lua`](../../examples/pagination.lua) example.
 
 ## parseInitData - WebApp initData validation
