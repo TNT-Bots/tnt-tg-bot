@@ -6,7 +6,7 @@ English | [Russian](docs/ru/README.md)</br>
 [![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
 
 ## Description
-**tnt-tg-bot** is a Lua library for the [Tarantool](https://www.tarantool.io/) platform that provides an interface to the [Telegram Bot API](https://core.telegram.org/bots/api). Current version: `2.0`.
+**tnt-tg-bot** is a Lua library for the [Tarantool](https://www.tarantool.io/) platform that provides an interface to the [Telegram Bot API](https://core.telegram.org/bots/api). The project no longer uses version numbers and follows a rolling-release model - track the `master` branch.
 
 > [!WARNING]
 > The `master` branch may receive force pushes, hard resets.
