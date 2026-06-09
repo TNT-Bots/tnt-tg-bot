@@ -11,11 +11,11 @@ curl -v -k -X POST \
   "callback_query":{
     "id": "4382bfdwdsb323b2d9",
     "from":{
-       "last_name":"Test Lastname",
-       "type": "private",
-       "id":1111111,
-       "first_name":"Test Firstname",
-       "username":"Testusername"
+      "last_name":"Test Lastname",
+      "type": "private",
+      "id":1111111,
+      "first_name":"Test Firstname",
+      "username":"Testusername"
     },
     "data": "Data from button callback",
     "inline_message_id": "1234csdbsk4839"

@@ -42,7 +42,7 @@ function debug.start(bot, opts)
     port = port
   }
 
-  log.info('[HTTP Server] %s', 'listening', host..':'..port)
+  log.info('[HTTP Server] %s %s', 'listening', host..':'..port)
 end
 
 return debug

@@ -11,24 +11,24 @@ curl -v -k -X POST \
   "message":{
     "date":1441645532,
     "chat":{
-       "last_name":"Test Lastname",
-       "type": "private",
-       "id":1111111,
-       "first_name":"Test Firstname",
-       "username":"Testusername"
+      "last_name":"Test Lastname",
+      "type": "private",
+      "id":1111111,
+      "first_name":"Test Firstname",
+      "username":"Testusername"
     },
     "message_id":1365,
     "from":{
-       "last_name":"Test Lastname",
-       "id":1111111,
-       "first_name":"Test Firstname",
-       "username":"Testusername"
+      "last_name":"Test Lastname",
+      "id":1111111,
+      "first_name":"Test Firstname",
+      "username":"Testusername"
     },
     "voice": {
-        "file_id": "AwADBAADbXXXXXXXXXXXGBdhD2l6_XX",
-        "duration": 5,
-        "mime_type": "audio/ogg",
-        "file_size": 23000
+      "file_id": "AwADBAADbXXXXXXXXXXXGBdhD2l6_XX",
+      "duration": 5,
+      "mime_type": "audio/ogg",
+      "file_size": 23000
     }
   }
 }' "${WEBHOOK_URL}"
