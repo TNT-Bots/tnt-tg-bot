@@ -19,7 +19,7 @@ local webhook = {}
 -- @return (table) Response data
 function webhook.sendCertificate(bot, opts)
   if type(opts) ~= 'table' or
-    type(opts.bot_url) ~= 'string'
+    type(opts.bot_url or opts.url) ~= 'string'
   then
     log.error('[WebHook] %s', 'Invalid opts')
 
@@ -51,7 +51,7 @@ function webhook.sendCertificate(bot, opts)
 
   -- Set webhook
   return bot.call('setWebhook', {
-    url = opts.bot_url,
+    url = opts.bot_url or opts.url,
     certificate = data,
     drop_pending_updates = opts.drop_pending_updates or false,
     allowed_updates = opts.allowed_updates
