@@ -109,7 +109,7 @@ function webhook.start(bot, opts, switch)
     return webhook.sendCertificate(bot, opts)
   else
     return bot.call('setWebhook', {
-      url = opts.bot_url,
+      url = opts.bot_url or opts.url,
       drop_pending_updates = opts.drop_pending_updates or false,
       allowed_updates = opts.allowed_updates
     })
