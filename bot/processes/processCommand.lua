@@ -34,6 +34,12 @@ local function processCommand(ctx, opts)
   if opts and opts.is_text_command then
     command = opts.command
 
+    -- A resolved command is not guaranteed: callers pass bot.commands[name],
+    -- which is nil for an unknown (or wrong-case) command addressed to the bot.
+    if command == nil then
+      return
+    end
+
     goto text_command
   end
 
