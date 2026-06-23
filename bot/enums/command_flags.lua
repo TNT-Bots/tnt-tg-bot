@@ -11,5 +11,6 @@ flags.CALLBACK       = 32
 flags.MAINTENANCE    = 64
 flags.MODERATION     = 128
 flags.ADMINISTRATIVE = 256
+flags.MULTI_USER     = 512
 
 return flags

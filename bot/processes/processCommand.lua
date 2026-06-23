@@ -6,11 +6,11 @@ local command_flags = require('bot.enums.command_flags')
 local chat_type = require('bot.enums.chat_type')
 local RateLimiter = require('bot.libs.rateLimiter')
 
--- Антифлуд: per (user_id, chat_id). У юзера свой бюджет в каждом чате,
--- юзеры друг друга не аффектят. TODO: вынести цифры в bot.cfg.
-local antiflood = RateLimiter.new({ capacity = 2, refill_per_sec = 1 })
-
--- TODO: Callback press timeout handler?
+-- antiflood: per (user_id, chat_id)
+local antiflood = RateLimiter.new({
+  capacity = 2,
+  refill_per_sec = 1
+})
 
 local function build_kv_arguments(ctx, command)
   local arguments = {}
@@ -95,9 +95,12 @@ local function processCommand(ctx, opts)
     log.warn('[processCommand] antiflood user=%s chat=%s wait=%.2fs',
       ufrom.id, chat_id, wait)
 
+    -- wait is the seconds until the next press is allowed; the handler can
+    -- surface it to the user (timer + answerCallbackQuery cache_time).
     if ctx.is_callback_query then
-      -- luacheck: ignore
-      if opts and opts.antiflood_answer and opts.antiflood_answer(ctx) then end
+      if opts and opts.antiflood_answer then
+        opts.antiflood_answer(ctx, wait)
+      end
     end
 
     return
