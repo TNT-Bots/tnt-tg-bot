@@ -21,7 +21,7 @@ Telegram
    │  сырой апдейт (JSON)
    ▼
 transport            bot/transport/{longpolling,webhook}.lua
-   │  по одному fiber на апдейт → switch(update)
+   │  по одному fiber на апдейт -> switch(update)
    ▼
 processMessage       bot/processes/processMessage.lua
    │  оборачивает сырой апдейт в типизированный контекст-объект
@@ -51,7 +51,7 @@ bot.events.onGetUpdate(ctx)        ← единственная встроенн
 | `bot.sendImage(data)` | Упрощённый `sendPhoto` из пути к файлу или URL. |
 | `bot.events` | Таблица твоих обработчиков; рантайм вызывает только `onGetUpdate`. |
 | `bot.command(ctx)` / `bot.callbackCommand(ctx)` | Находят зарегистрированную команду/callback в апдейте по имени. |
-| `bot.commands` | Реестр: `имя → команда`. Заполняется вручную или через `commandLoader`. |
+| `bot.commands` | Реестр: `имя -> команда`. Заполняется вручную или через `commandLoader`. |
 | `bot:getBotId()` | Числовой id бота, разобранный из токена. |
 | `bot.subdir(deep, ...)` | Хелпер для относительных `require`. |
 | `bot:startLongPolling(opts)` | Запуск через long polling. |
@@ -71,10 +71,10 @@ bot.events.onGetUpdate(ctx)        ← единственная встроенн
 | [`bot/interfaces/`](../../bot/interfaces) | `EventEmitter` (`on`/`emit`) - примитив-наблюдатель для построения своей диспетчеризации событий. |
 | [`bot/libs/`](../../bot/libs) | Хелперы: `hdec` (HTML-форматирование), `sql` (обёртка над Tarantool 3 SQL/NoSQL), `rateLimiter` (токен-бакет), `sendQueue` (очередь исходящих на чат), `parseInitData` (валидация WebApp initData), `inputFile`, `getter`. См. [Библиотеки](libs.md). |
 | [`bot/middlewares/`](../../bot/middlewares) | `request` (HTTP-транспорт к API: ретраи, подстановка parse_mode), `inlineKeyboard` и `inlineCallbackKeyboard` (сборка клавиатур). См. [Клавиатуры](keyboards.md). |
-| [`bot/processes/`](../../bot/processes) | `processMessage` (сырой апдейт → типизированный ctx) и `processCommand` (рантайм команд: разбор аргументов, pre/post-хуки, rate-limit). |
+| [`bot/processes/`](../../bot/processes) | `processMessage` (сырой апдейт -> типизированный ctx) и `processCommand` (рантайм команд: разбор аргументов, pre/post-хуки, rate-limit). |
 | [`bot/transport/`](../../bot/transport) | `longpolling`, `webhook`, `debug`. См. [Транспорт](transport.md). |
 | [`bot/types/`](../../bot/types) | Сборщики/валидаторы payload'ов Telegram: inline- и reply-клавиатуры, кнопки, `ForceReply`, `LinkPreviewOptions`, `InputMedia*` (медиа-группы). |
-| [`bot/utils/`](../../bot/utils) | `commandLoader` (загрузка модулей команд в `bot.commands`), `fstring` (`string.f`-шаблоны), `pagination`, `colors`. |
+| [`bot/utils/`](../../bot/utils) | `commandLoader` (загрузка модулей команд в `bot.commands`), `pagination`, |
 
 ## Куда дальше
 

@@ -33,7 +33,7 @@ Detailed docs live in [`docs/en/`](docs/en) (на русском - [`docs/ru/`](
 | [Commands](docs/en/commands.md) | `Command` class, flags, `commandLoader`, callbacks |
 | [Context & events](docs/en/context.md) | `bot.events`, `onGetUpdate`, context objects and getters |
 | [Keyboards](docs/en/keyboards.md) | Inline and reply keyboards |
-| [Libraries](docs/en/libs.md) | `hdec`, `sql`, `fstring`, `rateLimiter`, `sendQueue`, … |
+| [Libraries](docs/en/libs.md) | `hdec`, `sql`, `rateLimiter`, `sendQueue`, … |
 | [Transport](docs/en/transport.md) | Long polling, webhook, debug server |
 
 The LDoc API reference is generated with `bash bin/ldoc` (output in `doc/`).
@@ -125,10 +125,10 @@ bot/
 ├── interfaces/     EventEmitter (observer) for building your own event dispatch
 ├── libs/           Helpers: hdec, sql, rateLimiter, sendQueue, parseInitData, inputFile, getter
 ├── middlewares/    request (HTTP transport) + inline/callback keyboard builders
-├── processes/      processMessage (raw → typed ctx), processCommand (command runtime)
+├── processes/      processMessage (raw -> typed ctx), processCommand (command runtime)
 ├── transport/      longpolling, webhook, debug
 ├── types/          Telegram payload builders: keyboards, buttons, input media
-└── utils/          commandLoader, fstring (string.f), pagination, colors
+└── utils/          commandLoader, pagination
 ```
 See [docs/en/overview.md](docs/en/overview.md) for the full subsystem map and the update lifecycle.
 

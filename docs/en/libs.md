@@ -54,7 +54,7 @@ touch them).
 local RateLimiter = require('bot.libs.rateLimiter')
 local limiter = RateLimiter.new({ capacity = 3, refill_per_sec = 1 })
 
-local ok, wait = limiter:allow(chat_id)   -- ok=false → retry after `wait` seconds
+local ok, wait = limiter:allow(chat_id)   -- ok=false -> retry after `wait` seconds
 ```
 
 Idle buckets are swept by a background fiber.
@@ -74,18 +74,6 @@ queue:push({ chat_id = id, text = 'hi' }, function(err) log.error(err) end)
 One worker fiber per chat sends with `interval` spacing; on `429` it waits
 `retry_after + 2`s and retries; over `max_queue` it drops with a `log.warn`. The
 optional second arg handles non-`429` send errors.
-
-## fstring - string templates
-
-[`bot/utils/fstring.lua`](../../bot/utils/fstring.lua). Substitutes `${key}` from
-a table. Commonly installed globally as `string.f`:
-
-```lua
-string.f = require('bot.utils.fstring')
-('Hello, ${name}!'):f({ name = 'world' })
-```
-
-Unmatched `${…}` are left as-is, which allows pre-filling a template in stages.
 
 ## pagination - paginated keyboards
 
@@ -129,10 +117,5 @@ local res = parseInitData(init_data, bot_token)  -- { valid = bool, userData = t
 [`bot/libs/getter.lua`](../../bot/libs/getter.lua). `defineGetters(class, map)`
 generates getter methods from dot-paths - the mechanism behind all context-object
 getters.
-
-## colors - terminal colors
-
-[`bot/utils/colors.lua`](../../bot/utils/colors.lua). ANSI 256-color escape codes
-(`colors.brightRed`, …, `colors.reset`) for colored terminal output.
 
 See also: [Overview](overview.md), [Keyboards](keyboards.md).

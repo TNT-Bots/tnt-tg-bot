@@ -21,7 +21,7 @@ Telegram
    │  raw update (JSON)
    ▼
 transport            bot/transport/{longpolling,webhook}.lua
-   │  one fiber per update → switch(update)
+   │  one fiber per update -> switch(update)
    ▼
 processMessage       bot/processes/processMessage.lua
    │  wraps raw update into a typed context object
@@ -51,7 +51,7 @@ Configured once via `bot:cfg{…}`. Key surface:
 | `bot.sendImage(data)` | Shortcut for `sendPhoto` from a file path or URL. |
 | `bot.events` | Table of your event handlers; the runtime only calls `onGetUpdate`. |
 | `bot.command(ctx)` / `bot.callbackCommand(ctx)` | Resolve a registered command/callback from the update by name. |
-| `bot.commands` | Registry: `name → command`. Populated manually or via `commandLoader`. |
+| `bot.commands` | Registry: `name -> command`. Populated manually or via `commandLoader`. |
 | `bot:getBotId()` | Numeric bot id, parsed from the token. |
 | `bot.subdir(deep, ...)` | `require`-path helper for module-relative requires. |
 | `bot:startLongPolling(opts)` | Run via long polling. |
@@ -71,10 +71,10 @@ Configured once via `bot:cfg{…}`. Key surface:
 | [`bot/interfaces/`](../../bot/interfaces) | `EventEmitter` (`on`/`emit`) - the observer primitive for building your own event dispatch. |
 | [`bot/libs/`](../../bot/libs) | Helpers: `hdec` (HTML formatting), `sql` (Tarantool 3 SQL/NoSQL wrapper), `rateLimiter` (token bucket), `sendQueue` (per-chat outgoing queue), `parseInitData` (WebApp initData validation), `inputFile`, `getter`. See [Libraries](libs.md). |
 | [`bot/middlewares/`](../../bot/middlewares) | `request` (HTTP transport to the API, retries, parse-mode injection), `inlineKeyboard` and `inlineCallbackKeyboard` (keyboard builders). See [Keyboards](keyboards.md). |
-| [`bot/processes/`](../../bot/processes) | `processMessage` (raw update → typed ctx) and `processCommand` (command runtime: argument parsing, pre/post hooks, rate limiting). |
+| [`bot/processes/`](../../bot/processes) | `processMessage` (raw update -> typed ctx) and `processCommand` (command runtime: argument parsing, pre/post hooks, rate limiting). |
 | [`bot/transport/`](../../bot/transport) | `longpolling`, `webhook`, `debug`. See [Transport](transport.md). |
 | [`bot/types/`](../../bot/types) | Telegram payload builders/validators: inline & reply keyboards, buttons, `ForceReply`, `LinkPreviewOptions`, `InputMedia*` (media groups). |
-| [`bot/utils/`](../../bot/utils) | `commandLoader` (load command modules into `bot.commands`), `fstring` (`string.f` templating), `pagination`, `colors`. |
+| [`bot/utils/`](../../bot/utils) | `commandLoader` (load command modules into `bot.commands`), `pagination`, |
 
 ## Where to go next
 

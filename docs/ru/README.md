@@ -31,7 +31,7 @@
 | [Команды](commands.md) | Класс `Command`, флаги, `commandLoader`, callback'и |
 | [Контекст и события](context.md) | `bot.events`, `onGetUpdate`, контекст-объекты и геттеры |
 | [Клавиатуры](keyboards.md) | Inline- и reply-клавиатуры |
-| [Библиотеки](libs.md) | `hdec`, `sql`, `fstring`, `rateLimiter`, `sendQueue`, … |
+| [Библиотеки](libs.md) | `hdec`, `sql`, `rateLimiter`, `sendQueue`, … |
 | [Транспорт](transport.md) | Long polling, webhook, отладочный сервер |
 
 Справочник API по аннотациям LDoc генерируется командой `bash bin/ldoc` (вывод в `doc/`).
@@ -112,10 +112,10 @@ bot/
 ├── interfaces/     EventEmitter (наблюдатель) для своей диспетчеризации событий
 ├── libs/           Хелперы: hdec, sql, rateLimiter, sendQueue, parseInitData, inputFile, getter
 ├── middlewares/    request (HTTP-транспорт) + сборщики inline/callback-клавиатур
-├── processes/      processMessage (сырой → типизированный ctx), processCommand (рантайм команд)
+├── processes/      processMessage (сырой -> типизированный ctx), processCommand (рантайм команд)
 ├── transport/      longpolling, webhook, debug
 ├── types/          Сборщики payload'ов Telegram: клавиатуры, кнопки, медиа
-└── utils/          commandLoader, fstring (string.f), pagination, colors
+└── utils/          commandLoader, pagination
 ```
 Полная карта подсистем и жизненный цикл - в [docs/ru/overview.md](overview.md).
 

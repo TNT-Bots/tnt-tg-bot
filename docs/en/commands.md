@@ -3,7 +3,7 @@
 # Commands
 
 A command is a small module: a `Command` object (its metadata) plus a `call`
-handler. Commands are registered in `bot.commands` (a `name → command` table)
+handler. Commands are registered in `bot.commands` (a `name -> command` table)
 and dispatched by [`processCommand`](../../bot/processes/processCommand.lua).
 
 ## Defining a command
