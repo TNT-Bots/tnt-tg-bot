@@ -19,26 +19,26 @@ local PER_PAGE = 5
 
 -- Sample data
 local fruits = {
-  { name = 'Apple',      desc = 'A sweet red fruit, rich in fiber and vitamin C.' },
-  { name = 'Banana',     desc = 'A yellow tropical fruit, high in potassium.' },
-  { name = 'Cherry',     desc = 'A small red stone fruit with a sweet-tart flavor.' },
-  { name = 'Date',       desc = 'A sweet dried fruit from the date palm tree.' },
-  { name = 'Elderberry', desc = 'A dark purple berry used in syrups and jams.' },
-  { name = 'Fig',        desc = 'A soft pear-shaped fruit with sweet flesh.' },
-  { name = 'Grape',      desc = 'A small round fruit growing in clusters on vines.' },
-  { name = 'Honeydew',   desc = 'A large melon with pale green sweet flesh.' },
-  { name = 'Kiwi',       desc = 'A brown fuzzy fruit with bright green flesh.' },
-  { name = 'Lemon',      desc = 'A sour yellow citrus fruit rich in vitamin C.' },
-  { name = 'Mango',      desc = 'A tropical stone fruit with juicy orange flesh.' },
-  { name = 'Nectarine',  desc = 'A smooth-skinned variety of peach.' },
-  { name = 'Orange',     desc = 'A round citrus fruit with a bright orange rind.' },
-  { name = 'Papaya',     desc = 'A tropical fruit with soft orange flesh and black seeds.' },
-  { name = 'Quince',     desc = 'A hard aromatic fruit used in preserves and jellies.' },
-  { name = 'Raspberry',  desc = 'A soft red berry with a delicate sweet flavor.' },
-  { name = 'Strawberry', desc = 'A juicy red fruit covered with tiny seeds.' },
-  { name = 'Tangerine',  desc = 'A small sweet citrus fruit, easy to peel.' },
-  { name = 'Watermelon', desc = 'A large fruit with juicy red flesh and green rind.' },
-  { name = 'Blueberry',  desc = 'A small dark blue berry rich in antioxidants.' },
+  { name = 'Apple',      desc = 'A sweet red fruit, rich in fiber and vitamin C.'           },
+  { name = 'Banana',     desc = 'A yellow tropical fruit, high in potassium.'               },
+  { name = 'Cherry',     desc = 'A small red stone fruit with a sweet-tart flavor.'         },
+  { name = 'Date',       desc = 'A sweet dried fruit from the date palm tree.'              },
+  { name = 'Elderberry', desc = 'A dark purple berry used in syrups and jams.'              },
+  { name = 'Fig',        desc = 'A soft pear-shaped fruit with sweet flesh.'                },
+  { name = 'Grape',      desc = 'A small round fruit growing in clusters on vines.'         },
+  { name = 'Honeydew',   desc = 'A large melon with pale green sweet flesh.'                },
+  { name = 'Kiwi',       desc = 'A brown fuzzy fruit with bright green flesh.'              },
+  { name = 'Lemon',      desc = 'A sour yellow citrus fruit rich in vitamin C.'             },
+  { name = 'Mango',      desc = 'A tropical stone fruit with juicy orange flesh.'           },
+  { name = 'Nectarine',  desc = 'A smooth-skinned variety of peach.'                        },
+  { name = 'Orange',     desc = 'A round citrus fruit with a bright orange rind.'           },
+  { name = 'Papaya',     desc = 'A tropical fruit with soft orange flesh and black seeds.'  },
+  { name = 'Quince',     desc = 'A hard aromatic fruit used in preserves and jellies.'      },
+  { name = 'Raspberry',  desc = 'A soft red berry with a delicate sweet flavor.'            },
+  { name = 'Strawberry', desc = 'A juicy red fruit covered with tiny seeds.'                },
+  { name = 'Tangerine',  desc = 'A small sweet citrus fruit, easy to peel.'                 },
+  { name = 'Watermelon', desc = 'A large fruit with juicy red flesh and green rind.'        },
+  { name = 'Blueberry',  desc = 'A small dark blue berry rich in antioxidants.'             },
 }
 
 -- The list keyboard: item buttons open a detail page, nav buttons flip pages.
@@ -49,7 +49,9 @@ local function listKeyboard(page)
     page = page,
     per_page = PER_PAGE,
     command = 'cb_fruits',
-    arguments = { action = 'page' },  -- nav buttons inherit this; page is set per button
+    -- nav buttons inherit this; page is set per button
+    arguments = { action = 'page' },
+
     make_button = function(item, index)
       return {
         text = item.name,

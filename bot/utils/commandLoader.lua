@@ -31,7 +31,7 @@ function commandLoader.loader(_, list)
       local pathToCommand = string.format('%s.%s', path, command)
 
       -- First: Load callback command
-      -- Note: Нужно для правильнной передачи callback-аргументов
+      -- NOTE: Нужно для правильнной передачи callback-аргументов
       if params.callback_commands then
         for i = 1, #params.callback_commands do
           local callbackCommand = params.callback_commands[i]

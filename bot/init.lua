@@ -1,8 +1,8 @@
--- ----------------------------- --
--- Tarantool Telegram Bot API    --
--- By uriid1                     --
--- Licence MIT                   --
--- ----------------------------- --
+-- .-.-.-.-.-.-.-.-.-.-.-.-.-.
+-- Module: Telegram Bot
+-- Licence: MIT
+-- (C) 2026 uriid1 <github.com/uriid1>
+-- .-.-.-.-.-.-.-.-.-.-.-.-.-.
 --- @module bot
 local bot = { _version = '2.0' }
 

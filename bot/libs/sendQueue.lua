@@ -1,11 +1,10 @@
 --- Outgoing message queue: at most one message per interval per chat.
---
--- Each chat_id runs its own fiber that sends queued messages with an interval
--- pause between them. Telegram allows ~1 msg/sec per chat, so the queue smooths
--- bursts (e.g. mass bans) and avoids 429s; different chats run in parallel.
--- In-memory - if a chat's queue grows past max_queue, new messages are dropped
--- with a warning.
---
+--[[
+Each chat_id runs its own fiber that sends queued messages with an interval
+pause between them. Telegram allows ~1 msg/sec per chat, so the queue smooths
+bursts (e.g. mass bans) and avoids 429s; different chats run in parallel.
+In-memory - if a chat's queue grows past max_queue, new messages are dropped with a warning.
+--]]
 local log = require('log')
 local fiber = require('fiber')
 local bot = require('bot')

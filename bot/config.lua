@@ -1,3 +1,5 @@
+--- Module config
+--
 local parse_mode = require('bot.enums.parse_mode')
 
 local config = {

@@ -127,5 +127,14 @@ bash bin/ldoc
 ## Вклад в проект
 Через форк репозитория и Pull Request.
 
+## Ченджлог
+
+[05.05.2026]
+  - Были удалены deprecated модули:
+    * `bot/utils/colors.lua`
+    * `bot/utils/fstring.lua`
+
+  - Местами поправлены комментарии. 
+
 ## Лицензия
 [MIT](../../LICENSE)

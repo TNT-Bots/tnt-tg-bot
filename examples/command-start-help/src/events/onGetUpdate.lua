@@ -1,3 +1,5 @@
+---
+--
 local bot = require('bot')
 
 local function onGetUpdate(ctx)

@@ -95,8 +95,8 @@ local function processCommand(ctx, opts)
     log.warn('[processCommand] antiflood user=%s chat=%s wait=%.2fs',
       ufrom.id, chat_id, wait)
 
-    -- wait is the seconds until the next press is allowed; the handler can
-    -- surface it to the user (timer + answerCallbackQuery cache_time).
+    -- Wait is the seconds until the next press is allowed.
+    -- The handler can surface it to the user (timer + answerCallbackQuery cache_time).
     if ctx.is_callback_query then
       if opts and opts.antiflood_answer then
         opts.antiflood_answer(ctx, wait)

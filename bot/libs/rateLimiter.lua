@@ -1,10 +1,11 @@
 --- Token-bucket rate limiter keyed by an arbitrary value.
---
--- Each key owns a bucket of tokens; every call spends one. Buckets refill at
--- refill_per_sec tokens/sec up to capacity, allowing short bursts and then a
--- steady rate - a good fit for Telegram's per-chat ~1 msg/sec limit. Idle
--- buckets are swept by a background fiber. In-memory only.
---
+--[[
+Each key owns a bucket of tokens; every call spends one.
+Buckets refill at refill_per_sec tokens/sec up to capacity,
+allowing short bursts and then a steady rate -
+a good fit for Telegram's per-chat ~1 msg/sec limit.
+Idle buckets are swept by a background fiber. In-memory only.
+--]]
 local fiber = require('fiber')
 
 --- How often the sweeper scans buckets, in seconds.
@@ -26,8 +27,8 @@ function rateLimiter.new(opts)
     buckets = {},
   }, rateLimiter)
 
-  -- A bucket fully refills in capacity/refill_per_sec seconds; double that
-  -- before treating it as idle, so a returning key still has full credit.
+  -- A bucket fully refills in capacity/refill_per_sec seconds.
+  -- Double that before treating it as idle, so a returning key still has full credit.
   self.idle_threshold_sec = (self.capacity / self.refill_per_sec) * 2
 
   self.cleaner_fiber = fiber.create(function()

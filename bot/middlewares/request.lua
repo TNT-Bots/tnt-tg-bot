@@ -12,8 +12,9 @@ local mpEncode = require('multipart-post')
 local MAX_RETRIES = 3
 local API_URL_FMT = config.api_url..'%s/%s'
 
--- Outbound request timeout (seconds). Tarantool's http.client defaults to an
--- effectively infinite timeout, so without this a hung connection to the
+-- Outbound request timeout (seconds)
+--  Tarantool's http.client defaults to an effectively infinite timeout,
+--  so without this a hung connection to the
 -- Telegram API blocks the calling fiber forever and they pile up over time.
 local REQUEST_TIMEOUT = 25
 
@@ -58,9 +59,7 @@ function request.send(params)
 
   local url = API_URL_FMT:format(config.token, params.method)
 
-  -- Retry только для сетевых ошибок (HTTP-ответа не пришло).
-  -- На любой ответ API (включая 429) - отдаём как есть, решение за caller'ом.
-  -- За соблюдением Telegram rate-limit'ов отвечает client-side limiter (bot.libs.rateLimiter).
+  -- Retry only for network errors.
   for attempt = 1, MAX_RETRIES do
     local raw = http.post(url, body, opts)
 
