@@ -114,6 +114,9 @@ are mounted live, so you can edit them without rebuilding. The image **skips
 | [reply-bot.lua](examples/reply-bot.lua) | Echo via the `ctx:reply()` shortcut |
 | [callback-answer.lua](examples/callback-answer.lua) | Inline keyboard + callback handling (`ctx:answer`, `ctx:getQueryData`) |
 | [pagination.lua](examples/pagination.lua) | Paginated inline keyboard with detail pages (`bot.utils.pagination`) |
+| [reactions.lua](examples/reactions.lua) | Message reactions (`types.ReactionType` + `bot:setMessageReaction`) |
+| [stars-invoice.lua](examples/stars-invoice.lua) | Telegram Stars payment: invoice, pre-checkout, successful payment |
+| [request-users.lua](examples/request-users.lua) | Reply keyboard with user selection (`KeyboardButtonRequestUsers`, `users_shared`) |
 | [command-start-help/](examples/command-start-help) | Structured project: `commandLoader` + `/start`, `/help` modules |
 
 ## Library structure
