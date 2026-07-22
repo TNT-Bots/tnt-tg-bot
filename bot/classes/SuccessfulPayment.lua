@@ -14,7 +14,7 @@ end
 --- Get the SuccessfulPayment object itself.
 -- @treturn table SuccessfulPayment object
 function SuccessfulPayment:getSelf()
-  return self.successful_payment
+  return self
 end
 
 -- Getters are generated from the mapping below.

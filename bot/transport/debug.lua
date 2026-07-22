@@ -1,7 +1,7 @@
 --- Debug HTTP server.
 local log = require('log')
 
-local debug = {}
+local _debug = {}
 
 --- Start an HTTP server with debug routes while long polling is running.
 -- @tparam table bot bot object
@@ -9,7 +9,7 @@ local debug = {}
 -- @tparam[opt='0.0.0.0'] string opts.host host to bind to
 -- @tparam[opt=9091] number opts.port port to listen on
 -- @tparam[opt] table opts.routes routes { path, method, callback }
-function debug.start(bot, opts)
+function _debug.start(bot, opts)
   local http_server = require('http.server')
   local host = opts.host or '0.0.0.0'
   local port = opts.port or 9091
@@ -32,10 +32,6 @@ function debug.start(bot, opts)
 
   httpd:start()
 
-  if not bot.debug then
-    bot.debug =  {}
-  end
-
   bot.debug = {
     host = host,
     port = port
@@ -44,4 +40,4 @@ function debug.start(bot, opts)
   log.info('[HTTP Server] %s %s', 'listening', host..':'..port)
 end
 
-return debug
+return _debug

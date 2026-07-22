@@ -46,9 +46,9 @@ function longpolling.start(bot, opts, switch)
 
     local res = client:request('GET', table.concat(url))
 
-    if res and res.body == nil then
+    if res == nil or res.body == nil then
       log.verbose('[Long Polling] Empty body received | Status: %s | Reason: %s',
-        res.status, res.reason)
+        res and res.status, res and res.reason)
 
       log.verbose('[Server] timeout')
       fiber.sleep(1)
@@ -56,10 +56,20 @@ function longpolling.start(bot, opts, switch)
       goto continue
     end
 
-    local body = json.decode(res.body)
+    -- Non-JSON body (e.g. an HTML error page from a proxy) must not kill the loop
+    local decoded, body = pcall(json.decode, res.body)
+    if not decoded then
+      log.error('[Long Polling] Body decode failed: %s', body)
+      fiber.sleep(1)
+
+      goto continue
+    end
 
     if body.ok == false then
       log.error(res)
+
+      -- Pause before the retry, otherwise a persistent API error turns into a busy loop
+      fiber.sleep(1)
     else
       if body.result then
         for i = 1, #body.result do

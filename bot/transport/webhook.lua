@@ -27,24 +27,26 @@ function webhook.sendCertificate(bot, opts)
   -- Certificate read
   local data
   if opts.certificate then
-    if not fio.path.exists(opts.certificate) then
-      log.error('[WebHook] %s', 'Certificate not found: '..opts.certificate)
+    local cert = fio.open(opts.certificate, 'O_RDONLY')
+
+    if cert == nil then
+      log.error('[WebHook] %s', 'Cannot open certificate: '..opts.certificate)
 
       return
     end
 
-    local cert = fio.open(opts.certificate, 'O_RDONLY')
-
     data = {
-      filename = opts.certificate:match('[^/]*.$'),
+      filename = opts.certificate:match('[^/]+$'),
       data = cert:read()
     }
 
     cert:close()
   end
 
-  if type(opts.allowed_updates) == 'table' then
-    opts.allowed_updates = json.encode(opts.allowed_updates)
+  -- The caller's opts stays unmodified
+  local allowed_updates = opts.allowed_updates
+  if type(allowed_updates) == 'table' then
+    allowed_updates = json.encode(allowed_updates)
   end
 
   -- Webhook registration
@@ -52,7 +54,7 @@ function webhook.sendCertificate(bot, opts)
     url = opts.bot_url or opts.url,
     certificate = data,
     drop_pending_updates = opts.drop_pending_updates or false,
-    allowed_updates = opts.allowed_updates
+    allowed_updates = allowed_updates
   }, { multipart_post = true })
 end
 
@@ -79,8 +81,18 @@ function webhook.start(bot, opts, switch)
   -- Bot update route setup
   --
   local function default_callback(req)
+    -- The endpoint is reachable from the internet: empty/garbage bodies from
+    -- scanners must not raise (req:json() throws on invalid JSON).
+    local ok, data = pcall(req.json, req)
+
+    if not ok or type(data) ~= 'table' then
+      return {
+        status = 400
+      }
+    end
+
     fiber.create(function ()
-      switch(req:json())
+      switch(data)
     end)
 
     return {

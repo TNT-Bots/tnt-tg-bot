@@ -27,10 +27,8 @@ function message:new(ctx, opts)
   obj.update_id = update_id
   obj.message = refMessage
 
-  if ctx.message then
-    if ctx.message.successful_payment then
-      obj.message.successful_payment = SuccessfulPayment(ctx.message.successful_payment)
-    end
+  if refMessage and refMessage.successful_payment then
+    refMessage.successful_payment = SuccessfulPayment(refMessage.successful_payment)
   end
 
   return setmetatable(obj, self)
@@ -43,11 +41,13 @@ function message:getMessage()
 end
 
 --- Split the message text into arguments.
--- @tparam table opts
+-- @tparam[opt] table opts
 -- @tparam[opt=' '] string opts.separator separator used to split the text
 -- @tparam[opt=10] number opts.count maximum number of arguments
 -- @treturn table arguments list
 function message:getArguments(opts)
+  opts = opts or {}
+
   if self.message and self.message.text then
     local separator = opts.separator or ' '
     local count = opts.count or 10

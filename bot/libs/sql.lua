@@ -33,6 +33,21 @@ local function cast(value, field_type)
   return value
 end
 
+-- SQL-safe representation of a Lua value (uuid cdata included)
+local function castValue(value)
+  local _type = type(value)
+
+  if _type == 'cdata' then
+    if uuid.is_uuid(value) then
+      return cast(tostring(value), 'uuid')
+    end
+
+    return value
+  end
+
+  return cast(value, _type)
+end
+
 local sql = {}
 
 --- Execute an SQL query.
@@ -51,14 +66,7 @@ function sql.execute(sql_query, values)
   if values then
     local castValues = {}
     for key, value in pairs(values) do
-      local _type = type(value)
-      if _type == 'cdata' then
-        if uuid.is_uuid(value) then
-          castValues[key] = cast(tostring(value), 'uuid')
-        end
-      else
-        castValues[key] = cast(value, _type)
-      end
+      castValues[key] = castValue(value)
     end
 
     query = string.gsub(sql_query, "%${([%w_]+)}", castValues)
@@ -123,7 +131,7 @@ function sql.create(space, fields)
 
     if fieldValue == box.NULL then
       if not format.is_nullable then
-        error(('Field %s not required'):format(fieldName), 1)
+        error(('Field %s is required'):format(fieldName), 1)
       end
     end
 
@@ -169,7 +177,7 @@ function sql.update(space, fields, where)
 
   local whereParts = {}
   for key, value in pairs(where) do
-    table.insert(whereParts, ('%s = %s'):format(key, cast(value)))
+    table.insert(whereParts, ('%s = %s'):format(key, castValue(value)))
   end
 
   local query = {

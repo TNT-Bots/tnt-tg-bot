@@ -66,8 +66,12 @@ local function processCommand(ctx, opts)
 
   ::text_command::
 
-  -- User who triggered the command
+  -- User who triggered the command.
+  -- Updates without a sender (e.g. channel posts) are ignored.
   local ufrom = ctx:getUserFrom()
+  if ufrom == nil then
+    return
+  end
 
   -- Check command type flags
   --
@@ -112,9 +116,14 @@ local function processCommand(ctx, opts)
   end
   --
 
-  -- Command arguments build from arguments_schema
+  -- Command arguments build from arguments_schema.
+  -- Arguments live on ctx: the command object is shared between fibers,
+  -- and concurrent updates would overwrite command.arguments.
   if command.arguments_schema then
-    command.arguments = build_kv_arguments(ctx, command)
+    ctx.arguments = build_kv_arguments(ctx, command)
+
+    -- Deprecated: kept for backward compatibility, prefer ctx.arguments.
+    command.arguments = ctx.arguments
   end
 
   -- Pre call command event

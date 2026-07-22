@@ -22,23 +22,27 @@ local function build_body(params)
   local body
 
   if params.fields then
-    -- Default parse mode for text and caption payloads
-    if params.fields.text or params.fields.caption then
-      if not params.fields.parse_mode then
-        params.fields.parse_mode = config.parse_mode
+    local fields = params.fields
+
+    -- Default parse mode for text and caption payloads.
+    -- A shallow copy keeps the caller's table unmodified.
+    if fields.text or fields.caption then
+      if not fields.parse_mode then
+        fields = table.copy(fields)
+        fields.parse_mode = config.parse_mode
       end
     end
 
     -- Multipart encoding for file uploads, JSON otherwise
     if params.is_multipart or params.multipart then
       local boundary
-      body, boundary = mpEncode(params.fields)
+      body, boundary = mpEncode(fields)
 
       opts.headers = {
         ['Content-Type'] = 'multipart/form-data; boundary=' .. boundary,
       }
     else
-      body = json.encode(params.fields)
+      body = json.encode(fields)
 
       opts.headers = {
         ['Content-Type'] = 'application/json'
@@ -88,7 +92,14 @@ function request.send(params)
         }
       end
     else
-      local data = json.decode(raw.body)
+      -- Non-JSON body (e.g. an HTML error page from a gateway) must not kill the fiber
+      local decoded, data = pcall(json.decode, raw.body)
+      if not decoded then
+        return nil, {
+          description = 'Failed to decode response body: '..tostring(data),
+          __method = params.method
+        }
+      end
 
       if data.ok == false then
         data.__method = params.method

@@ -25,11 +25,13 @@ local function InputMediaVideo(data)
   -- Optional. Thumbnail of the file sent;
   -- can be ignored if thumbnail generation for the file is supported server-side
   if data.thumbnail then
-    if type(data.thumbnail) ~= 'string' or
+    if type(data.thumbnail) ~= 'string' and
       type(data.thumbnail) ~= 'table'
     then
       return nil
     end
+
+    jsonData.thumbnail = data.thumbnail
   end
 
   -- Optional. Caption of the video to be sent,

@@ -38,6 +38,8 @@ end
 -- @tparam table data sendPhoto fields
 -- @tparam[opt] string data.filepath path to a local image file
 -- @tparam[opt] string data.url image URL
+-- @treturn[1] table response from the Telegram Bot API
+-- @treturn[2] table err
 function api.sendImage(data)
   if data.filepath then
     data.photo = inputFile(data.filepath)
@@ -47,7 +49,7 @@ function api.sendImage(data)
     data.url = nil
   end
 
-  api.call(methods.sendPhoto, data, { multipart_post = true })
+  return api.call(methods.sendPhoto, data, { multipart_post = true })
 end
 
 --- Wrap all Telegram API methods onto the bot object.

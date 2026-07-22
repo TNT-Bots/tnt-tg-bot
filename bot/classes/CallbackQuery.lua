@@ -69,11 +69,13 @@ function callback:getMessage()
 end
 
 --- Split the callback query data into arguments.
--- @tparam table opts
+-- @tparam[opt] table opts
 -- @tparam[opt=' '] string opts.separator separator used to split the data
 -- @tparam[opt=10] number opts.count maximum number of arguments
 -- @treturn table arguments list
 function callback:getArguments(opts)
+  opts = opts or {}
+
   if self.callback_query then
     local separator = opts.separator or ' '
     local count = opts.count or 10

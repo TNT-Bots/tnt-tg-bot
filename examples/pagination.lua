@@ -105,7 +105,7 @@ local cbFruits = Command:new({
 })
 
 function cbFruits.call(ctx)
-  local args = cbFruits.arguments
+  local args = ctx.arguments
   local page = tonumber(args.page)
 
   if args.action == 'open' then

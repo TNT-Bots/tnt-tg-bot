@@ -21,8 +21,10 @@ end
 --- Validate init data received from a Telegram Mini App.
 -- @tparam string init_data raw query string from the web app
 -- @tparam string bot_token bot token used for the HMAC secret
--- @treturn table { valid = boolean, userData = ?table }
-local function parseInitData(init_data, bot_token)
+-- @tparam[opt] table opts
+-- @tparam[opt] number opts.max_age_sec reject data older than this (replay protection)
+-- @treturn table { valid = boolean, userData = ?table, authDate = ?number }
+local function parseInitData(init_data, bot_token, opts)
   -- init_data query string parsing
   local parsed = parse_query(init_data)
   local received_hash = parsed.hash or ""
@@ -64,9 +66,21 @@ local function parseInitData(init_data, bot_token)
     return string.format('%02x', string.byte(c))
   end)
 
+  local valid = (expected_hash == string.lower(received_hash))
+  local authDate = tonumber(parsed.auth_date)
+
+  -- auth_date freshness check: a captured init_data with a valid hash
+  -- can be replayed forever without it
+  if valid and opts and opts.max_age_sec then
+    if authDate == nil or (os.time() - authDate) > opts.max_age_sec then
+      valid = false
+    end
+  end
+
   return {
-    valid = (expected_hash == string.lower(received_hash)),
+    valid = valid,
     userData = userData,
+    authDate = authDate,
   }
 end
 

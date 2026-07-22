@@ -94,7 +94,7 @@ local function inlineKeyboardButton(keyboard, data)
 
   -- Optional. Description of the button that copies the specified text to the clipboard.
   if data.copy_text then
-    button.copy_text = tostring(button.copy_text)
+    button.copy_text = tostring(data.copy_text)
   end
 
   -- Optional. Specify True, to send a Pay button

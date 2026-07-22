@@ -44,6 +44,15 @@ function rateLimiter.new(opts)
   return self
 end
 
+--- Stop the background cleaner fiber.
+-- Without this call every created limiter keeps its fiber alive forever.
+function rateLimiter:stop()
+  if self.cleaner_fiber ~= nil then
+    self.cleaner_fiber:cancel()
+    self.cleaner_fiber = nil
+  end
+end
+
 --- Drop buckets untouched for longer than idle_threshold_sec.
 -- @treturn number how many keys were removed
 function rateLimiter:cleanup()
