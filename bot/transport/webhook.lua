@@ -1,5 +1,4 @@
---- Webhook transport
--- @module bot.transport.webhook
+--- Webhook transport.
 local log = require('log')
 local fio = require('fio')
 local json = require('json')
@@ -7,16 +6,15 @@ local fiber = require('fiber')
 
 local webhook = {}
 
---- Sends a certificate for webhook setup
---
--- @param bot (table) Bot object
--- @param opts (table) Options table
-  -- @param opts.url (string) URL for the webhook
-  -- @param opts.certificate (string) Path to the certificate file
-  -- @param opts.drop_pending_updates (boolean) Whether to drop pending updates (false by default)
-  -- @param opts.allowed_updates (table) List of allowed updates (nil by default)
---
--- @return (table) Response data
+--- Register the webhook, optionally with a self-signed certificate.
+-- @tparam table bot bot object
+-- @tparam table opts
+-- @tparam string opts.url webhook URL (opts.bot_url is accepted as an alias)
+-- @tparam[opt] string opts.certificate path to the certificate file
+-- @tparam[opt=false] boolean opts.drop_pending_updates drop pending updates
+-- @tparam[opt] table opts.allowed_updates list of allowed update types
+-- @treturn[1] table response from the Telegram Bot API
+-- @treturn[2] table err
 function webhook.sendCertificate(bot, opts)
   if type(opts) ~= 'table' or
     type(opts.bot_url or opts.url) ~= 'string'
@@ -26,7 +24,7 @@ function webhook.sendCertificate(bot, opts)
     return
   end
 
-  -- Read certificate
+  -- Certificate read
   local data
   if opts.certificate then
     if not fio.path.exists(opts.certificate) then
@@ -49,7 +47,7 @@ function webhook.sendCertificate(bot, opts)
     opts.allowed_updates = json.encode(opts.allowed_updates)
   end
 
-  -- Set webhook
+  -- Webhook registration
   return bot.call('setWebhook', {
     url = opts.bot_url or opts.url,
     certificate = data,
@@ -58,11 +56,18 @@ function webhook.sendCertificate(bot, opts)
   }, { multipart_post = true })
 end
 
---- Start the webhook
---
--- @param bot (table) Bot object
--- @param opts (table) Options table
--- @param switch (function) Update handler
+--- Start the webhook HTTP server and register the webhook.
+-- @tparam table bot bot object
+-- @tparam table opts
+-- @tparam[opt='0.0.0.0'] string opts.host host to bind to
+-- @tparam[opt=9091] number opts.port port to listen on
+-- @tparam[opt='/'] string opts.path route for incoming updates
+-- @tparam string opts.url webhook URL (opts.bot_url is accepted as an alias)
+-- @tparam[opt] string opts.certificate path to the certificate file
+-- @tparam[opt] table opts.routes extra routes { path, method, callback }
+-- @tparam function switch update handler
+-- @treturn[1] table response from the Telegram Bot API
+-- @treturn[2] table err
 function webhook.start(bot, opts, switch)
   local http_server = require('http.server')
   local host = opts.host or '0.0.0.0'
@@ -71,7 +76,7 @@ function webhook.start(bot, opts, switch)
 
   bot.maintenance = not not opts.maintenance
 
-  -- Bot route setup
+  -- Bot update route setup
   --
   local function default_callback(req)
     fiber.create(function ()
@@ -89,7 +94,7 @@ function webhook.start(bot, opts, switch)
   }, default_callback)
   --
 
-  -- Declaration custom routes
+  -- Custom route declaration
   if opts.routes then
     for i = 1, #opts.routes do
       local route = opts.routes[i]

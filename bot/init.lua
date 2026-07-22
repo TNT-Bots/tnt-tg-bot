@@ -1,9 +1,6 @@
--- .-.-.-.-.-.-.-.-.-.-.-.-.-.
--- Module: Telegram Bot
+--- Telegram Bot API framework for Tarantool.
 -- Licence: MIT
 -- (C) 2026 uriid1 <github.com/uriid1>
--- .-.-.-.-.-.-.-.-.-.-.-.-.-.
---- @module bot
 local bot = { _version = '2.0' }
 
 package.path = package.path .. ';.rocks/share/lua/5.1/?.lua'
@@ -26,19 +23,18 @@ local switch = function (ctx)
   end
 end
 
---- Initializes the bot with opts
---
--- @param opts (table) opts
-  -- @param[opt] opts.token (string) Bot token
-  -- @param[opt] opts.parse_mode (string) Parse mode. HTML by default
-  -- @param[opt] opts.api_url (string)
+--- Initialize the bot with options.
+-- @tparam table opts
+-- @tparam[opt] string opts.token bot token
+-- @tparam[opt] string opts.parse_mode parse mode, 'HTML' by default
+-- @tparam[opt] string opts.api_url Telegram Bot API base URL
+-- @tparam[opt] string opts.username bot username
+-- @treturn table bot object
 -- @usage
--- bot:cfg {
---  token = '1234567:AABBccDDFF...',
---  parse_mode = 'HTML' - Default: 'HTML'
--- }
---
--- @return bot object
+-- bot:cfg({
+--   token = '1234567:AABBccDDFF...',
+--   parse_mode = 'HTML',
+-- })
 function bot:cfg(opts)
   self.token = opts.token
   self.api_url = opts.api_url or config.api_url
@@ -65,16 +61,17 @@ function bot:cfg(opts)
     end
   })
 
-  --- Wrap methods
-  --
+  -- Exposure of all Telegram API methods as bot:<method>()
   api.wrapMethods(self)
 
   return self
 end
 
---- Helper for require
--- @param deep (number)
--- @param (path|any)
+--- Strip trailing segments from a module or filesystem path.
+-- Helper for building require paths relative to the caller.
+-- @tparam number deep number of trailing segments to strip
+-- @tparam string path module path ('a.b.c') or filesystem path
+-- @treturn string path without the stripped segments
 function bot.subdir(deep, ...)
   local sep
   local path = tostring(select(1, ...))
@@ -98,7 +95,9 @@ bot.call = api.call
 bot.sendImage = api.sendImage
 
 local botId
---- Helper for get bot id
+
+--- Get the numeric bot id derived from the token.
+-- @treturn number bot id
 function bot:getBotId()
   if not botId then
     botId = tonumber((self.token or ''):match('^%d+'))

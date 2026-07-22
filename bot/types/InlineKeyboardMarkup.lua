@@ -1,7 +1,5 @@
---- Inline Keyboard Markup
-  -- https://core.telegram.org/bots/api#replykeyboardmarkup
-  --
--- @module bot.types.InlineKeyboardMarkup
+--- InlineKeyboardMarkup type builder.
+-- See: https://core.telegram.org/bots/api#inlinekeyboardmarkup
 local json = require('json')
 
 local function InlineKeyboardMarkup(data)
@@ -11,10 +9,10 @@ local function InlineKeyboardMarkup(data)
 
   local obj = {}
 
-  -- Array of button rows,
-  -- each represented by an Array of InlineKeyboardButton objects
+  -- inline_keyboard is an array of button rows,
+  -- each represented by an array of InlineKeyboardButton objects
   if data then
-    -- If table inline_keyboard exists
+    -- A ready inline_keyboard table is encoded as-is
     if type(data.inline_keyboard) == 'table' then
       return json.encode(data)
     end

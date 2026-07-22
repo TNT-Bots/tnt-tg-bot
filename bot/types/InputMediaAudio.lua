@@ -1,7 +1,5 @@
---- Input Media Audio
-  -- https://core.telegram.org/bots/api#inputmediaaudio
-  --
--- @module bot.types.InputMediaAudio
+--- InputMediaAudio type builder.
+-- See: https://core.telegram.org/bots/api#inputmediaaudio
 local function InputMediaAudio(data)
   if not data then
     return nil
@@ -46,7 +44,7 @@ local function InputMediaAudio(data)
     jsonData.caption_entities = data.caption_entities
   end
 
-  -- Optional. Video duration in seconds
+  -- Optional. Audio duration in seconds
   if data.duration then
     jsonData.duration = tonumber(data.duration)
   end

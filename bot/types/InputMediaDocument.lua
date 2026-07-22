@@ -1,7 +1,5 @@
---- Input Media Document
-  -- https://core.telegram.org/bots/api#inputmediadocument
-  --
--- @module bot.types.InputMediaDocument
+--- InputMediaDocument type builder.
+-- See: https://core.telegram.org/bots/api#inputmediadocument
 local function InputMediaDocument(data)
   if not data then
     return nil

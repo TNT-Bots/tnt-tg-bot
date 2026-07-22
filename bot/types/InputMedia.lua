@@ -1,5 +1,5 @@
---- Input media
--- @module bot.types.InputMedia
+--- InputMedia type builder.
+-- See: https://core.telegram.org/bots/api#inputmedia
 local json = require('json')
 
 local function InputMedia(data)

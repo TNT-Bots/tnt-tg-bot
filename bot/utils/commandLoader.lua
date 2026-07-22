@@ -1,5 +1,4 @@
---- bot/utils/commandLoader.lua
---
+--- Command module loader registering commands in bot.commands.
 local log = require('log')
 local bot = require('bot')
 
@@ -7,6 +6,8 @@ local commandLoader = {
   path = ''
 }
 
+--- Set the base require path for command modules.
+-- @tparam string path base path, e.g. 'src.commands'
 function commandLoader.setPath(path)
   commandLoader.path = path
 end
@@ -23,6 +24,9 @@ local function command_require(path)
   end
 end
 
+--- Load command modules and register them in bot.commands.
+-- @tparam any _ unused (self when called via __call)
+-- @tparam table list { [command_type] = { [command_name] = params } }
 function commandLoader.loader(_, list)
   for commandType, commands in pairs(list) do
     local path = string.format('%s.%s', commandLoader.path, commandType)
@@ -30,8 +34,8 @@ function commandLoader.loader(_, list)
     for command, params in pairs(commands) do
       local pathToCommand = string.format('%s.%s', path, command)
 
-      -- First: Load callback command
-      -- NOTE: Нужно для правильнной передачи callback-аргументов
+      -- Callback commands load first.
+      -- NOTE: required for correct callback argument passing.
       if params.callback_commands then
         for i = 1, #params.callback_commands do
           local callbackCommand = params.callback_commands[i]
@@ -39,7 +43,7 @@ function commandLoader.loader(_, list)
         end
       end
 
-      -- Next: Load base command
+      -- Base command load
       command_require(pathToCommand)
     end
   end

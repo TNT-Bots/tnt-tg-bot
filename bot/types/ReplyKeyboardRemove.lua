@@ -1,7 +1,5 @@
---- Reply Keyboard Remove
-  -- see https://core.telegram.org/bots/api#replykeyboardremove
-  --
--- @module bot.types.ReplyKeyboardRemove
+--- ReplyKeyboardRemove type builder.
+-- See: https://core.telegram.org/bots/api#replykeyboardremove
 local function ReplyKeyboardRemove(data)
   if not data then
     return {

@@ -1,10 +1,8 @@
---- Enum parse_mode
+--- Parse mode enum.
+-- See: https://core.telegram.org/bots/api#formatting-options
+--
 
----
--- @table bot.enums.parse_mode
--- @field HTML
--- @field MARKDOWN
--- @field MARKDOWN_V2
+--- Parse modes.
 local parse_mode = {
   HTML = 'HTML',
   MARKDOWN = 'Markdown',

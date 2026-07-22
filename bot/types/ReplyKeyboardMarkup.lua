@@ -1,6 +1,5 @@
---- Reply Keyboard Markup
--- see https://core.telegram.org/bots/api#replykeyboardmarkup
--- @module bot.types.ReplyKeyboardMarkup
+--- ReplyKeyboardMarkup type builder.
+-- See: https://core.telegram.org/bots/api#replykeyboardmarkup
 local function ReplyKeyboardMarkup(data)
   if not data then
     return { keyboard = {} }
@@ -33,7 +32,8 @@ local function ReplyKeyboardMarkup(data)
     obj.one_time_keyboard = data.one_time_keyboard and true or false
   end
 
-  -- Optional. Requests clients to hide the keyboard as soon as it's been used
+  -- Optional. The placeholder to be shown in the input field when the keyboard is active,
+  -- 1-64 characters
   if data.input_field_placeholder then
     obj.input_field_placeholder = tostring(data.input_field_placeholder):sub(1, 64)
   end

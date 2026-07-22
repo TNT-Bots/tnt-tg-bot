@@ -1,7 +1,5 @@
---- Inline Keyboard Button
-  -- https://core.telegram.org/bots/api#inlinekeyboardbutton
-  --
--- @module bot.types.inlineKeyboardButton
+--- InlineKeyboardButton type builder.
+-- See: https://core.telegram.org/bots/api#inlinekeyboardbutton
 local log = require('log')
 
 local function inlineKeyboardButton(keyboard, data)
@@ -30,9 +28,9 @@ local function inlineKeyboardButton(keyboard, data)
 
   -- Optional. Style of the button.
   -- Must be one of:
-  -- “danger” (red)
-  -- “success” (green)
-  -- “primary” (blue).
+  -- "danger" (red)
+  -- "success" (green)
+  -- "primary" (blue).
   -- If omitted, then an app-specific style is used.
   if data.style then
     button.style = tostring(data.style)
@@ -71,7 +69,7 @@ local function inlineKeyboardButton(keyboard, data)
     button.switch_inline_query = tostring(data.switch_inline_query)
   end
 
-  -- Optional. If set, pressing the button will insert the bot's username and -
+  -- Optional. If set, pressing the button will insert the bot's username and
   -- the specified inline query in the current chat's input field. May be empty,
   -- in which case only the bot's username will be inserted.
   if data.switch_inline_query_current_chat then
@@ -101,14 +99,14 @@ local function inlineKeyboardButton(keyboard, data)
   end
 
   if keyboard then
-    -- Add button to line
+    -- New row when data.row does not exist yet
     if not keyboard["inline_keyboard"][data.row] then
       table.insert(keyboard["inline_keyboard"], { button })
 
       return button
     end
 
-    -- Add button to row
+    -- Button addition to an existing row
     table.insert(keyboard["inline_keyboard"][data.row or 1], button)
 
     return button

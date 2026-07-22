@@ -1,7 +1,5 @@
---- Input Media Animation
-  -- https://core.telegram.org/bots/api#inputmediaanimation
-  --
--- @module bot.types.InputMediaAnimation
+--- InputMediaAnimation type builder.
+-- See: https://core.telegram.org/bots/api#inputmediaanimation
 local function InputMediaAnimation(data)
   if not data then
     return nil

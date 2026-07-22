@@ -1,6 +1,8 @@
---- See: https://core.telegram.org/bots/api#update
+--- Allowed update types enum.
+-- See: https://core.telegram.org/bots/api#update
 --
 
+--- Update types.
 local allowed_updates = {
   MESSAGE = 'message',
   EDITED_MESSAGE = 'edited_message',

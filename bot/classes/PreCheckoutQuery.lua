@@ -1,14 +1,12 @@
---- Module PreCheckoutQuery
--- @module bot.classes.PreCheckoutQuery
-
+--- PreCheckoutQuery class wrapping a pre_checkout_query update.
 local defineGetters = require('bot.libs.getter')
 
 local PreCheckoutQuery = {}
 PreCheckoutQuery.__index = PreCheckoutQuery
 
---- Creates a new PreCheckoutQuery object
--- @param ctx The data for initializing the object
--- @return The created PreCheckoutQuery object
+--- Create a new PreCheckoutQuery object.
+-- @tparam table ctx update data with update_id and pre_checkout_query fields
+-- @treturn table PreCheckoutQuery object
 function PreCheckoutQuery:new(ctx)
   local obj = {}
   obj.update_id = ctx.update_id
@@ -17,25 +15,15 @@ function PreCheckoutQuery:new(ctx)
   return setmetatable(obj, self)
 end
 
+-- Getters are generated from the mapping below.
+-- Each method returns the value at the dot-separated path inside the object.
 defineGetters(PreCheckoutQuery, {
-  --- Gets the update ID
-  -- @return (number) The update ID
   getUpdateId        = 'update_id',
-  --- Bot-specified invoice payload
-  -- @return (string)
-  getInvoicePayload  = 'pre_checkout_query.invoice_payload',
-  --- Unique query identifier
-  -- @return (string)
-  getId              = 'pre_checkout_query.id',
-  --- Three-letter ISO 4217 currency code, or "XTR" for payments in Telegram Stars
-  -- @return (string)
-  getCurrency        = 'pre_checkout_query.currency',
-  --- User who sent the query
-  -- @return (User)
-  getUserFrom        = 'pre_checkout_query.from',
-  --- Price in the smallest units of the currency (integer, not float/double)
-  -- @return (Integer)
-  getTotalAmount     = 'pre_checkout_query.total_amount',
+  getInvoicePayload  = 'pre_checkout_query.invoice_payload', -- bot-specified invoice payload
+  getId              = 'pre_checkout_query.id',              -- unique query identifier
+  getCurrency        = 'pre_checkout_query.currency',        -- ISO 4217 code, 'XTR' for Telegram Stars
+  getUserFrom        = 'pre_checkout_query.from',            -- user who sent the query
+  getTotalAmount     = 'pre_checkout_query.total_amount',    -- price in the smallest currency units
 })
 
 setmetatable(PreCheckoutQuery, {

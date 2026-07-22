@@ -1,5 +1,5 @@
---- https://core.telegram.org/bots/api#botcommandscope
--- @module bot.types.BotCommandScope
+--- BotCommandScope type builder.
+-- See: https://core.telegram.org/bots/api#botcommandscope
 local bot_command_scope = require('bot.enums.bot_command_scope')
 
 local function BotCommandScope(scope, data)

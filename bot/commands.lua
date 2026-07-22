@@ -1,16 +1,13 @@
---- Command parsing module
--- @module bot.commands
+--- Command resolution for text and callback updates.
 local log = require('log')
 
 local commands = {}
 
---- Handles a command via text (ctx.message.text)
---
--- @param bot (table) Bot object
--- @param ctx (table) Message object
---
--- @return Command func
--- @return Bot username
+--- Resolve a command from message text (ctx.message.text).
+-- @tparam table bot bot object
+-- @tparam table ctx message object
+-- @treturn function command handler, nil if the command is unknown
+-- @treturn string bot username from the '/cmd@username' form, if present
 function commands.command(bot, ctx)
   local command = ctx:getArguments({ count = 1 })[1]
 
@@ -30,12 +27,10 @@ function commands.command(bot, ctx)
   return bot.commands[command], username
 end
 
---- Handles a callback query
---
--- @param bot (table) Bot object
--- @param ctx (table) Callback query object
---
--- @return Command func
+--- Resolve a command from callback query data.
+-- @tparam table bot bot object
+-- @tparam table ctx callback query object
+-- @treturn function command handler, nil if the command is unknown
 function commands.callbackCommand(bot, ctx)
   local command = ctx:getArguments({ count = 1 })[1]
   if not bot.commands[command] then

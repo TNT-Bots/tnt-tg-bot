@@ -1,9 +1,10 @@
---- Inline keyboard middleware
---
--- @module bot.middlewares.inlineKeyoard
+--- Inline keyboard middleware.
 local InlineKeyboardMarkup = require('bot.types.InlineKeyboardMarkup')
 local InlineKeyboardButton = require('bot.types.InlineKeyboardButton')
 
+--- Build an InlineKeyboardMarkup from a list of buttons and button rows.
+-- @tparam table data list where each item is a button or an array of buttons (a row)
+-- @treturn table inline keyboard markup
 local function inlineKeyoard(data)
   local keyboard = InlineKeyboardMarkup()
 

@@ -1,5 +1,5 @@
---- https://core.telegram.org/bots/api#botcommand
--- @module bot.types.BotCommand
+--- BotCommand type builder.
+-- See: https://core.telegram.org/bots/api#botcommand
 local function BotCommand(data)
   if not data then
     return nil

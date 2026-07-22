@@ -1,14 +1,8 @@
---- Enum Chat Member Status
+--- Chat member status enum.
+-- See: https://core.telegram.org/bots/api#chatmember
+--
 
----
--- @table bot.enums.chat_member_status
--- @field CREATOR
--- @field ADMINISTRATOR
--- @field MEMBER
--- @field RESTRICTED
--- @field LEFT
--- @field KICKED
--- @field UNKNOWN
+--- Chat member statuses.
 local chat_member_status = {
   CREATOR = 'creator',
   ADMINISTRATOR = 'administrator',

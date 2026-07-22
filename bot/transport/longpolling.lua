@@ -1,5 +1,4 @@
---- Long polling transport
--- @module bot.transport.longpolling
+--- Long polling transport.
 local log = require('log')
 local json = require('json')
 local fiber = require('fiber')
@@ -14,11 +13,15 @@ local DEFAULT_ALLOWED_UPDATES = {
   'pre_checkout_query'
 }
 
---- Start long polling
---
--- @param bot (table) Bot object
--- @param opts (table) Options table
--- @param switch (function) Update handler
+--- Start long polling.
+-- Blocks the calling fiber in an endless getUpdates loop.
+-- @tparam table bot bot object
+-- @tparam[opt] table opts
+-- @tparam[opt=-1] number opts.offset initial update offset
+-- @tparam[opt=60] number opts.timeout getUpdates timeout, seconds
+-- @tparam[opt] table opts.allowed_updates list of allowed update types
+-- @tparam[opt=-1] number opts.max_connections http client connection limit
+-- @tparam function switch update handler
 function longpolling.start(bot, opts, switch)
   opts = opts or {}
 

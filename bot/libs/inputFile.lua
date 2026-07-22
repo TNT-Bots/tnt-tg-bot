@@ -1,8 +1,10 @@
---- Input file
--- @module bot.libs.inputFile
+--- Local file reader for multipart uploads.
 local fio = require('fio')
 local log = require('log')
 
+--- Read a local file into the format expected by multipart upload.
+-- @tparam string filename path to the file
+-- @treturn ?table { data = <content>, filename = <path> }, nil if unreadable
 local function inputFile(filename)
   if type(filename) ~= 'string' then
     return nil

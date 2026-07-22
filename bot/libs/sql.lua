@@ -1,5 +1,4 @@
---- Wrapper for execute sql (tarantool > 3.x only)
--- @module bot.ext.sql
+--- SQL helpers over box.execute (Tarantool 3.x only).
 local log = require('log')
 local uuid = require('uuid')
 
@@ -10,8 +9,8 @@ if _TARANTOOL then
   end
 end
 
--- TODO: Tarantool прямо поддерживает и рекомендует передачу параметров -
--- через box.execute(sql, extra-parameters)
+-- TODO: switch to bound parameters via box.execute(sql, extra-parameters).
+-- Tarantool supports and recommends them directly.
 
 local function escape(value)
   return string.format("'%s'", value:gsub("'", "''"))
@@ -36,16 +35,17 @@ end
 
 local sql = {}
 
---- Execute sql query
--- @param sql_query (string) SQL string
--- @param values (table) Table of values
--- @return[1] result
--- @return[1] error
+--- Execute an SQL query.
+-- ${name} placeholders are substituted with escaped values.
+-- @tparam string sql_query SQL string
+-- @tparam[opt] table values placeholder values
+-- @treturn[1] table rows mapped to field names
+-- @treturn[2] table err
 -- @usage
-  -- local rows = sql.execute("SELECT * FROM SEQSCAN users WHERE name = ${name}", { name = 'Alex' })
-  -- if rows == nil then
-  --   log.error('No rows')
-  -- end
+-- local rows = sql.execute('SELECT * FROM SEQSCAN users WHERE name = ${name}', { name = 'Alex' })
+-- if rows == nil then
+--   log.error('No rows')
+-- end
 function sql.execute(sql_query, values)
   local query
   if values then
@@ -76,7 +76,7 @@ function sql.execute(sql_query, values)
     return nil, err
   end
 
-  -- Mapping result
+  -- Result mapping: positional tuple -> { field_name = value }
   local metadata = result.metadata
   local rows = {}
   if result.rows then
@@ -94,11 +94,11 @@ function sql.execute(sql_query, values)
   return rows, nil
 end
 
---- Create record
--- @param space (string) space
--- @param fields (table)
--- @return[1] result
--- @return[1] error
+--- Insert a record.
+-- @tparam string space space name
+-- @tparam table fields { field_name = value, ... }
+-- @treturn[1] table box.execute result
+-- @treturn[2] table err
 function sql.create(space, fields)
   if box.space[space] == nil then
     error(('Space: %s not found'):format(space), 1)
@@ -141,12 +141,12 @@ function sql.create(space, fields)
   return box.execute(sqlQuery, data)
 end
 
---- Update record(s)
--- @param space (string) space name
--- @param fields (table) columns to update
--- @param where (table) where condition(s)
--- @return[1] result
--- @return[2] error
+--- Update record(s).
+-- @tparam string space space name
+-- @tparam table fields columns to update
+-- @tparam table where where condition(s)
+-- @treturn[1] table box.execute result
+-- @treturn[2] table err
 function sql.update(space, fields, where)
   if box.space[space] == nil then
     error(('Space: %s not found'):format(space), 1)
@@ -186,15 +186,15 @@ function sql.update(space, fields, where)
   return box.execute(sqlQuery, data)
 end
 
---- Update record by primary key через box.space:update (NoSQL API).
--- В отличие от sql.update работает с map/array/любыми типами Tarantool -
--- SQL UPDATE для них непригоден (см. ограничения map в SQL).
--- where ДОЛЖЕН содержать все поля первичного ключа.
--- @param space (string) space name
--- @param fields (table) { field_name = new_value, ... }
--- @param where (table) полный первичный ключ { pk_field = value, ... }
--- @return[1] true
--- @return[2] error
+--- Update a record by primary key via box.space:update (NoSQL API).
+-- Unlike sql.update it works with map/array/any Tarantool types.
+-- SQL UPDATE cannot handle them (see map limitations in SQL).
+-- where MUST contain every primary key field.
+-- @tparam string space space name
+-- @tparam table fields { field_name = new_value, ... }
+-- @tparam table where full primary key { pk_field = value, ... }
+-- @treturn[1] boolean true
+-- @treturn[2] table err
 function sql.update_nosql(space, fields, where)
   if box.space[space] == nil then
     error(('Space: %s not found'):format(space), 1)
@@ -208,7 +208,7 @@ function sql.update_nosql(space, fields, where)
 
   local space_obj = box.space[space]
 
-  -- Достаём первичный ключ из where в правильном порядке частей индекса
+  -- Primary key extraction from where in index part order
   local primary_index = space_obj.index[0]
   if primary_index == nil then
     error(('Space: %s has no primary index'):format(space), 1)
@@ -225,7 +225,7 @@ function sql.update_nosql(space, fields, where)
     key[i] = value
   end
 
-  -- Операции присваивания: {'=', field_name, value}
+  -- Assignment operations: { '=', field_name, value }
   local ops = {}
   for field_name, value in pairs(fields) do
     table.insert(ops, { '=', field_name, value })
@@ -241,15 +241,15 @@ function sql.update_nosql(space, fields, where)
   return true, nil
 end
 
---- Upsert record (atomic insert or update by primary key)
--- Uses box.space:upsert() directly
--- If record doesn't exist - inserts default_fields as a full tuple
--- If record exists - applies update operations only to update_fields
--- @param space (string) space
--- @param default_fields (table) full record for insert case
--- @param update_fields (table) fields to update if record exists
--- @return[1] true
--- @return[2] error
+--- Upsert a record (atomic insert or update by primary key).
+-- Uses box.space:upsert() directly.
+-- If the record does not exist - inserts default_fields as a full tuple.
+-- If the record exists - applies update operations only to update_fields.
+-- @tparam string space space name
+-- @tparam table default_fields full record for the insert case
+-- @tparam table update_fields fields to update if the record exists
+-- @treturn[1] boolean true
+-- @treturn[2] table err
 function sql.upsert(space, default_fields, update_fields)
   if box.space[space] == nil then
     error(('Space: %s not found'):format(space), 1)
@@ -297,23 +297,23 @@ function sql.upsert(space, default_fields, update_fields)
   return true, nil
 end
 
---- Атомарное выполнение нескольких операций в транзакции
--- При ошибке любой операции внутри fn все изменения откатываются.
--- Функция fn должна бросать error() при ошибке, чтобы сработал откат.
--- Вспомогательная функция sql.check() упрощает проверку.
--- @param fn (function)
--- @return[1] result
--- @return[2] error
+--- Run several operations atomically in one transaction.
+-- If any operation inside fn fails, all changes are rolled back.
+-- fn must raise error() on failure for the rollback to trigger.
+-- The sql.check() helper simplifies that.
+-- @tparam function fn
+-- @treturn[1] boolean true
+-- @treturn[2] table err
 -- @usage
-  -- local ok, err = sql.atomic(function()
-  --   sql.check(sql.create('users', userData))
-  --   sql.check(sql.create('user_credentials', credentials))
-  --   sql.check(sql.create('sessions', session))
-  -- end)
-
-  -- if err then
-  --   - все операции откачены
-  -- end
+-- local ok, err = sql.atomic(function()
+--   sql.check(sql.create('users', userData))
+--   sql.check(sql.create('user_credentials', credentials))
+--   sql.check(sql.create('sessions', session))
+-- end)
+--
+-- if err then
+--   -- all operations are rolled back
+-- end
 function sql.atomic(fn)
   local ok, err = pcall(box.atomic, fn)
 
@@ -324,11 +324,11 @@ function sql.atomic(fn)
   return true, nil
 end
 
---- Проверка результата SQL-операции для использования внутри sql.atomic
--- Если операция вернула ошибку - бросает error для отката транзакции
--- @param result Первый возврат sql.create/sql.execute/sql.update
--- @param err Второй возврат (ошибка)
--- @return result
+--- Check an SQL operation result inside sql.atomic.
+-- Raises error on failure so that the transaction rolls back.
+-- @tparam any result first return value of sql.create/sql.execute/sql.update
+-- @tparam any err second return value (error)
+-- @treturn any result
 function sql.check(result, err)
   if err then
     error(err, 2)

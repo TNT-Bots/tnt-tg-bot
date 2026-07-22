@@ -1,5 +1,8 @@
---- @see https://gist.github.com/wiz0u/2a6d40c8f635687be363d72251a264da
+--- Message effect ids enum.
+-- See: https://gist.github.com/wiz0u/2a6d40c8f635687be363d72251a264da
 --
+
+--- Message effects, addressable by name or by emoji.
 local message_effect = {
   heart = '5159385139981059251',    -- ❤️
   poi = '5046589136895476101',      -- 💩

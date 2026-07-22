@@ -1,12 +1,13 @@
---- Process incoming data and create corresponding objects
--- @module bot.middlewares.processMessage
-
+--- Update dispatcher wrapping raw updates into typed objects.
 local Message = require('bot.classes.Message')
 local CallbackQuery = require('bot.classes.CallbackQuery')
 local ChatMember = require('bot.classes.ChatMember')
 local MyChatMember = require('bot.classes.MyChatMember')
 local PreCheckoutQuery = require('bot.classes.PreCheckoutQuery')
 
+--- Wrap raw update data into the matching class.
+-- @tparam table data raw update from the Telegram Bot API
+-- @treturn table typed update object, raw data if the update type is unknown
 local function processMessage(data)
   if data.message then
     return Message(data)

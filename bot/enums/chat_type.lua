@@ -1,12 +1,8 @@
---- Enum Chat Type
+--- Chat type enum.
+-- See: https://core.telegram.org/bots/api#chat
+--
 
----
--- @table bot.enums.chat_type
--- @field SENDER
--- @field PRIVATE
--- @field GROUP
--- @field SUPERGROUP
--- @field CHANNEL
+--- Chat types.
 local chat_type = {
   SENDER = 'sender',
   PRIVATE = 'private',

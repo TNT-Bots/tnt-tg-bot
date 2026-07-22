@@ -1,7 +1,5 @@
---- Keyboard Button
-  -- https://core.telegram.org/bots/api#keyboardbutton
-  --
--- @module bot.types.KeyboardButton
+--- KeyboardButton type builder.
+-- See: https://core.telegram.org/bots/api#keyboardbutton
 local function KeyboardButton(keyboard, data)
   if keyboard and type(keyboard) ~= 'table' then
     return nil
@@ -18,15 +16,15 @@ local function KeyboardButton(keyboard, data)
     button.text = tostring(data.text)
   end
 
-  -- Optional. If specified,pressing the button will open a list of suitable users.
-  -- Tapping on any user will send their identifier to the bot in a “user_shared” service message.
+  -- Optional. If specified, pressing the button will open a list of suitable users.
+  -- Tapping on any user will send their identifier to the bot in a "user_shared" service message.
   -- Available in private chats only
   if data.request_user then
     button.request_user = data.request_user
   end
 
   -- Optional. If specified, pressing the button will open a list of suitable chats.
-  -- Tapping on a chat will send its identifier to the bot in a “chat_shared” service message
+  -- Tapping on a chat will send its identifier to the bot in a "chat_shared" service message.
   -- Available in private chats only.
   if data.request_chat then
     button.request_chat = data.request_chat
@@ -56,14 +54,14 @@ local function KeyboardButton(keyboard, data)
   end
 
   if keyboard then
-    -- Add button to line
+    -- New row when data.row does not exist yet
     if not keyboard["keyboard"][data.row] then
       table.insert(keyboard["keyboard"], { button })
 
       return button
     end
 
-    -- Add button to row
+    -- Button addition to an existing row
     table.insert(keyboard["keyboard"][data.row or 1], button)
 
     return button

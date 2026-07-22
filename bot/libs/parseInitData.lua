@@ -1,5 +1,5 @@
---- https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app
--- @module bot.libs.parseInitData
+--- Telegram Mini App init data validation.
+-- See: https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app
 local openssl_hmac = require('openssl.hmac')
 local json = require('json')
 
@@ -18,47 +18,48 @@ local function url_decode(str)
   end))
 end
 
--- Validating data received via the mini app
---- @param init_data (string)
---- @param bot_token (string)
+--- Validate init data received from a Telegram Mini App.
+-- @tparam string init_data raw query string from the web app
+-- @tparam string bot_token bot token used for the HMAC secret
+-- @treturn table { valid = boolean, userData = ?table }
 local function parseInitData(init_data, bot_token)
-  -- Parse the init_data query string
+  -- init_data query string parsing
   local parsed = parse_query(init_data)
   local received_hash = parsed.hash or ""
   parsed.hash = nil
 
-  -- Try to parse user field as JSON if present
+  -- user field JSON parsing, if present
   local userData
   if parsed.user then
     local user = url_decode(parsed.user)
     userData = json.decode(user)
   end
 
-  -- Sort keys alphabetically
+  -- Alphabetical key sorting
   local keys = {}
   for k in pairs(parsed) do
     table.insert(keys, k)
   end
   table.sort(keys)
 
-  -- Build data_check_string: key=value pairs joined by \n
+  -- data_check_string: key=value pairs joined by \n
   local parts = {}
   for _, key in ipairs(keys) do
     table.insert(parts, key .. "=" .. url_decode(parsed[key]))
   end
   local data_check_string = table.concat(parts, "\n")
 
-  -- Compute secret key: HMAC_SHA256(bot_token, "WebAppData")
+  -- Secret key: HMAC_SHA256(bot_token, "WebAppData")
   local secret_hmac = openssl_hmac.new("WebAppData", "sha256")
   secret_hmac:update(bot_token)
-  local secret_key = secret_hmac:final()  -- binary string
+  local secret_key = secret_hmac:final() -- binary string
 
-  -- Compute HMAC of data_check_string with secret_key
+  -- HMAC of data_check_string with secret_key
   local hmac_obj = openssl_hmac.new(secret_key, "sha256")
   hmac_obj:update(data_check_string)
-  local calc_hash_bin = hmac_obj:final()  -- binary string
+  local calc_hash_bin = hmac_obj:final() -- binary string
 
-  -- Convert binary hash to lowercase hex string
+  -- Binary hash conversion to a lowercase hex string
   local expected_hash = calc_hash_bin:gsub('.', function(c)
     return string.format('%02x', string.byte(c))
   end)

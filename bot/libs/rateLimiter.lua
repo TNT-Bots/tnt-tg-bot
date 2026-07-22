@@ -8,16 +8,17 @@ Idle buckets are swept by a background fiber. In-memory only.
 --]]
 local fiber = require('fiber')
 
---- How often the sweeper scans buckets, in seconds.
+-- How often the sweeper scans buckets, in seconds
 local CLEANUP_INTERVAL_SEC = 60
 
 local rateLimiter = {}
 rateLimiter.__index = rateLimiter
 
 --- Create a new limiter.
--- @param opts (table)
--- @param opts.capacity (number) burst size (tokens available at once)
--- @param opts.refill_per_sec (number) refill rate
+-- @tparam[opt] table opts
+-- @tparam[opt=3] number opts.capacity burst size (tokens available at once)
+-- @tparam[opt=1] number opts.refill_per_sec refill rate
+-- @treturn table limiter object
 function rateLimiter.new(opts)
   opts = opts or {}
 
@@ -44,7 +45,7 @@ function rateLimiter.new(opts)
 end
 
 --- Drop buckets untouched for longer than idle_threshold_sec.
--- @return (number) how many keys were removed
+-- @treturn number how many keys were removed
 function rateLimiter:cleanup()
   local now = fiber.time()
   local removed = 0
@@ -60,9 +61,9 @@ function rateLimiter:cleanup()
 end
 
 --- Try to spend one token for a key.
--- @param key (any) usually chat_id or user_id..':'..chat_id
--- @return (boolean) true if allowed, false if the bucket is empty
--- @return (number) seconds until the next token becomes available
+-- @tparam any key usually chat_id or user_id..':'..chat_id
+-- @treturn boolean true if allowed, false if the bucket is empty
+-- @treturn number seconds until the next token becomes available
 function rateLimiter:allow(key)
   local now = fiber.time()
   local bucket = self.buckets[key]

@@ -1,7 +1,5 @@
---- Force Reply
-  --
-  -- see https://core.telegram.org/bots/api#forcereply
--- @module bot.types.ForceReply
+--- ForceReply type builder.
+-- See: https://core.telegram.org/bots/api#forcereply
 local function ForceReply(data)
   if not data then
     return {

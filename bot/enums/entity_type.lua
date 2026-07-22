@@ -1,25 +1,8 @@
---- Enum Entity Type
+--- Message entity type enum.
+-- See: https://core.telegram.org/bots/api#messageentity
+--
 
----
--- See: <a href="https://core.telegram.org/bots/api#messageentity">Message Entity</a>
--- @table bot.enums.chat_permissions
--- @field MENTION
--- @field HASHTAG
--- @field CASHTAG
--- @field BOT_COMMAND
--- @field URL
--- @field EMAIL
--- @field PHONE_NUMBER
--- @field BOLD
--- @field ITALIC
--- @field UNDERLINE
--- @field STRIKETHROUGH
--- @field SPOILER
--- @field CODE
--- @field PRE
--- @field TEXT_LINK
--- @field TEXT_MENTION
--- @field CUSTOM_EMOJI
+--- Message entity types.
 local entity_type = {
   MENTION = 'mention',
   HASHTAG = 'hashtag',

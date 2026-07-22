@@ -1,5 +1,4 @@
---- Module config
---
+--- Bot runtime configuration shared between modules.
 local parse_mode = require('bot.enums.parse_mode')
 
 local config = {

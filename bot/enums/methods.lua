@@ -1,6 +1,8 @@
--- See: <a href="https://core.telegram.org/bots/api">All Methods</a>
----
--- @table bot.enums.methods
+--- Telegram Bot API method names enum.
+-- See: https://core.telegram.org/bots/api
+--
+
+--- API method names.
 local methods = {
   --
   -- Getting updates

@@ -1,15 +1,8 @@
---- Enum Bot Command Scope
+--- Bot command scope enum.
+-- See: https://core.telegram.org/bots/api#botcommandscope
+--
 
----
--- See: <a href="https://core.telegram.org/bots/api#botcommandscope">Bot Command Scope</a>
--- @table bot.enums.bot_command_scope
--- @field DEFAULT
--- @field ALL_PRIVATE_CHATS
--- @field ALL_GROUP_CHATS
--- @field ALL_CHAT_ADMINISTRATORS
--- @field CHAT
--- @field CHAT_ADMINISTRATORS
--- @field CHAT_MEMBER
+--- Bot command scopes.
 local bot_command_scope = {
   DEFAULT = 'default',
   ALL_PRIVATE_CHATS = 'all_private_chats',

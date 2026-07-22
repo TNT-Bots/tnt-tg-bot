@@ -1,12 +1,11 @@
---- Command handler
---
+--- Command execution pipeline: resolve, filter, antiflood, call.
 local log = require('log')
 local bot = require('bot')
 local command_flags = require('bot.enums.command_flags')
 local chat_type = require('bot.enums.chat_type')
 local RateLimiter = require('bot.libs.rateLimiter')
 
--- antiflood: per (user_id, chat_id)
+-- Antiflood limiter keyed by (user_id, chat_id)
 local antiflood = RateLimiter.new({
   capacity = 2,
   refill_per_sec = 1
@@ -85,7 +84,7 @@ local function processCommand(ctx, opts)
     return
   end
 
-  -- Антифлуд per (user, chat)
+  -- Antiflood per (user, chat)
   --
   local chat_id = ctx:getChatId()
   local key = ufrom.id..':'..chat_id
@@ -107,7 +106,7 @@ local function processCommand(ctx, opts)
   end
   --
 
-  -- Build commad arguments
+  -- Command arguments build from arguments_schema
   if command.arguments_schema then
     command.arguments = build_kv_arguments(ctx, command)
   end

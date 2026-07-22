@@ -1,25 +1,20 @@
---- Keyboard pagination utility
--- @module bot.utils.pagination
---
--- Навигация строится через convention проекта: { command, arguments } +
--- inlineCallbackKeyboard (callback_data собирается по arguments_schema команды).
---
+--- Keyboard pagination utility.
+-- Navigation relies on the project convention: { command, arguments } +
+-- inlineCallbackKeyboard (callback_data is built from the command's arguments_schema).
 local inlineCallbackKeyboard = require('bot.middlewares.inlineCallbackKeyboard')
 
---- Build a paginated inline keyboard
--- @param opts (table)
---   - total (number): всего элементов
---   - page (number): текущая страница (с 1)
---   - per_page (number, optional): на страницу (по умолчанию 5)
---   - command (string): callback-команда навигации (напр. 'cb_top')
---   - arguments (table, optional): базовые аргументы; page подставляется на кнопках
---   - page_key (string, optional): имя аргумента страницы (по умолчанию 'page')
---   - items (table, optional): элементы (нужны только если задан make_button)
---   - make_button (function, optional): function(item, index) -> { text, callback = { command, arguments } }
---   - footer (table, optional): доп. ряды кнопок после навигации (напр. «назад»)
---
--- @return Inline keyboard markup ready for reply_markup
---
+--- Build a paginated inline keyboard.
+-- @tparam table opts
+-- @tparam number opts.total total number of items
+-- @tparam number opts.page current page (1-based)
+-- @tparam[opt=5] number opts.per_page items per page
+-- @tparam string opts.command navigation callback command (e.g. 'cb_top')
+-- @tparam[opt] table opts.arguments base arguments, page is substituted on the buttons
+-- @tparam[opt='page'] string opts.page_key page argument name
+-- @tparam[opt] table opts.items items (required only when make_button is set)
+-- @tparam[opt] function opts.make_button function(item, index) -> { text, callback = { command, arguments } }
+-- @tparam[opt] table opts.footer extra button rows after navigation (e.g. a back button)
+-- @treturn table inline keyboard markup ready for reply_markup
 -- @usage
 -- local kb = pagination({
 --   total = 100,
@@ -27,7 +22,7 @@ local inlineCallbackKeyboard = require('bot.middlewares.inlineCallbackKeyboard')
 --   per_page = 10,
 --   command = 'cb_top',
 --   arguments = { which = 'donat' },
---   footer = { { { text = '🔙 Назад', callback = { command = 'cb_top', arguments = { which = 'menu', page = 1 } } } } },
+--   footer = { { { text = '🔙 Back', callback = { command = 'cb_top', arguments = { which = 'menu', page = 1 } } } } },
 -- })
 local function pagination(opts)
   local page = opts.page or 1
@@ -40,7 +35,7 @@ local function pagination(opts)
   if page < 1 then page = 1 end
   if page > total_pages then page = total_pages end
 
-  -- Кнопка навигации: базовые аргументы + нужная страница.
+  -- Navigation button: base arguments plus the target page.
   local function navButton(text, targetPage)
     local arguments = {}
 
@@ -55,7 +50,7 @@ local function pagination(opts)
 
   local buttons = {}
 
-  -- Кнопки элементов (по одной в ряд), если задан make_button.
+  -- Item buttons (one per row) when make_button is set.
   if opts.make_button then
     local start_idx = (page - 1) * per_page + 1
     local end_idx = math.min(start_idx + per_page - 1, opts.total)
@@ -65,7 +60,7 @@ local function pagination(opts)
     end
   end
 
-  -- Ряд навигации.
+  -- Navigation row.
   if total_pages > 1 then
     local nav = {}
 
@@ -80,7 +75,7 @@ local function pagination(opts)
     table.insert(buttons, nav)
   end
 
-  -- Доп. ряды (напр. «назад»).
+  -- Extra rows (e.g. a back button).
   if opts.footer then
     for _, row in ipairs(opts.footer) do
       table.insert(buttons, row)

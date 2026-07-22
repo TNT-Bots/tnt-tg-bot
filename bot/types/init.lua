@@ -1,3 +1,4 @@
+--- Aggregation of all Telegram type builders.
 return {
   BotCommand = require('bot.types.BotCommand'),
   BotCommandScope = require('bot.types.BotCommandScope'),

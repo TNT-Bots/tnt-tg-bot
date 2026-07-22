@@ -1,5 +1,4 @@
---- Module for making HTTP requests to the Telegram Bot API.
--- @module bot.middlewares.request
+--- HTTP transport for requests to the Telegram Bot API.
 local config = require('bot.config')
 local request = {}
 
@@ -12,10 +11,10 @@ local mpEncode = require('multipart-post')
 local MAX_RETRIES = 3
 local API_URL_FMT = config.api_url..'%s/%s'
 
--- Outbound request timeout (seconds)
---  Tarantool's http.client defaults to an effectively infinite timeout,
---  so without this a hung connection to the
--- Telegram API blocks the calling fiber forever and they pile up over time.
+-- Outbound request timeout, seconds.
+-- Tarantool's http.client defaults to an effectively infinite timeout.
+-- Without a limit a hung connection to the Telegram API blocks
+-- the calling fiber forever, and such fibers pile up over time.
 local REQUEST_TIMEOUT = 25
 
 local function build_body(params)
@@ -23,14 +22,14 @@ local function build_body(params)
   local body
 
   if params.fields then
-    -- Set parse mode
+    -- Default parse mode for text and caption payloads
     if params.fields.text or params.fields.caption then
       if not params.fields.parse_mode then
         params.fields.parse_mode = config.parse_mode
       end
     end
 
-    -- Make multipart-data
+    -- Multipart encoding for file uploads, JSON otherwise
     if params.is_multipart or params.multipart then
       local boundary
       body, boundary = mpEncode(params.fields)
@@ -51,8 +50,12 @@ local function build_body(params)
 end
 
 --- Send an HTTP request to the Telegram Bot API.
--- @param params The request parameters.
--- @return The response from the API, or nil if there was an error.
+-- @tparam table params
+-- @tparam string params.method API method name
+-- @tparam[opt] table params.fields method fields
+-- @tparam[opt] boolean params.is_multipart encode fields as multipart/form-data
+-- @treturn[1] table decoded API response
+-- @treturn[2] table err
 function request.send(params)
   local body, opts = build_body(params)
   opts.timeout = REQUEST_TIMEOUT
@@ -92,10 +95,9 @@ function request.send(params)
         return nil, data
       end
 
-      -- Proxy
+      -- Proxy: data.result fields are reachable directly on data.
       -- tg: data.result.object.key
-      -- proxy: result.object.key
-      --
+      -- proxy: data.object.key
       setmetatable(data, {
         __index = function(t, key)
           if key == nil then

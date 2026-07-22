@@ -9,16 +9,17 @@ local log = require('log')
 local fiber = require('fiber')
 local bot = require('bot')
 
--- Extra seconds to wait on top of retry_after on a 429.
+-- Extra seconds to wait on top of retry_after on a 429
 local RETRY_AFTER_PADDING_SEC = 2
 
 local sendQueue = {}
 sendQueue.__index = sendQueue
 
 --- Create a queue.
--- @param opts (table)
--- @param opts.interval (number) pause between messages to one chat, seconds
--- @param opts.max_queue (number) max pending messages per chat
+-- @tparam[opt] table opts
+-- @tparam[opt=1] number opts.interval pause between messages to one chat, seconds
+-- @tparam[opt=100] number opts.max_queue max pending messages per chat
+-- @treturn table queue object
 function sendQueue.new(opts)
   opts = opts or {}
 
@@ -30,7 +31,9 @@ function sendQueue.new(opts)
   }, sendQueue)
 end
 
---- Drain one chat's queue. Runs inside its own fiber.
+--- Drain one chat's queue.
+-- Runs inside its own fiber.
+-- @tparam number|string chatId chat whose queue to drain
 function sendQueue:drain(chatId)
   local queue = self.queues[chatId]
 
@@ -63,8 +66,8 @@ function sendQueue:drain(chatId)
 end
 
 --- Enqueue a message for sending.
--- @param fields (table) sendMessage fields, chat_id required
--- @param onError (function) optional handler for send errors (other than 429)
+-- @tparam table fields sendMessage fields, chat_id required
+-- @tparam[opt] function onError handler for send errors (other than 429)
 function sendQueue:push(fields, onError)
   local chatId = fields.chat_id
 
