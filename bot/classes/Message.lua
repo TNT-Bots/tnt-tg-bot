@@ -153,22 +153,18 @@ function message:reply(fields)
 end
 
 --- Send a reply referencing this message (reply_parameters).
+-- Caller-provided fields.reply_parameters is respected (e.g. built via types.ReplyParameters).
 -- @tparam string|table fields text string or sendMessage fields
 -- @treturn[1] table response from the Telegram Bot API
 -- @treturn[2] table err
 function message:replyToMessage(fields)
   if type(fields) == 'string' then
-    fields = {
-      text = fields,
-      reply_parameters = {
-        message_id = self:getMessageId()
-      }
-    }
+    fields = { text = fields }
   end
 
   fields.chat_id = fields.chat_id or self:getChatId()
-  fields.reply_parameters = {
-      message_id = self:getMessageId()
+  fields.reply_parameters = fields.reply_parameters or {
+    message_id = self:getMessageId()
   }
 
   return api.call('sendMessage', fields)

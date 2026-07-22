@@ -15,8 +15,11 @@ local methods = {
   close = 'close',
   sendMessage = 'sendMessage',
   forwardMessage = 'forwardMessage',
+  forwardMessages = 'forwardMessages',
   copyMessage = 'copyMessage',
+  copyMessages = 'copyMessages',
   sendPhoto = 'sendPhoto',
+  sendLivePhoto = 'sendLivePhoto',
   sendAudio = 'sendAudio',
   sendDocument = 'sendDocument',
   sendVideo = 'sendVideo',
@@ -24,6 +27,7 @@ local methods = {
   sendVoice = 'sendVoice',
   sendVideoNote = 'sendVideoNote',
   sendMediaGroup = 'sendMediaGroup',
+  sendPaidMedia = 'sendPaidMedia',
   sendLocation = 'sendLocation',
   editMessageLiveLocation = 'editMessageLiveLocation',
   stopMessageLiveLocation = 'stopMessageLiveLocation',
@@ -33,12 +37,17 @@ local methods = {
   sendDice = 'sendDice',
   sendChatAction = 'sendChatAction',
   getUserProfilePhotos = 'getUserProfilePhotos',
+  getUserProfileAudios = 'getUserProfileAudios',
+  getUserPersonalChatMessages = 'getUserPersonalChatMessages',
+  getUserChatBoosts = 'getUserChatBoosts',
+  setUserEmojiStatus = 'setUserEmojiStatus',
   getFile = 'getFile',
   banChatMember = 'banChatMember',
   unbanChatMember = 'unbanChatMember',
   restrictChatMember = 'restrictChatMember',
   promoteChatMember = 'promoteChatMember',
   setChatAdministratorCustomTitle = 'setChatAdministratorCustomTitle',
+  setChatMemberTag = 'setChatMemberTag',
   banChatSenderChat = 'banChatSenderChat',
   unbanChatSenderChat = 'unbanChatSenderChat',
   setChatPermissions = 'setChatPermissions',
@@ -46,8 +55,13 @@ local methods = {
   createChatInviteLink = 'createChatInviteLink',
   editChatInviteLink = 'editChatInviteLink',
   revokeChatInviteLink = 'revokeChatInviteLink',
+  createChatSubscriptionInviteLink = 'createChatSubscriptionInviteLink',
+  editChatSubscriptionInviteLink = 'editChatSubscriptionInviteLink',
   approveChatJoinRequest = 'approveChatJoinRequest',
   declineChatJoinRequest = 'declineChatJoinRequest',
+  answerChatJoinRequestQuery = 'answerChatJoinRequestQuery',
+  sendChatJoinRequestWebApp = 'sendChatJoinRequestWebApp',
+  answerGuestQuery = 'answerGuestQuery',
   setChatPhoto = 'setChatPhoto',
   deleteChatPhoto = 'deleteChatPhoto',
   setChatTitle = 'setChatTitle',
@@ -85,18 +99,25 @@ local methods = {
   getMyDescription = 'getMyDescription',
   setMyShortDescription = 'setMyShortDescription',
   getMyShortDescription = 'getMyShortDescription',
+  setMyProfilePhoto = 'setMyProfilePhoto',
+  removeMyProfilePhoto = 'removeMyProfilePhoto',
   setChatMenuButton = 'setChatMenuButton',
   getChatMenuButton = 'getChatMenuButton',
   setMyDefaultAdministratorRights = 'setMyDefaultAdministratorRights',
   getMyDefaultAdministratorRights = 'getMyDefaultAdministratorRights',
 
-  getChatBoostStatus = 'getChatBoostStatus', -- Chat boost
-  getChatBoostList = 'getChatBoostList',
+  setMessageReaction = 'setMessageReaction', -- Reactions
+  deleteMessageReaction = 'deleteMessageReaction',
+  deleteAllMessageReactions = 'deleteAllMessageReactions',
+
+  verifyUser = 'verifyUser', -- Verification
+  verifyChat = 'verifyChat',
+  removeUserVerification = 'removeUserVerification',
+  removeChatVerification = 'removeChatVerification',
 
   getBusinessConnection = 'getBusinessConnection', -- Business
-  getBusinessConnections = 'getBusinessConnections',
-  setBusinessConnectionMenuButton = 'setBusinessConnectionMenuButton',
-  setBusinessConnectionCommands = 'setBusinessConnectionCommands',
+  readBusinessMessage = 'readBusinessMessage',
+  deleteBusinessMessages = 'deleteBusinessMessages',
   setBusinessAccountName = 'setBusinessAccountName',
   setBusinessAccountUsername = 'setBusinessAccountUsername',
   setBusinessAccountBio = 'setBusinessAccountBio',
@@ -110,9 +131,15 @@ local methods = {
   upgradeGift = 'upgradeGift',
   transferGift = 'transferGift',
 
+  getAvailableGifts = 'getAvailableGifts', -- Gifts
+  sendGift = 'sendGift',
+  getChatGifts = 'getChatGifts',
+  getUserGifts = 'getUserGifts',
+
   postStory = 'postStory', -- Stories
   editStory = 'editStory',
   deleteStory = 'deleteStory',
+  repostStory = 'repostStory',
 
   editMessageText = 'editMessageText', -- Updating messages
   editMessageCaption = 'editMessageCaption',
@@ -120,6 +147,23 @@ local methods = {
   editMessageReplyMarkup = 'editMessageReplyMarkup',
   stopPoll = 'stopPoll',
   deleteMessage = 'deleteMessage',
+  deleteMessages = 'deleteMessages',
+
+  sendChecklist = 'sendChecklist', -- Checklists
+  editMessageChecklist = 'editMessageChecklist',
+
+  approveSuggestedPost = 'approveSuggestedPost', -- Suggested posts
+  declineSuggestedPost = 'declineSuggestedPost',
+
+  deleteEphemeralMessage = 'deleteEphemeralMessage', -- Ephemeral messages
+  editEphemeralMessageText = 'editEphemeralMessageText',
+  editEphemeralMessageCaption = 'editEphemeralMessageCaption',
+  editEphemeralMessageMedia = 'editEphemeralMessageMedia',
+  editEphemeralMessageReplyMarkup = 'editEphemeralMessageReplyMarkup',
+
+  sendMessageDraft = 'sendMessageDraft', -- Drafts and rich messages
+  sendRichMessage = 'sendRichMessage',
+  sendRichMessageDraft = 'sendRichMessageDraft',
 
   sendSticker = 'sendSticker', -- Stickers
   getStickerSet = 'getStickerSet',
@@ -127,6 +171,7 @@ local methods = {
   uploadStickerFile = 'uploadStickerFile',
   createNewStickerSet = 'createNewStickerSet',
   addStickerToSet = 'addStickerToSet',
+  replaceStickerInSet = 'replaceStickerInSet',
   setStickerPositionInSet = 'setStickerPositionInSet',
   deleteStickerFromSet = 'deleteStickerFromSet',
   setStickerEmojiList = 'setStickerEmojiList',
@@ -139,23 +184,28 @@ local methods = {
 
   answerInlineQuery = 'answerInlineQuery', -- Inline mode
   answerWebAppQuery = 'answerWebAppQuery',
+  savePreparedInlineMessage = 'savePreparedInlineMessage',
+  savePreparedKeyboardButton = 'savePreparedKeyboardButton',
 
   sendInvoice = 'sendInvoice', -- Payments
   createInvoiceLink = 'createInvoiceLink',
   answerShippingQuery = 'answerShippingQuery',
   answerPreCheckoutQuery = 'answerPreCheckoutQuery',
+  getMyStarBalance = 'getMyStarBalance',
   getStarTransactions = 'getStarTransactions',
   refundStarPayment = 'refundStarPayment',
   editUserStarSubscription = 'editUserStarSubscription',
+
+  getManagedBotToken = 'getManagedBotToken', -- Managed bots
+  replaceManagedBotToken = 'replaceManagedBotToken',
+  getManagedBotAccessSettings = 'getManagedBotAccessSettings',
+  setManagedBotAccessSettings = 'setManagedBotAccessSettings',
 
   setPassportDataErrors = 'setPassportDataErrors', -- Telegram Passport
 
   sendGame = 'sendGame', -- Games
   setGameScore = 'setGameScore',
   getGameHighScores = 'getGameHighScores',
-
-  setChatBackground = 'setChatBackground', -- Chat background
-  deleteChatBackground = 'deleteChatBackground',
 
   giftPremiumSubscription = 'giftPremiumSubscription', -- Premium
 }
