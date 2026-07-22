@@ -34,6 +34,16 @@ local function InputMediaVideo(data)
     jsonData.thumbnail = data.thumbnail
   end
 
+  -- Optional. Cover for the video in the message
+  if data.cover then
+    jsonData.cover = tostring(data.cover)
+  end
+
+  -- Optional. Start timestamp for the video in the message, in seconds
+  if data.start_timestamp then
+    jsonData.start_timestamp = tonumber(data.start_timestamp)
+  end
+
   -- Optional. Caption of the video to be sent,
   -- 0-1024 characters after entities parsing
   if data.caption then
@@ -49,6 +59,11 @@ local function InputMediaVideo(data)
   -- which can be specified instead of parse_mode
   if data.caption_entities and type(data.caption_entities) == 'table' then
     jsonData.caption_entities = data.caption_entities
+  end
+
+  -- Optional. Pass True if the caption must be shown above the message media
+  if data.show_caption_above_media ~= nil then
+    jsonData.show_caption_above_media = data.show_caption_above_media and true or false
   end
 
   -- Optional. Video width

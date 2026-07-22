@@ -12,7 +12,10 @@ local function BotCommand(data)
 
   return {
     command = data.command or data[1],
-    description = data.description or data[2] or 'command'
+    description = data.description or data[2] or 'command',
+    -- Optional. True, if the command sends an ephemeral message,
+    -- which can be seen only by the sender of the message and the bot
+    is_ephemeral = data.is_ephemeral
   }
 end
 

@@ -51,6 +51,11 @@ local function InputMediaAnimation(data)
     jsonData.caption_entities = data.caption_entities
   end
 
+  -- Optional. Pass True if the caption must be shown above the message media
+  if data.show_caption_above_media ~= nil then
+    jsonData.show_caption_above_media = data.show_caption_above_media and true or false
+  end
+
   -- Optional. Video width
   if data.width then
     jsonData.width = tonumber(data.width)

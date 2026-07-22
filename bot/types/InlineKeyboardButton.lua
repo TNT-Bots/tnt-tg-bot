@@ -93,8 +93,11 @@ local function inlineKeyboardButton(keyboard, data)
   end
 
   -- Optional. Description of the button that copies the specified text to the clipboard.
-  if data.copy_text then
-    button.copy_text = tostring(data.copy_text)
+  -- The API expects a CopyTextButton object; a plain string is wrapped into one.
+  if type(data.copy_text) == 'table' then
+    button.copy_text = data.copy_text
+  elseif data.copy_text then
+    button.copy_text = { text = tostring(data.copy_text) }
   end
 
   -- Optional. Specify True, to send a Pay button

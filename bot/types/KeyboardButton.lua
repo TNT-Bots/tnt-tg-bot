@@ -22,11 +22,38 @@ local function KeyboardButton(keyboard, data)
     button.text = tostring(data.text)
   end
 
-  -- Optional. If specified, pressing the button will open a list of suitable users.
-  -- Tapping on any user will send their identifier to the bot in a "user_shared" service message.
+  -- Optional. Unique identifier of the custom emoji shown before the text of the button
+  if data.icon_custom_emoji_id then
+    button.icon_custom_emoji_id = tostring(data.icon_custom_emoji_id)
+  end
+
+  -- Optional. Style of the button.
+  -- Must be one of:
+  -- "danger" (red)
+  -- "success" (green)
+  -- "primary" (blue).
+  -- If omitted, then an app-specific style is used.
+  if data.style then
+    button.style = tostring(data.style)
+  end
+
+  -- Optional. If specified, pressing the button will open a list of suitable users (KeyboardButtonRequestUsers).
+  -- Identifiers of the selected users will be sent to the bot in a "users_shared" service message.
   -- Available in private chats only
+  if data.request_users then
+    button.request_users = data.request_users
+  end
+
+  -- Deprecated: replaced by request_users in Bot API 7.0.
+  -- Kept as a passthrough for backward compatibility.
   if data.request_user then
     button.request_user = data.request_user
+  end
+
+  -- Optional. If specified, pressing the button will suggest creating a managed bot
+  -- (KeyboardButtonRequestManagedBot)
+  if data.request_managed_bot then
+    button.request_managed_bot = data.request_managed_bot
   end
 
   -- Optional. If specified, pressing the button will open a list of suitable chats.
