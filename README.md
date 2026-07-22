@@ -11,6 +11,7 @@ English | [Russian](docs/ru/README.md)</br>
 > [!WARNING]
 > The `master` branch may receive force pushes, hard resets.
 
+DOC: https://ldoc.uriid1.ru/tnt-tg-bot
 FULL BOT EXAMPLE: https://github.com/niko-tg/niko-bot
 
 ## Features
