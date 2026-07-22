@@ -1,5 +1,10 @@
 --- InputMediaPhoto type builder.
 -- See: https://core.telegram.org/bots/api#inputmediaphoto
+--
+
+--- Build an InputMediaPhoto object.
+-- @tparam table data InputMediaPhoto fields, data.media required
+-- @treturn ?table InputMediaPhoto, nil on invalid input
 local function InputMediaPhoto(data)
   if not data then
     return nil

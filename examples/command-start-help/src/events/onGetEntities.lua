@@ -1,5 +1,4 @@
----
---
+--- Entities event handler running bot commands.
 local processCommand = require('bot.processes.processCommand')
 
 local function onGetEntities(ctx)

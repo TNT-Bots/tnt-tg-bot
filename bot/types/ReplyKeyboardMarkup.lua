@@ -1,5 +1,10 @@
 --- ReplyKeyboardMarkup type builder.
 -- See: https://core.telegram.org/bots/api#replykeyboardmarkup
+--
+
+--- Build a ReplyKeyboardMarkup object.
+-- @tparam[opt] table data markup fields, data.keyboard is an array of button rows
+-- @treturn table ReplyKeyboardMarkup
 local function ReplyKeyboardMarkup(data)
   if not data then
     return { keyboard = {} }

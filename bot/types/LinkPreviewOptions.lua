@@ -1,5 +1,10 @@
 --- LinkPreviewOptions type builder.
 -- See: https://core.telegram.org/bots/api#linkpreviewoptions
+--
+
+--- Build a LinkPreviewOptions object.
+-- @tparam table data LinkPreviewOptions fields
+-- @treturn ?table LinkPreviewOptions, nil when data is missing
 local function LinkPreviewOptions(data)
   if not data then
     return nil

@@ -1,5 +1,4 @@
--- Example of inline keyboard with ctx:answer() and ctx:reply()
---
+--- Example of an inline keyboard with ctx:answer() and ctx:reply().
 local log = require('log')
 local bot = require('bot')
 local inlineKeyboard = require('bot.middlewares.inlineKeyboard')
@@ -9,7 +8,7 @@ bot:cfg({
 })
 
 function bot.events.onGetUpdate(ctx)
-  -- Handle callback queries
+  -- Callback query handling
   if ctx.is_callback_query then
     local data = ctx:getQueryData()
 
@@ -24,7 +23,7 @@ function bot.events.onGetUpdate(ctx)
     return
   end
 
-  -- Handle /start command
+  -- /start command handling
   local text = ctx:getText()
   if not text or text ~= '/start' then
     return

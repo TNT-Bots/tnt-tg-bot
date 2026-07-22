@@ -2,6 +2,10 @@
 -- See: https://core.telegram.org/bots/api#inlinekeyboardbutton
 local log = require('log')
 
+--- Build an InlineKeyboardButton and optionally attach it to a keyboard.
+-- @tparam ?table keyboard InlineKeyboardMarkup to attach the button to
+-- @tparam table data button fields, data.row selects the keyboard row
+-- @treturn ?table InlineKeyboardButton, nil on invalid input
 local function inlineKeyboardButton(keyboard, data)
   if type(data) ~= 'table' then
     return nil

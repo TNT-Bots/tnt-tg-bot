@@ -1,5 +1,10 @@
 --- ForceReply type builder.
 -- See: https://core.telegram.org/bots/api#forcereply
+--
+
+--- Build a ForceReply object.
+-- @tparam[opt] table data { input_field_placeholder = ..., selective = ... }
+-- @treturn table ForceReply
 local function ForceReply(data)
   if not data then
     return {

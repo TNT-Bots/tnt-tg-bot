@@ -2,3 +2,4 @@
 examples/mini-shop/storage/
 examples/pattern-observer/var/
 .claude/
+lua-doc/

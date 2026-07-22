@@ -3,19 +3,14 @@
 --
 
 --- API method names.
+-- @table methods
 local methods = {
-  --
-  -- Getting updates
-  --
-  getUpdates = 'getUpdates',
+  getUpdates = 'getUpdates', -- Getting updates
   setWebhook = 'setWebhook',
   deleteWebhook = 'deleteWebhook',
   getWebhookInfo = 'getWebhookInfo',
 
-  --
-  -- Available methods
-  --
-  getMe = 'getMe',
+  getMe = 'getMe', -- Available methods
   logOut = 'logOut',
   close = 'close',
   sendMessage = 'sendMessage',
@@ -95,16 +90,10 @@ local methods = {
   setMyDefaultAdministratorRights = 'setMyDefaultAdministratorRights',
   getMyDefaultAdministratorRights = 'getMyDefaultAdministratorRights',
 
-  --
-  -- Chat Boost
-  --
-  getChatBoostStatus = 'getChatBoostStatus',
+  getChatBoostStatus = 'getChatBoostStatus', -- Chat boost
   getChatBoostList = 'getChatBoostList',
 
-  --
-  -- Business
-  --
-  getBusinessConnection = 'getBusinessConnection',
+  getBusinessConnection = 'getBusinessConnection', -- Business
   getBusinessConnections = 'getBusinessConnections',
   setBusinessConnectionMenuButton = 'setBusinessConnectionMenuButton',
   setBusinessConnectionCommands = 'setBusinessConnectionCommands',
@@ -121,27 +110,18 @@ local methods = {
   upgradeGift = 'upgradeGift',
   transferGift = 'transferGift',
 
-  --
-  -- Stories
-  --
-  postStory = 'postStory',
+  postStory = 'postStory', -- Stories
   editStory = 'editStory',
   deleteStory = 'deleteStory',
 
-  --
-  -- Updating messages
-  --
-  editMessageText = 'editMessageText',
+  editMessageText = 'editMessageText', -- Updating messages
   editMessageCaption = 'editMessageCaption',
   editMessageMedia = 'editMessageMedia',
   editMessageReplyMarkup = 'editMessageReplyMarkup',
   stopPoll = 'stopPoll',
   deleteMessage = 'deleteMessage',
 
-  --
-  -- Stickers
-  --
-  sendSticker = 'sendSticker',
+  sendSticker = 'sendSticker', -- Stickers
   getStickerSet = 'getStickerSet',
   getCustomEmojiStickers = 'getCustomEmojiStickers',
   uploadStickerFile = 'uploadStickerFile',
@@ -157,16 +137,10 @@ local methods = {
   setCustomEmojiStickerSetThumbnail = 'setCustomEmojiStickerSetThumbnail',
   deleteStickerSet = 'deleteStickerSet',
 
-  --
-  -- Inline mode
-  --
-  answerInlineQuery = 'answerInlineQuery',
+  answerInlineQuery = 'answerInlineQuery', -- Inline mode
   answerWebAppQuery = 'answerWebAppQuery',
 
-  --
-  -- Payments
-  --
-  sendInvoice = 'sendInvoice',
+  sendInvoice = 'sendInvoice', -- Payments
   createInvoiceLink = 'createInvoiceLink',
   answerShippingQuery = 'answerShippingQuery',
   answerPreCheckoutQuery = 'answerPreCheckoutQuery',
@@ -174,28 +148,16 @@ local methods = {
   refundStarPayment = 'refundStarPayment',
   editUserStarSubscription = 'editUserStarSubscription',
 
-  --
-  -- Telegram Passport
-  --
-  setPassportDataErrors = 'setPassportDataErrors',
+  setPassportDataErrors = 'setPassportDataErrors', -- Telegram Passport
 
-  --
-  -- Games
-  --
-  sendGame = 'sendGame',
+  sendGame = 'sendGame', -- Games
   setGameScore = 'setGameScore',
   getGameHighScores = 'getGameHighScores',
 
-  --
-  -- Chat Background
-  --
-  setChatBackground = 'setChatBackground',
+  setChatBackground = 'setChatBackground', -- Chat background
   deleteChatBackground = 'deleteChatBackground',
 
-  --
-  -- Premium
-  --
-  giftPremiumSubscription = 'giftPremiumSubscription',
+  giftPremiumSubscription = 'giftPremiumSubscription', -- Premium
 }
 
 return methods

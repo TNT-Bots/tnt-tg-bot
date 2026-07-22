@@ -1,5 +1,10 @@
 --- InputMediaAudio type builder.
 -- See: https://core.telegram.org/bots/api#inputmediaaudio
+--
+
+--- Build an InputMediaAudio object.
+-- @tparam table data InputMediaAudio fields, data.media required
+-- @treturn ?table InputMediaAudio, nil on invalid input
 local function InputMediaAudio(data)
   if not data then
     return nil

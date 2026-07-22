@@ -1,5 +1,10 @@
 --- InputMediaDocument type builder.
 -- See: https://core.telegram.org/bots/api#inputmediadocument
+--
+
+--- Build an InputMediaDocument object.
+-- @tparam table data InputMediaDocument fields, data.media required
+-- @treturn ?table InputMediaDocument, nil on invalid input
 local function InputMediaDocument(data)
   if not data then
     return nil

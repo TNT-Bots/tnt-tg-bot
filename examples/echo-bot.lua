@@ -1,5 +1,4 @@
--- Example of echo bot
---
+--- Example of an echo bot.
 local log = require('log')
 local bot = require('bot')
 
@@ -11,10 +10,10 @@ function bot.events.onGetUpdate(ctx)
   local text = ctx:getText()
   local chatId = ctx:getChatId()
 
-  local _, err = bot:sendMessage {
+  local _, err = bot:sendMessage({
     text = text,
     chat_id = chatId
-  }
+  })
 
   if err then
     log.error(err)

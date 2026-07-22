@@ -1,5 +1,9 @@
 --- Aggregation of all Telegram type builders.
-return {
+--
+
+--- Telegram type builders.
+-- @table types
+local types = {
   BotCommand = require('bot.types.BotCommand'),
   BotCommandScope = require('bot.types.BotCommandScope'),
   ForceReply = require('bot.types.ForceReply'),
@@ -16,3 +20,5 @@ return {
   ReplyKeyboardMarkup = require('bot.types.ReplyKeyboardMarkup'),
   ReplyKeyboardRemove = require('bot.types.ReplyKeyboardRemove'),
 }
+
+return types

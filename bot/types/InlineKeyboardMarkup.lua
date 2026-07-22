@@ -2,6 +2,11 @@
 -- See: https://core.telegram.org/bots/api#inlinekeyboardmarkup
 local json = require('json')
 
+--- Build an InlineKeyboardMarkup object.
+-- With a ready data.inline_keyboard table returns its JSON encoding,
+-- otherwise returns an empty markup with a toJson method.
+-- @tparam[opt] table data { inline_keyboard = { { button, ... }, ... } }
+-- @treturn table|string markup object or JSON string
 local function InlineKeyboardMarkup(data)
   if data and type(data) ~= 'table' then
     return nil

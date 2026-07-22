@@ -1,5 +1,11 @@
 --- KeyboardButton type builder.
 -- See: https://core.telegram.org/bots/api#keyboardbutton
+--
+
+--- Build a KeyboardButton and optionally attach it to a keyboard.
+-- @tparam ?table keyboard ReplyKeyboardMarkup to attach the button to
+-- @tparam table data button fields, data.row selects the keyboard row
+-- @treturn ?table KeyboardButton, nil on invalid input
 local function KeyboardButton(keyboard, data)
   if keyboard and type(keyboard) ~= 'table' then
     return nil

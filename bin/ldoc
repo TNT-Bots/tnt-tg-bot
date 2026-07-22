@@ -1,5 +1,24 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-ldoc \
-  -s '!new' \
-  -d doc/ bot/
+TARGET="${1:-}"
+if [ -z "${TARGET}" ]; then
+  echo "Usage: $0 <file.lua | directory> [ldoc options]" >&2
+  echo "Example: $0 src/services/tours" >&2
+  exit 2
+fi
+
+if [ ! -e "${TARGET}" ]; then
+  echo "Target not found: ${TARGET}" >&2
+  exit 2
+fi
+
+shift
+
+docker run --rm \
+  -u "$(id -u):$(id -g)" \
+  -v "$(pwd):/data" \
+  ghcr.io/lunarmodules/ldoc:v1.5.0 \
+    -d lua-doc \
+    "$@" \
+    "${TARGET}"

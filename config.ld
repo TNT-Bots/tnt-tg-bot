@@ -1,4 +1,9 @@
-module ".*"
-
--- Генерировать аннотации для полей:
-settings.export = true
+project = 'TNT TG BOT'
+file = {
+  'bot',
+  exclude = {},
+}
+dir = 'lua-doc'
+style = 'doc-style'
+template = 'doc-style'
+all = true

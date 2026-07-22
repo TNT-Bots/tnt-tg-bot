@@ -1,5 +1,4 @@
--- Example of echo bot using ctx:reply() shortcut
---
+--- Example of an echo bot using the ctx:reply() shortcut.
 local log = require('log')
 local bot = require('bot')
 

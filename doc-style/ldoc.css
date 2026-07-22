@@ -1,0 +1,463 @@
+/* Dracula theme for LDoc (https://github.com/lunarmodules/LDoc).
+   Color palette: https://draculatheme.com
+   Usage: set style = 'path/to/this/directory' in your config.ld. */
+
+:root {
+  color-scheme: dark;
+  --bg: #282a36;
+  --bg-side: #21222c;
+  --bg-code: #21222c;
+  --bg-hover: #44475a;
+  --bg-target: rgba(189, 147, 249, 0.15);
+  --fg: #f8f8f2;
+  --fg-muted: #6272a4;
+  --border: #44475a;
+  --accent: #bd93f9;
+  --accent-strong: #ff79c6;
+  --sig: #50fa7b;
+  --syn-keyword: #ff79c6;
+  --syn-string: #f1fa8c;
+  --syn-comment: #6272a4;
+  --syn-number: #bd93f9;
+  --syn-global: #8be9fd;
+  --syn-function: #50fa7b;
+  --syn-param: #ffb86c;
+}
+
+/* --------------------------------
+   Base
+   -------------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, div, dl, dt, dd, ul, ol, li,
+h1, h2, h3, h4, pre, code, p, blockquote, table, th, td {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--fg);
+  background: var(--bg);
+}
+
+code, tt, pre, kbd, samp {
+  font-family: ui-monospace, 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+  font-size: 0.9em;
+}
+
+a:link, a:visited {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-strong);
+  text-decoration: underline;
+}
+
+p {
+  margin: 0.6em 0;
+}
+
+ul, ol {
+  margin: 0.6em 0;
+  padding-left: 1.4em;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 1.2em 0;
+}
+
+img {
+  border: 0;
+  max-width: 100%;
+}
+
+/* Highlight the item targeted by the anchor */
+a:target + * {
+  background: var(--bg-target);
+}
+
+/* --------------------------------
+   Layout: fixed navigation on the left
+   -------------------------------- */
+
+#container {
+  margin: 0;
+  background: var(--bg);
+}
+
+#main {
+  display: block;
+}
+
+#navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 16rem;
+  overflow-y: auto;
+  padding: 1.2rem 1rem 2rem;
+  background: var(--bg-side);
+  border-right: 1px solid var(--border);
+}
+
+#content {
+  margin-left: 16rem;
+  padding: 1.6rem 2.4rem 3rem;
+  max-width: 54rem;
+}
+
+#about {
+  margin-left: 16rem;
+  padding: 0.8rem 2.4rem;
+  border-top: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 60rem) {
+  #navigation {
+    position: static;
+    width: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #content, #about {
+    margin-left: 0;
+    padding: 1.2rem;
+  }
+}
+
+/* --------------------------------
+   Navigation
+   -------------------------------- */
+
+#navigation h1 {
+  font-size: 1.15rem;
+  margin-bottom: 0.6em;
+}
+
+#navigation h1 a {
+  color: var(--fg);
+}
+
+#navigation h2,
+#navigation summary {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0.55em 0 0.2em;
+  border: 0;
+}
+
+/* Collapsible module groups */
+#navigation details {
+  margin: 0;
+}
+
+#navigation summary {
+  cursor: pointer;
+  user-select: none;
+  border-radius: 6px;
+  padding: 0.1em 0.3em;
+}
+
+#navigation summary:hover {
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+#navigation summary::marker {
+  color: var(--fg-muted);
+  font-size: 0.8em;
+}
+
+#navigation ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#navigation li {
+  margin: 0;
+}
+
+#navigation li a {
+  display: block;
+  padding: 0.15em 0.5em;
+  border-radius: 6px;
+  color: var(--fg);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#navigation li a:hover {
+  background: var(--bg-hover);
+  text-decoration: none;
+}
+
+#navigation li li a {
+  padding-left: 1.4em;
+}
+
+/* Current module (not a link) */
+#navigation li strong {
+  display: block;
+  padding: 0.15em 0.5em;
+  color: var(--accent);
+}
+
+/* --------------------------------
+   Content
+   -------------------------------- */
+
+#content h1 {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  margin: 0 0 0.6em;
+}
+
+#content h1 code {
+  color: var(--accent);
+  font-size: 0.95em;
+}
+
+#content h2 {
+  font-size: 1.15rem;
+  margin: 1.4em 0 0.5em;
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid var(--border);
+}
+
+#content h2.section-header {
+  color: var(--fg);
+}
+
+#content h3 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 1.2em 0 0.3em;
+}
+
+#content h4 {
+  font-size: 1rem;
+  margin: 1em 0 0.4em;
+}
+
+p.name {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.95rem;
+}
+
+/* --------------------------------
+   Summary tables (function_list, module_list)
+   -------------------------------- */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table.function_list,
+table.module_list {
+  margin: 0.6em 0 1em;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table.function_list td,
+table.module_list td {
+  padding: 0.45em 0.8em;
+  border-top: 1px solid var(--border);
+  vertical-align: top;
+}
+
+table.function_list tr:first-child td,
+table.module_list tr:first-child td {
+  border-top: 0;
+}
+
+table.function_list td.name,
+table.module_list td.name {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  background: var(--bg-side);
+  width: 40%;
+}
+
+table.function_list td.summary,
+table.module_list td.summary {
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+
+/* --------------------------------
+   Function details
+   -------------------------------- */
+
+dl.function, dl.table {
+  margin: 0.8em 0 1.6em;
+}
+
+dl.function dt, dl.table dt {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.95rem;
+  color: var(--sig);
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 8px 8px 0 0;
+  padding: 0.5em 0.9em;
+  margin-top: 1em;
+}
+
+dl.function dt strong, dl.table dt strong {
+  font-weight: 600;
+}
+
+dl.function dd, dl.table dd {
+  border: 1px solid var(--border);
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
+  padding: 0.7em 1em 0.9em;
+  margin: 0;
+}
+
+/* [line N] link in the signature */
+dl.function dt a[href*='source'], dl.function dt a[name] + a {
+  color: var(--fg-muted);
+  font-size: 0.8em;
+}
+
+/* Parameters and returns */
+dl.function dd ul, dl.function dd ol,
+dl.table dd ul, dl.table dd ol {
+  list-style: none;
+  padding-left: 0.4em;
+}
+
+dl.function dd li, dl.table dd li {
+  margin: 0.25em 0;
+}
+
+span.parameter {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.88rem;
+  color: var(--syn-param);
+}
+
+span.parameter:after {
+  content: ':';
+  color: var(--fg-muted);
+}
+
+span.types {
+  font-size: 0.85rem;
+}
+
+span.types:before {
+  content: '(';
+  color: var(--fg-muted);
+}
+
+span.types:after {
+  content: ')';
+  color: var(--fg-muted);
+}
+
+a.type, span.type {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.95em;
+}
+
+/* The stock LDoc template emits <br/><br/> after summary tables - hide them */
+#content br {
+  display: none;
+}
+
+/* --------------------------------
+   Code and examples
+   -------------------------------- */
+
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.8em 1em;
+  margin: 0.7em 0;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+
+code, tt {
+  background: var(--bg-code);
+  border-radius: 4px;
+  padding: 0.1em 0.3em;
+}
+
+pre code, pre tt, h1 code {
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+ul.nowrap {
+  overflow: auto;
+  white-space: nowrap;
+}
+
+/* Lua syntax highlighting in pre.example */
+pre .keyword { color: var(--syn-keyword); font-weight: 600; }
+pre .string { color: var(--syn-string); }
+pre .comment { color: var(--syn-comment); font-style: italic; }
+pre .number { color: var(--syn-number); }
+pre .constant { color: var(--syn-number); }
+pre .global { color: var(--syn-global); }
+pre .library { color: var(--syn-global); }
+pre .function-name { color: var(--syn-function); }
+pre .operator { color: var(--syn-keyword); }
+pre .preprocessor, pre.prepro { color: var(--fg-muted); }
+pre .escape { color: var(--syn-keyword); }
+pre .marker { background: var(--bg-target); }
+pre .prompt { color: var(--fg-muted); }
+
+/* --------------------------------
+   Project header (#product) and misc
+   -------------------------------- */
+
+/* The default template's header block is empty - the project name already lives in the navigation */
+#product {
+  display: none;
+}
+
+blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1em;
+  color: var(--fg-muted);
+}
+
+th, td {
+  text-align: left;
+}

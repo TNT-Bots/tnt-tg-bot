@@ -1,5 +1,4 @@
----
---
+--- Update event handler dispatching messages with entities.
 local bot = require('bot')
 
 local function onGetUpdate(ctx)

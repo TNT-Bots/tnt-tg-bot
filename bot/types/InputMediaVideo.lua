@@ -1,5 +1,10 @@
 --- InputMediaVideo type builder.
 -- See: https://core.telegram.org/bots/api#inputmediavideo
+--
+
+--- Build an InputMediaVideo object.
+-- @tparam table data InputMediaVideo fields, data.media required
+-- @treturn ?table InputMediaVideo, nil on invalid input
 local function InputMediaVideo(data)
   if not data then
     return nil

@@ -26,6 +26,12 @@ local function build_kv_arguments(ctx, command)
   return arguments
 end
 
+--- Resolve and execute a command for the incoming update.
+-- @tparam table ctx typed update object (message or callback query)
+-- @tparam[opt] table opts
+-- @tparam[opt] boolean opts.is_text_command treat opts.command as an already resolved command
+-- @tparam[opt] table opts.command resolved command object, used with is_text_command
+-- @tparam[opt] function opts.antiflood_answer called as (ctx, wait) when a callback press is rate limited
 local function processCommand(ctx, opts)
   local commandName
   local command

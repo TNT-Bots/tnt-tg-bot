@@ -1,5 +1,10 @@
 --- InputMediaAnimation type builder.
 -- See: https://core.telegram.org/bots/api#inputmediaanimation
+--
+
+--- Build an InputMediaAnimation object.
+-- @tparam table data InputMediaAnimation fields, data.media required
+-- @treturn ?table InputMediaAnimation, nil on invalid input
 local function InputMediaAnimation(data)
   if not data then
     return nil
