@@ -6,7 +6,7 @@ local log = require('log')
 local json = require('json')
 local http = require('http.client')
 local fiber = require('fiber')
-local mpEncode = require('multipart-post')
+local multipartPost = require('multipart-post')
 
 local MAX_RETRIES = 3
 local API_URL_FMT = config.api_url..'%s/%s'
@@ -35,11 +35,30 @@ local function build_body(params)
 
     -- Multipart encoding for file uploads, JSON otherwise
     if params.is_multipart or params.multipart then
-      local boundary
-      body, boundary = mpEncode(fields)
+      -- Telegram expects nested structures (reply_markup etc.) as JSON strings in multipart.
+      --- A table without a data field is not a file
+      -- part: encode it, otherwise mpEncode drops the field but keeps its
+      -- boundary line - the dangling boundary breaks the multipart body
+      -- and Telegram replies 400 with an empty body.
+      for key, value in pairs(fields) do
+        if type(value) == 'table' and value.data == nil then
+          if fields == params.fields then
+            fields = table.copy(fields)
+          end
 
+          fields[key] = json.encode(value)
+        end
+      end
+
+      local encoded, err = multipartPost.encode(fields)
+
+      if err then
+        return nil, nil, err
+      end
+
+      body = encoded.body
       opts.headers = {
-        ['Content-Type'] = 'multipart/form-data; boundary=' .. boundary,
+        ['Content-Type'] = encoded.content_type,
       }
     else
       body = json.encode(fields)
@@ -61,7 +80,13 @@ end
 -- @treturn[1] table decoded API response
 -- @treturn[2] table err
 function request.send(params)
-  local body, opts = build_body(params)
+  local body, opts, buildErr = build_body(params)
+
+  if buildErr then
+    buildErr.__method = params.method
+    return nil, buildErr
+  end
+
   opts.timeout = REQUEST_TIMEOUT
 
   local url = API_URL_FMT:format(config.token, params.method)
@@ -74,8 +99,8 @@ function request.send(params)
       if attempt < MAX_RETRIES then
         local delay = math.pow(2, attempt - 1)
 
-        log.warn('[Request] Network error, retry after %ds (attempt %d/%d)',
-          delay, attempt, MAX_RETRIES)
+        log.warn('[Request] Empty response (status: %s, reason: %s), retry after %ds (attempt %d/%d)',
+          tostring(raw.status), tostring(raw.reason), delay, attempt, MAX_RETRIES)
 
         fiber.sleep(delay)
       else
@@ -88,6 +113,8 @@ function request.send(params)
 
         return nil, {
           description = 'Empty data received',
+          status = raw.status,
+          reason = raw.reason,
           __method = params.method
         }
       end
