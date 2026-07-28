@@ -22,7 +22,7 @@ bash tnt-tg-bot.pre-build.sh
 # HTTP клиент/сервер (обязательно)
 luarocks install --local --tree=$PWD/.rocks --server=https://rocks.tarantool.org/ http
 # Multipart POST (обязательно)
-luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 lua-multipart-post 1.0-0
+luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 lua-multipart-post
 # Биндинг к OpenSSL (опционально, только для WebApp)
 luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 luaossl
 ```
