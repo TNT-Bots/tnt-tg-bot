@@ -62,4 +62,4 @@ CC="gcc -std=gnu99" \
   tools::luarocks_install "luaossl" "20250929-0"
 
 # https://github.com/uriid1/pimp-lua
-tools::luarocks_install "pimp" "2.1-2"
+tools::luarocks_install "pimp" "2.2-0"
