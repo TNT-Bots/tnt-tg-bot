@@ -22,7 +22,7 @@ Or install the rocks manually:
 # HTTP client/server (required)
 luarocks install --local --tree=$PWD/.rocks --server=https://rocks.tarantool.org/ http
 # Multipart POST (required)
-luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 lua-multipart-post 1.0-0
+luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 lua-multipart-post
 # OpenSSL binding (optional, WebApp only)
 luarocks install --local --tree=$PWD/.rocks --lua-version 5.1 luaossl
 ```
