@@ -2,7 +2,7 @@
 -- Uses bot.utils.pagination, which builds navigation through the project's
 -- callback convention: a registered command plus its arguments_schema.
 -- The keyboard encodes { command, arguments } into callback_data,
--- and processCommand parses it back into command.arguments on each press.
+-- and processCommand parses it back into ctx.arguments on each press.
 local bot = require('bot')
 local Command = require('bot.classes.Command')
 local pagination = require('bot.utils.pagination')

@@ -3,8 +3,20 @@
 --
 
 --- Build a LinkPreviewOptions object.
--- @tparam table data LinkPreviewOptions fields
+-- @tparam table data
+-- @tparam[opt] boolean data.is_disabled disable the link preview
+-- @tparam[opt] string data.url URL to use for the link preview, the first URL of the message text by default
+-- @tparam[opt] boolean data.prefer_small_media shrink the media in the link preview
+-- @tparam[opt] boolean data.prefer_large_media enlarge the media in the link preview
+-- @tparam[opt] boolean data.show_above_text show the link preview above the message text
 -- @treturn ?table LinkPreviewOptions, nil when data is missing
+-- @usage
+-- local LinkPreviewOptions = require('bot.types.LinkPreviewOptions')
+--
+-- ctx:reply({
+--   text = 'https://example.com',
+--   link_preview_options = LinkPreviewOptions({ is_disabled = true }),
+-- })
 local function LinkPreviewOptions(data)
   if not data then
     return nil

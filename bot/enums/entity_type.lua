@@ -4,23 +4,23 @@
 
 --- Message entity types.
 local entity_type = {
-  MENTION = 'mention',
-  HASHTAG = 'hashtag',
-  CASHTAG = 'cashtag',
-  BOT_COMMAND = 'bot_command',
-  URL = 'url',
-  EMAIL = 'email',
-  PHONE_NUMBER = 'phone_number',
-  BOLD = 'bold',
-  ITALIC = 'italic',
-  UNDERLINE = 'underline',
-  STRIKETHROUGH = 'strikethrough',
-  SPOILER = 'spoiler',
-  CODE = 'code',
-  PRE = 'pre',
-  TEXT_LINK = 'text_link',
-  TEXT_MENTION = 'text_mention',
-  CUSTOM_EMOJI = 'custom_emoji',
+  MENTION = 'mention',             -- @username
+  HASHTAG = 'hashtag',             -- #hashtag or #hashtag@chatusername
+  CASHTAG = 'cashtag',             -- $USD or $USD@chatusername
+  BOT_COMMAND = 'bot_command',     -- /start@jobs_bot
+  URL = 'url',                     -- https://telegram.org
+  EMAIL = 'email',                 -- do-not-reply@telegram.org
+  PHONE_NUMBER = 'phone_number',   -- +1-212-555-0123
+  BOLD = 'bold',                   -- bold text
+  ITALIC = 'italic',               -- italic text
+  UNDERLINE = 'underline',         -- underlined text
+  STRIKETHROUGH = 'strikethrough', -- strikethrough text
+  SPOILER = 'spoiler',             -- spoiler message
+  CODE = 'code',                   -- monowidth string
+  PRE = 'pre',                     -- monowidth block
+  TEXT_LINK = 'text_link',         -- clickable text URL
+  TEXT_MENTION = 'text_mention',   -- mention of a user without a username
+  CUSTOM_EMOJI = 'custom_emoji',   -- inline custom emoji sticker
 }
 
 return entity_type

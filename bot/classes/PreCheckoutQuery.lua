@@ -1,6 +1,11 @@
 --- PreCheckoutQuery class wrapping a pre_checkout_query update.
+-- @pragma nostrip
 local defineGetters = require('bot.libs.getter')
 
+--- Fields of the PreCheckoutQuery object.
+-- @table PreCheckoutQuery
+-- @tfield number update_id update identifier
+-- @tfield table pre_checkout_query raw PreCheckoutQuery object from the Telegram Bot API
 local PreCheckoutQuery = {}
 PreCheckoutQuery.__index = PreCheckoutQuery
 

@@ -44,6 +44,7 @@ return command
 | `MAINTENANCE` | 64 |
 | `MODERATION` | 128 |
 | `ADMINISTRATIVE` | 256 |
+| `MULTI_USER` | 512 |
 
 > **Важно:** сам `processCommand` enforce-ит **только `PRIVATE`** (команда работает
 > лишь в личке). Ещё он отбивает других ботов и отправителей от лица канала
@@ -92,8 +93,8 @@ commandLoader {
 
 1. Находит команду - по callback-данным, по первому токену текста или из `opts.command`, если задан `opts.is_text_command`.
 2. Enforce-ит `PRIVATE`; отбивает ботов и отправителей-каналы.
-3. Применяет **антифлуд** на `(user_id, chat_id)` - токен-бакет (`capacity = 2`, `refill = 1/сек`). На callback зовётся `opts.antiflood_answer(ctx)`, если передан.
-4. Для команд с `arguments_schema` заполняет `command.arguments` (см. ниже).
+3. Применяет **антифлуд** на `(user_id, chat_id)` - токен-бакет (`capacity = 2`, `refill = 1/сек`). На callback зовётся `opts.antiflood_answer(ctx, wait)`, если передан; `wait` - секунды до следующего разрешённого нажатия.
+4. Для команд с `arguments_schema` заполняет `ctx.arguments` (см. ниже).
 5. Зовёт `bot.events.preCallCommand(ctx, command)` - **если он вернул `false`, команда отменяется.**
 6. Выполняет `command.call(ctx)`.
 7. Зовёт `bot.events.postCallCommand(ctx, command)`.
@@ -103,7 +104,7 @@ commandLoader {
 ## Callback-команды
 
 Команда может обрабатывать и нажатия inline-кнопок. Объяви `arguments_schema` -
-и позиционная `callback_data` разберётся обратно в именованный `command.arguments`:
+и позиционная `callback_data` разберётся обратно в именованный `ctx.arguments`:
 
 ```lua
 local command = Command:new {
@@ -114,11 +115,14 @@ local command = Command:new {
 
 function command.call(ctx)
   ctx:answer()                       -- подтвердить нажатие
-  local page   = command.arguments.page
-  local action = command.arguments.action
+  local page   = ctx.arguments.page
+  local action = ctx.arguments.action
   -- ...
 end
 ```
+
+> `command.arguments` по-прежнему работает, но устарел: объект команды общий для
+> всех fiber-ов, и параллельные апдейты перезаписывают его. Используй `ctx.arguments`.
 
 `callback_data` - строка через пробел `cb_settings <page> <action>`. Схема
 сопоставляет позиции именам. Строй такие кнопки через

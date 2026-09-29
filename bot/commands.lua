@@ -1,13 +1,15 @@
 --- Command resolution for text and callback updates.
+-- @pragma nostrip
 local log = require('log')
 
 local commands = {}
 
 --- Resolve a command from message text (ctx.message.text).
 -- @tparam table bot bot object
+-- The resolved command name is stored in ctx.__command.
 -- @tparam table ctx message object
--- @treturn function command handler, nil if the command is unknown
--- @treturn string bot username from the '/cmd@username' form, if present
+-- @treturn ?table command object from bot.commands, nil if the command is unknown
+-- @treturn ?string bot username from the '/cmd@username' form, if present
 function commands.command(bot, ctx)
   local command = ctx:getArguments({ count = 1 })[1]
 
@@ -29,8 +31,9 @@ end
 
 --- Resolve a command from callback query data.
 -- @tparam table bot bot object
+-- The resolved command name is stored in ctx.__command.
 -- @tparam table ctx callback query object
--- @treturn function command handler, nil if the command is unknown
+-- @treturn ?table command object from bot.commands, nil if the command is unknown
 function commands.callbackCommand(bot, ctx)
   local command = ctx:getArguments({ count = 1 })[1]
   if not bot.commands[command] then

@@ -3,8 +3,28 @@
 --
 
 --- Build a ReplyKeyboardMarkup object.
--- @tparam[opt] table data markup fields, data.keyboard is an array of button rows
+-- @tparam[opt] table data markup fields
+-- @tparam[opt] table data.keyboard array of button rows { { button, ... }, ... }, see types.KeyboardButton
+-- @tparam[opt] boolean data.is_persistent always show the keyboard when the regular keyboard is hidden
+-- @tparam[opt] boolean data.resize_keyboard resize the keyboard vertically for optimal fit
+-- @tparam[opt] boolean data.one_time_keyboard hide the keyboard as soon as it has been used
+-- @tparam[opt] string data.input_field_placeholder placeholder shown in the input field, cut to 64 characters
+-- @tparam[opt] boolean data.selective show the keyboard to specific users only
 -- @treturn table ReplyKeyboardMarkup
+-- @see types.KeyboardButton
+-- @usage
+-- local ReplyKeyboardMarkup = require('bot.types.ReplyKeyboardMarkup')
+--
+-- local kb = ReplyKeyboardMarkup({
+--   keyboard = {
+--     { { text = 'Yes' }, { text = 'No' } },
+--     { { text = 'Cancel' } },
+--   },
+--   resize_keyboard = true,
+--   one_time_keyboard = true,
+-- })
+--
+-- ctx:reply({ text = 'Answer:', reply_markup = kb })
 local function ReplyKeyboardMarkup(data)
   if not data then
     return { keyboard = {} }

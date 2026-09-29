@@ -1,4 +1,15 @@
 --- Simple event emitter.
+-- @pragma nostrip
+-- @usage
+-- local EventEmitter = require('bot.interfaces.EventEmitter')
+--
+-- local emitter = EventEmitter:new()
+--
+-- emitter:on('member_kicked', function(ctx)
+--   ctx:reply('Bye!')
+-- end)
+--
+-- emitter:emit('member_kicked', ctx)
 local log = require('log')
 
 local EventEmitter = {}
@@ -14,8 +25,9 @@ function EventEmitter:new()
 end
 
 --- Subscribe a handler to an event.
+-- Several handlers of one event are called in the subscription order.
 -- @tparam string event event name
--- @tparam function fn handler
+-- @tparam function fn handler called as fn(ctx)
 function EventEmitter:on(event, fn)
   log.verbose('[EventEmitter] init event: %-40s | fn %s', event, fn)
 
@@ -27,6 +39,7 @@ function EventEmitter:on(event, fn)
 end
 
 --- Emit an event to all subscribed handlers.
+-- An event without handlers is ignored.
 -- @tparam string event event name
 -- @tparam any ctx argument passed to handlers
 function EventEmitter:emit(event, ctx)

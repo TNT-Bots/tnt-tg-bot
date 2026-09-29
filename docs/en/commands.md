@@ -44,6 +44,7 @@ function is a plain field you assign yourself.
 | `MAINTENANCE` | 64 |
 | `MODERATION` | 128 |
 | `ADMINISTRATIVE` | 256 |
+| `MULTI_USER` | 512 |
 
 > **Important:** `processCommand` itself enforces **only `PRIVATE`** (the command
 > runs only in private chats). It also denies other bots and channel (`sender_chat`)
@@ -92,8 +93,8 @@ For `settings` above, the loader requires
 
 1. Resolves the command - by callback data, by the first text token, or from `opts.command` when `opts.is_text_command` is set.
 2. Enforces `PRIVATE`; denies bots and channel senders.
-3. Applies **antiflood** per `(user_id, chat_id)` - a token bucket (`capacity = 2`, `refill = 1/s`). On a callback, `opts.antiflood_answer(ctx)` is called if provided.
-4. For commands with an `arguments_schema`, fills `command.arguments` (see below).
+3. Applies **antiflood** per `(user_id, chat_id)` - a token bucket (`capacity = 2`, `refill = 1/s`). On a callback, `opts.antiflood_answer(ctx, wait)` is called if provided; `wait` is the number of seconds until the next press is allowed.
+4. For commands with an `arguments_schema`, fills `ctx.arguments` (see below).
 5. Calls `bot.events.preCallCommand(ctx, command)` - **if it returns `false`, the command is aborted.**
 6. Runs `command.call(ctx)`.
 7. Calls `bot.events.postCallCommand(ctx, command)`.
@@ -103,7 +104,7 @@ For `settings` above, the loader requires
 ## Callback commands
 
 A command can also handle inline-button presses. Declare an `arguments_schema`
-and the positional `callback_data` is parsed back into a named `command.arguments`:
+and the positional `callback_data` is parsed back into a named `ctx.arguments`:
 
 ```lua
 local command = Command:new {
@@ -114,11 +115,14 @@ local command = Command:new {
 
 function command.call(ctx)
   ctx:answer()                       -- acknowledge the press
-  local page   = command.arguments.page
-  local action = command.arguments.action
+  local page   = ctx.arguments.page
+  local action = ctx.arguments.action
   -- ...
 end
 ```
+
+> `command.arguments` still works but is deprecated: the command object is shared
+> between fibers, so concurrent updates overwrite it. Use `ctx.arguments`.
 
 `callback_data` is a space-separated string `cb_settings <page> <action>`. The
 schema maps positions to names. Build such buttons with

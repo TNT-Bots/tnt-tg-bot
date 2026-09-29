@@ -1,4 +1,5 @@
 --- Telegram Bot API client.
+-- @pragma nostrip
 local request = require('bot.middlewares.request')
 local inputFile = require('bot.libs.inputFile')
 local methods = require('bot.enums.methods')
@@ -7,11 +8,13 @@ local api = {}
 
 --- Execute a Telegram Bot API method.
 -- @tparam string method API method to execute
--- @tparam table fields method fields
+-- @tparam[opt] table fields method fields
 -- @tparam[opt] table opts options
 -- @tparam[opt] boolean opts.multipart_post send fields as multipart/form-data
 -- @treturn[1] table response from the Telegram Bot API
 -- @treturn[2] table err
+-- @raise if method is nil
+-- @see middlewares.request
 -- @usage
 -- bot.call('sendMessage', {
 --   text = 'Hello!',
@@ -35,6 +38,7 @@ function api.call(method, fields, opts)
 end
 
 --- Simplified wrapper over the sendPhoto method.
+-- data.filepath or data.url is moved into data.photo, the passed table is modified.
 -- @tparam table data sendPhoto fields
 -- @tparam[opt] string data.filepath path to a local image file
 -- @tparam[opt] string data.url image URL
@@ -53,7 +57,8 @@ function api.sendImage(data)
 end
 
 --- Wrap all Telegram API methods onto the bot object.
--- After the call every method is available as bot:<method>(fields, opts).
+-- After the call every method of enums.methods is available as bot:method(fields, opts).
+-- @see enums.methods
 -- @tparam table bot bot object
 function api.wrapMethods(bot)
   for method, _ in pairs(methods) do

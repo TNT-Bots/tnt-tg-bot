@@ -6,8 +6,15 @@ local MyChatMember = require('bot.classes.MyChatMember')
 local PreCheckoutQuery = require('bot.classes.PreCheckoutQuery')
 
 --- Wrap raw update data into the matching class.
+-- The class is selected by the update field: message, callback_query,
+-- chat_member, my_chat_member or pre_checkout_query.
 -- @tparam table data raw update from the Telegram Bot API
 -- @treturn table typed update object, raw data if the update type is unknown
+-- @see classes.Message
+-- @see classes.CallbackQuery
+-- @see classes.ChatMember
+-- @see classes.MyChatMember
+-- @see classes.PreCheckoutQuery
 local function processMessage(data)
   if data.message then
     return Message(data)

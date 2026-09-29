@@ -1,10 +1,16 @@
 --- Outgoing message queue: at most one message per interval per chat.
---[[
-Each chat_id runs its own fiber that sends queued messages with an interval
-pause between them. Telegram allows ~1 msg/sec per chat, so the queue smooths
-bursts (e.g. mass bans) and avoids 429s; different chats run in parallel.
-In-memory - if a chat's queue grows past max_queue, new messages are dropped with a warning.
---]]
+-- Each chat_id runs its own fiber that sends queued messages with an interval
+-- pause between them. Telegram allows ~1 msg/sec per chat, so the queue smooths
+-- bursts (e.g. mass bans) and avoids 429s; different chats run in parallel.
+-- In-memory - if a chat's queue grows past max_queue, new messages are dropped with a warning.
+-- @pragma nostrip
+-- @usage
+-- local sendQueue = require('bot.libs.sendQueue')
+-- local queue = sendQueue.new({ interval = 1.1, max_queue = 100 })
+--
+-- queue:push({ chat_id = chat_id, text = 'hi' }, function(err)
+--   log.error(err)
+-- end)
 local log = require('log')
 local fiber = require('fiber')
 local bot = require('bot')
@@ -32,7 +38,8 @@ function sendQueue.new(opts)
 end
 
 --- Drain one chat's queue.
--- Runs inside its own fiber.
+-- Runs inside its own fiber, started by sendQueue:push.
+-- On a 429 waits for retry_after plus 2 seconds and retries the same message.
 -- @tparam number|string chatId chat whose queue to drain
 function sendQueue:drain(chatId)
   local queue = self.queues[chatId]
@@ -66,8 +73,10 @@ function sendQueue:drain(chatId)
 end
 
 --- Enqueue a message for sending.
+-- A message over the max_queue limit is dropped with a warning in the log.
 -- @tparam table fields sendMessage fields, chat_id required
--- @tparam[opt] function onError handler for send errors (other than 429)
+-- @tparam[opt] function onError handler for send errors (other than 429), called as onError(err)
+-- @raise if fields.chat_id is nil
 function sendQueue:push(fields, onError)
   local chatId = fields.chat_id
 

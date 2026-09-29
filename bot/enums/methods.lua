@@ -1,6 +1,8 @@
 --- Telegram Bot API method names enum.
+-- The name of a field is the name of the API method. Every method is exposed
+-- on the bot object as bot:method(fields, opts), also available as bot.methods.
 -- See: https://core.telegram.org/bots/api
---
+-- @see bot
 
 --- API method names.
 -- @table methods

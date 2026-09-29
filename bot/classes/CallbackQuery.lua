@@ -3,6 +3,15 @@ local Message = require('bot.classes.Message')
 local defineGetters = require('bot.libs.getter')
 local api = require('bot.api')
 
+--- Fields of the callback object.
+-- @table callback
+-- @tfield number update_id update identifier
+-- @tfield table callback_query raw CallbackQuery object from the Telegram Bot API
+-- @tfield ?table message raw Message object the callback button is attached to
+-- @tfield boolean is_callback_query always true, distinguishes the object from a message object
+-- @tfield ?table arguments named arguments parsed from the callback data,
+-- set by processes.processCommand for commands with arguments_schema
+-- @tfield ?string __command resolved command name, set by bot.callbackCommand
 local callback = {}
 callback.__index = callback
 
@@ -115,7 +124,8 @@ defineGetters(callback, {
 })
 
 --- Check whether the callback query sender is the message reply author.
--- @treturn boolean true if it is the same user, false otherwise
+-- @treturn ?boolean true if it is the same user, false otherwise,
+-- nil when the attached message is not a reply
 function callback:isSameUser()
   if self.callback_query and self.callback_query.from and
     self.message and self.message.reply_to_message
@@ -129,7 +139,7 @@ end
 --- @section end
 
 --- Get the associated message.
--- @treturn table associated message
+-- @treturn ?table raw Message object the callback button is attached to
 function callback:getMessage()
   return self.message
 end
@@ -138,7 +148,8 @@ end
 -- @tparam[opt] table opts
 -- @tparam[opt=' '] string opts.separator separator used to split the data
 -- @tparam[opt=10] number opts.count maximum number of arguments
--- @treturn table arguments list
+-- @treturn table arguments list, the first item is the command name
+-- @raise if the callback query has no data
 function callback:getArguments(opts)
   opts = opts or {}
 
@@ -150,8 +161,9 @@ function callback:getArguments(opts)
 end
 
 --- Strip the leading command from the callback query data.
--- @treturn string data without the command
--- @treturn number number of replacements made
+-- Works only after the command was resolved by bot.callbackCommand.
+-- @treturn ?string data without the command, nil when there is no data or resolved command
+-- @treturn ?number number of replacements made
 function callback:trimCommand()
   if self.callback_query and self.callback_query.data and self.__command then
     local res, count = self.callback_query.data:gsub(self.__command..' ', '', 1)
@@ -161,6 +173,7 @@ function callback:trimCommand()
 end
 
 --- Send a reply to the same chat.
+-- A passed table is modified: chat_id is set when missing.
 -- @tparam string|table fields text string or sendMessage fields
 -- @treturn[1] table response from the Telegram Bot API
 -- @treturn[2] table err
@@ -180,6 +193,7 @@ function callback:reply(fields)
 end
 
 --- Answer the callback query (shows a notification to the user).
+-- A passed table is modified: callback_query_id is set when missing.
 -- @tparam[opt] string|table fields text string or answerCallbackQuery fields
 -- @treturn[1] table response from the Telegram Bot API
 -- @treturn[2] table err

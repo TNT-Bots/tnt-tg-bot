@@ -4,7 +4,8 @@
 
 --- Build a ReplyKeyboardRemove object.
 -- Without data the keyboard is removed for all users (API default).
--- @tparam[opt] table data { selective = ... }
+-- @tparam[opt] table data
+-- @tparam[opt] boolean data.selective remove the keyboard for specific users only
 -- @treturn table ReplyKeyboardRemove
 local function ReplyKeyboardRemove(data)
   if not data then

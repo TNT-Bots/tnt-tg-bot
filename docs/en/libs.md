@@ -104,7 +104,8 @@ from the callback command's `arguments_schema`. See the
 
 ```lua
 local parseInitData = require('bot.libs.parseInitData')
-local res = parseInitData(init_data, bot_token)  -- { valid = bool, userData = table|nil }
+local res = parseInitData(init_data, bot_token, { max_age_sec = 3600 })
+-- { valid = bool, userData = table|nil, authDate = number|nil }
 ```
 
 ## inputFile - local file upload

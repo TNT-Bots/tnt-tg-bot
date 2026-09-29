@@ -1,4 +1,5 @@
 --- Webhook transport.
+-- @pragma nostrip
 local log = require('log')
 local fio = require('fio')
 local json = require('json')
@@ -7,6 +8,8 @@ local fiber = require('fiber')
 local webhook = {}
 
 --- Register the webhook, optionally with a self-signed certificate.
+-- Returns nothing when opts are invalid or the certificate cannot be opened,
+-- the reason is written to the log.
 -- @tparam table bot bot object
 -- @tparam table opts
 -- @tparam string opts.url webhook URL (opts.bot_url is accepted as an alias)
@@ -66,8 +69,11 @@ end
 -- @tparam[opt='/'] string opts.path route for incoming updates
 -- @tparam string opts.url webhook URL (opts.bot_url is accepted as an alias)
 -- @tparam[opt] string opts.certificate path to the certificate file
--- @tparam[opt] table opts.routes extra routes { path, method, callback }
--- @tparam function switch update handler
+-- @tparam[opt=false] boolean opts.drop_pending_updates drop pending updates
+-- @tparam[opt] table opts.allowed_updates list of allowed update types
+-- @tparam[opt] table opts.routes extra routes { { path, method, callback }, ... }
+-- @tparam[opt=false] boolean opts.maintenance value stored in bot.maintenance
+-- @tparam function switch update handler called with the raw update in a new fiber
 -- @treturn[1] table response from the Telegram Bot API
 -- @treturn[2] table err
 function webhook.start(bot, opts, switch)

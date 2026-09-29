@@ -1,4 +1,5 @@
 --- HTTP transport for requests to the Telegram Bot API.
+-- @pragma nostrip
 local config = require('bot.config')
 local request = {}
 
@@ -17,6 +18,8 @@ local API_URL_FMT = config.api_url..'%s/%s'
 -- the calling fiber forever, and such fibers pile up over time.
 local REQUEST_TIMEOUT = 25
 
+-- Request body and http options for params.fields: multipart or JSON.
+-- Returns body, opts or nil, nil, err
 local function build_body(params)
   local opts = {}
   local body
@@ -36,7 +39,7 @@ local function build_body(params)
     -- Multipart encoding for file uploads, JSON otherwise
     if params.is_multipart or params.multipart then
       -- Telegram expects nested structures (reply_markup etc.) as JSON strings in multipart.
-      --- A table without a data field is not a file
+      -- A table without a data field is not a file
       -- part: encode it, otherwise mpEncode drops the field but keeps its
       -- boundary line - the dangling boundary breaks the multipart body
       -- and Telegram replies 400 with an empty body.
@@ -73,12 +76,36 @@ local function build_body(params)
 end
 
 --- Send an HTTP request to the Telegram Bot API.
+-- The request timeout is 25 seconds. A request without a response body
+-- is sent up to 3 times with pauses of 1 and 2 seconds.
+-- config.parse_mode is added to fields with text or caption and without parse_mode,
+-- the passed fields table stays unmodified.
+--
+-- The response is a proxy over its result field: res.message_id
+-- is the same as res.result.message_id.
+--
+-- The error is either the decoded API response
+-- { ok = false, error_code, description, parameters } or
+-- { description, status, reason } for a network error.
+-- The __method field of the error holds the API method name.
 -- @tparam table params
 -- @tparam string params.method API method name
 -- @tparam[opt] table params.fields method fields
 -- @tparam[opt] boolean params.is_multipart encode fields as multipart/form-data
+-- (params.multipart is accepted as an alias)
 -- @treturn[1] table decoded API response
 -- @treturn[2] table err
+-- @usage
+-- local res, err = request.send({
+--   method = 'sendMessage',
+--   fields = { chat_id = 123456789, text = 'Hello!' },
+-- })
+--
+-- if err then
+--   log.error('%s: %s', err.__method, err.description)
+-- else
+--   log.info(res.message_id)
+-- end
 function request.send(params)
   local body, opts, buildErr = build_body(params)
 

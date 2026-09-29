@@ -1,6 +1,10 @@
 --- ChatMember class wrapping a chat_member update.
 local defineGetters = require('bot.libs.getter')
 
+--- Fields of the chatMember object.
+-- @table chatMember
+-- @tfield number update_id update identifier
+-- @tfield table chat_member raw ChatMemberUpdated object from the Telegram Bot API
 local chatMember = {}
 chatMember.__index = chatMember
 

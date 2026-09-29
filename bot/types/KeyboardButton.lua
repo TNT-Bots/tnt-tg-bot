@@ -3,9 +3,33 @@
 --
 
 --- Build a KeyboardButton and optionally attach it to a keyboard.
+-- The button is appended to the keyboard row data.row. A new row is added
+-- when data.row is omitted or the row does not exist.
 -- @tparam ?table keyboard ReplyKeyboardMarkup to attach the button to
--- @tparam table data button fields, data.row selects the keyboard row
+-- @tparam table data button fields
+-- @tparam string data.text text of the button, sent as a message when the button is pressed
+-- @tparam[opt] number data.row keyboard row to add the button to
+-- @tparam[opt] string data.icon_custom_emoji_id custom emoji shown before the button text
+-- @tparam[opt] string data.style button style: 'danger' (red), 'success' (green) or 'primary' (blue)
+-- @tparam[opt] table data.request_users request to select users, see types.KeyboardButtonRequestUsers
+-- @tparam[opt] table data.request_user deprecated, replaced by request_users in Bot API 7.0
+-- @tparam[opt] table data.request_managed_bot KeyboardButtonRequestManagedBot object
+-- @tparam[opt] table data.request_chat request to select a chat, see types.KeyboardButtonRequestChat
+-- @tparam[opt] boolean data.request_contact send the user's phone number as a contact
+-- @tparam[opt] boolean data.request_location send the user's current location
+-- @tparam[opt] table data.request_poll ask the user to create a poll, see types.KeyboardButtonPollType
+-- @tparam[opt] table data.web_app Web App launched when the button is pressed, see types.WebAppInfo
 -- @treturn ?table KeyboardButton, nil on invalid input
+-- @see types.ReplyKeyboardMarkup
+-- @usage
+-- local ReplyKeyboardMarkup = require('bot.types.ReplyKeyboardMarkup')
+-- local KeyboardButton = require('bot.types.KeyboardButton')
+--
+-- local kb = ReplyKeyboardMarkup({ resize_keyboard = true })
+-- KeyboardButton(kb, { text = 'Share contact', request_contact = true, row = 1 })
+-- KeyboardButton(kb, { text = 'Cancel', row = 2 })
+--
+-- ctx:reply({ text = 'Choose:', reply_markup = kb })
 local function KeyboardButton(keyboard, data)
   if keyboard and type(keyboard) ~= 'table' then
     return nil

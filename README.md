@@ -39,7 +39,7 @@ Detailed docs live in [`docs/en/`](docs/en) (на русском - [`docs/ru/`](
 | [Libraries](docs/en/libs.md) | `hdec`, `sql`, `rateLimiter`, `sendQueue`, … |
 | [Transport](docs/en/transport.md) | Long polling, webhook, debug server |
 
-The LDoc API reference is generated with `bash bin/ldoc` (output in `doc/`).
+The LDoc API reference is generated with `bash bin/ldoc .` (output in `lua-doc/`).
 
 ## Quick start
 ```lua
@@ -140,7 +140,7 @@ See [docs/en/overview.md](docs/en/overview.md) for the full subsystem map and th
 
 ## Documentation generation
 ```bash
-bash bin/ldoc
+bash bin/ldoc .
 ```
 
 ## Contributing

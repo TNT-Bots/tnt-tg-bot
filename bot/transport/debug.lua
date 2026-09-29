@@ -8,7 +8,7 @@ local _debug = {}
 -- @tparam table opts
 -- @tparam[opt='0.0.0.0'] string opts.host host to bind to
 -- @tparam[opt=9091] number opts.port port to listen on
--- @tparam[opt] table opts.routes routes { path, method, callback }
+-- @tparam[opt] table opts.routes routes { { path, method, callback }, ... }
 function _debug.start(bot, opts)
   local http_server = require('http.server')
   local host = opts.host or '0.0.0.0'

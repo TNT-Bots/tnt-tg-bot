@@ -1,5 +1,9 @@
 --- Aggregation of all Telegram type builders.
+-- @module types
+-- @usage
+-- local types = require('bot.types')
 --
+-- local markup = types.ReplyKeyboardRemove()
 
 --- Telegram type builders.
 -- @table types

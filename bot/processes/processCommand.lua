@@ -11,6 +11,7 @@ local antiflood = RateLimiter.new({
   refill_per_sec = 1
 })
 
+-- Callback data arguments mapped to the names from command.arguments_schema
 local function build_kv_arguments(ctx, command)
   local arguments = {}
   local schema = command.arguments_schema
@@ -27,11 +28,41 @@ local function build_kv_arguments(ctx, command)
 end
 
 --- Resolve and execute a command for the incoming update.
+--
+-- 1. The command is resolved from the callback data, the first word of a message
+-- with entities, or opts.command.
+--
+-- 2. Filters: updates without a sender, from other bots and on behalf of a chat
+-- are ignored, a command with the PRIVATE flag runs in private chats only.
+-- Other flags are not interpreted by the library.
+--
+-- 3. Antiflood per (user, chat): a burst of 2 calls, then 1 call per second.
+--
+-- 4. For a command with arguments_schema the callback data is parsed into ctx.arguments.
+--
+-- 5. bot.events.preCallCommand(ctx, command) is called, false cancels the command.
+--
+-- 6. command.call(ctx) is called.
+--
+-- 7. bot.events.postCallCommand(ctx, command) is called.
 -- @tparam table ctx typed update object (message or callback query)
 -- @tparam[opt] table opts
 -- @tparam[opt] boolean opts.is_text_command treat opts.command as an already resolved command
 -- @tparam[opt] table opts.command resolved command object, used with is_text_command
--- @tparam[opt] function opts.antiflood_answer called as (ctx, wait) when a callback press is rate limited
+-- @tparam[opt] function opts.antiflood_answer called as (ctx, wait) when a callback press is rate limited,
+-- wait is the number of seconds until the next press is allowed
+-- @see classes.Command
+-- @see enums.command_flags
+-- @usage
+-- local processCommand = require('bot.processes.processCommand')
+--
+-- function bot.events.onCallbackQuery(ctx)
+--   processCommand(ctx, {
+--     antiflood_answer = function(ctx, wait)
+--       ctx:answer(('Wait %d sec'):format(math.ceil(wait)))
+--     end,
+--   })
+-- end
 local function processCommand(ctx, opts)
   local commandName
   local command

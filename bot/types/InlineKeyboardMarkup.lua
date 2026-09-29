@@ -5,8 +5,16 @@ local json = require('json')
 --- Build an InlineKeyboardMarkup object.
 -- With a ready data.inline_keyboard table returns its JSON encoding,
 -- otherwise returns an empty markup with a toJson method.
--- @tparam[opt] table data { inline_keyboard = { { button, ... }, ... } }
--- @treturn table|string markup object or JSON string
+-- @tparam[opt] table data
+-- @tparam[opt] table data.inline_keyboard array of button rows { { button, ... }, ... }
+-- @treturn ?table|string markup object with the inline_keyboard field and the toJson() method,
+-- JSON string for a ready data.inline_keyboard, nil when data is not a table
+-- @see types.InlineKeyboardButton
+-- @usage
+-- local InlineKeyboardMarkup = require('bot.types.InlineKeyboardMarkup')
+--
+-- local kb = InlineKeyboardMarkup()
+-- kb:toJson() -- '{"inline_keyboard":[]}'
 local function InlineKeyboardMarkup(data)
   if data and type(data) ~= 'table' then
     return nil
@@ -28,6 +36,7 @@ local function InlineKeyboardMarkup(data)
   local keyboard = {}
   keyboard.__index = keyboard
 
+  -- JSON encoding of the markup
   function keyboard:toJson()
     return json.encode(self)
   end

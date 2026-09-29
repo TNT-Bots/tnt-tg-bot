@@ -3,7 +3,17 @@
 --
 
 --- Build an InputMediaAnimation object.
--- @tparam table data InputMediaAnimation fields, data.media required
+-- @tparam table data
+-- @tparam string data.media file to send: a file_id, an HTTP URL or 'attach://name' for a file uploaded under that name
+-- @tparam[opt] string|table data.thumbnail thumbnail of the file
+-- @tparam[opt] string data.caption caption of the animation, 0-1024 characters after entities parsing
+-- @tparam[opt] string data.parse_mode mode for parsing entities in the caption
+-- @tparam[opt] table data.caption_entities entities of the caption, instead of parse_mode
+-- @tparam[opt] boolean data.show_caption_above_media show the caption above the media
+-- @tparam[opt] number data.width animation width
+-- @tparam[opt] number data.height animation height
+-- @tparam[opt] number data.duration animation duration in seconds
+-- @tparam[opt] boolean data.has_spoiler cover the animation with a spoiler animation
 -- @treturn ?table InputMediaAnimation, nil on invalid input
 local function InputMediaAnimation(data)
   if not data then

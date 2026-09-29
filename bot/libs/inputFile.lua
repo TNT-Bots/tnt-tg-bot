@@ -4,7 +4,14 @@ local log = require('log')
 
 --- Read a local file into the format expected by multipart upload.
 -- @tparam string filename path to the file
--- @treturn ?table { data = <content>, filename = <path> }, nil if unreadable
+-- @treturn ?table { data = content, filename = path }, nil if unreadable
+-- @usage
+-- local inputFile = require('bot.libs.inputFile')
+--
+-- bot:sendDocument({
+--   chat_id = ctx:getChatId(),
+--   document = inputFile('/tmp/report.pdf'),
+-- }, { multipart_post = true })
 local function inputFile(filename)
   if type(filename) ~= 'string' then
     return nil

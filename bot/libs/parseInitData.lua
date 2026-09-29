@@ -3,6 +3,7 @@
 local openssl_hmac = require('openssl.hmac')
 local json = require('json')
 
+-- Query string split into a { key = raw value } table
 local function parse_query(query)
   local parsed = {}
   for key, value in query:gmatch("([^&=]+)=([^&]*)") do
@@ -12,6 +13,7 @@ local function parse_query(query)
   return parsed
 end
 
+-- Percent-decoding of %XX sequences
 local function url_decode(str)
   return (str:gsub("%%([0-9a-fA-F][0-9a-fA-F])", function(hex)
     return string.char(tonumber(hex, 16))
@@ -23,7 +25,17 @@ end
 -- @tparam string bot_token bot token used for the HMAC secret
 -- @tparam[opt] table opts
 -- @tparam[opt] number opts.max_age_sec reject data older than this (replay protection)
--- @treturn table { valid = boolean, userData = ?table, authDate = ?number }
+-- @treturn table { valid = boolean, userData = ?table, authDate = ?number }:
+-- valid is the hash check result, userData is the decoded user field,
+-- authDate is the auth_date field, Unix time
+-- @raise if the user field is not a valid JSON
+-- @usage
+-- local parseInitData = require('bot.libs.parseInitData')
+--
+-- local res = parseInitData(init_data, bot.token, { max_age_sec = 3600 })
+-- if res.valid then
+--   log.info(res.userData.id)
+-- end
 local function parseInitData(init_data, bot_token, opts)
   -- init_data query string parsing
   local parsed = parse_query(init_data)

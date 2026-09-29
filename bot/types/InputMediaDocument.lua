@@ -3,7 +3,14 @@
 --
 
 --- Build an InputMediaDocument object.
--- @tparam table data InputMediaDocument fields, data.media required
+-- @tparam table data
+-- @tparam string data.media file to send: a file_id, an HTTP URL or 'attach://name' for a file uploaded under that name
+-- @tparam[opt] string|table data.thumbnail thumbnail of the file
+-- @tparam[opt] string data.caption caption of the document, 0-1024 characters after entities parsing
+-- @tparam[opt] string data.parse_mode mode for parsing entities in the caption
+-- @tparam[opt] table data.caption_entities entities of the caption, instead of parse_mode
+-- @tparam[opt] boolean data.disable_content_type_detection disable the server-side content type detection for uploaded files,
+-- always true for a document sent as a part of an album
 -- @treturn ?table InputMediaDocument, nil on invalid input
 local function InputMediaDocument(data)
   if not data then

@@ -3,8 +3,23 @@
 --
 
 --- Build an InputMediaPhoto object.
--- @tparam table data InputMediaPhoto fields, data.media required
+-- @tparam table data
+-- @tparam string data.media file to send: a file_id, an HTTP URL or 'attach://name' for a file uploaded under that name
+-- @tparam[opt] string data.caption caption of the photo, 0-1024 characters after entities parsing
+-- @tparam[opt] string data.parse_mode mode for parsing entities in the caption
+-- @tparam[opt] table data.caption_entities entities of the caption, instead of parse_mode
+-- @tparam[opt] boolean data.show_caption_above_media show the caption above the media
+-- @tparam[opt] boolean data.has_spoiler cover the photo with a spoiler animation
 -- @treturn ?table InputMediaPhoto, nil on invalid input
+-- @usage
+-- local InputMediaPhoto = require('bot.types.InputMediaPhoto')
+--
+-- bot:sendMediaGroup({
+--   chat_id = ctx:getChatId(),
+--   media = {
+--     InputMediaPhoto({ media = 'https://example.com/photo.jpg', caption = 'Photo' }),
+--   },
+-- })
 local function InputMediaPhoto(data)
   if not data then
     return nil

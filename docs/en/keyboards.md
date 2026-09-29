@@ -50,7 +50,7 @@ local kb = inlineCallbackKeyboard({
 ```
 
 This keeps button data and the [callback command](commands.md) in sync: arguments
-are written in `arguments_schema` order, and parsed back into `command.arguments`
+are written in `arguments_schema` order, and parsed back into `ctx.arguments`
 when the button is pressed.
 
 ## Reply keyboard

@@ -1,12 +1,20 @@
 --- ReactionType builders for setMessageReaction.
 -- See: https://core.telegram.org/bots/api#reactiontype
---
+-- @pragma nostrip
 
 local ReactionType = {}
 
 --- Build a ReactionTypeEmoji object.
 -- @tparam string emoji reaction emoji from the list allowed by the API
 -- @treturn table ReactionTypeEmoji
+-- @usage
+-- local ReactionType = require('bot.types.ReactionType')
+--
+-- bot:setMessageReaction({
+--   chat_id = ctx:getChatId(),
+--   message_id = ctx:getMessageId(),
+--   reaction = { ReactionType.emoji('👍') },
+-- })
 function ReactionType.emoji(emoji)
   return {
     type = 'emoji',

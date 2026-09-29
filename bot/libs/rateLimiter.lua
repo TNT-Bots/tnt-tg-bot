@@ -1,11 +1,18 @@
 --- Token-bucket rate limiter keyed by an arbitrary value.
---[[
-Each key owns a bucket of tokens; every call spends one.
-Buckets refill at refill_per_sec tokens/sec up to capacity,
-allowing short bursts and then a steady rate -
-a good fit for Telegram's per-chat ~1 msg/sec limit.
-Idle buckets are swept by a background fiber. In-memory only.
---]]
+-- Each key owns a bucket of tokens; every call spends one.
+-- Buckets refill at refill_per_sec tokens/sec up to capacity,
+-- allowing short bursts and then a steady rate -
+-- a good fit for Telegram's per-chat ~1 msg/sec limit.
+-- Idle buckets are swept by a background fiber. In-memory only.
+-- @pragma nostrip
+-- @usage
+-- local RateLimiter = require('bot.libs.rateLimiter')
+-- local limiter = RateLimiter.new({ capacity = 3, refill_per_sec = 1 })
+--
+-- local allowed, wait = limiter:allow(chat_id)
+-- if not allowed then
+--   -- retry in `wait` seconds
+-- end
 local fiber = require('fiber')
 
 -- How often the sweeper scans buckets, in seconds

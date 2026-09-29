@@ -36,7 +36,7 @@
 | [Библиотеки](libs.md) | `hdec`, `sql`, `rateLimiter`, `sendQueue`, … |
 | [Транспорт](transport.md) | Long polling, webhook, отладочный сервер |
 
-Справочник API по аннотациям LDoc генерируется командой `bash bin/ldoc` (вывод в `doc/`).
+Справочник API по аннотациям LDoc генерируется командой `bash bin/ldoc .` (вывод в `lua-doc/`).
 
 ## Быстрый старт
 ```lua
@@ -123,7 +123,7 @@ bot/
 
 ## Генерация документации
 ```bash
-bash bin/ldoc
+bash bin/ldoc .
 ```
 
 ## Вклад в проект

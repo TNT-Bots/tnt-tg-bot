@@ -3,7 +3,8 @@
 --
 
 --- Build a WebAppInfo object.
--- @tparam string|table data HTTPS URL of the Web App, or { url = ... }
+-- @tparam string|table data HTTPS URL of the Web App, or a table with the field below
+-- @tparam string data.url HTTPS URL of the Web App
 -- @treturn ?table WebAppInfo, nil when data is missing
 local function WebAppInfo(data)
   if not data then

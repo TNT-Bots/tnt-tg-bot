@@ -11,11 +11,13 @@ local html_escape_map = {
   ["'"] = "&#039;",
 }
 
+--- Separator line: a monospaced row of dots.
 M.sep = "<code>··············</code>"
 
 --- Escape HTML-unsafe characters as HTML entities.
--- @tparam string text
+-- @tparam any text value to escape, converted with tostring
 -- @treturn string escaped text
+-- @treturn number number of replaced characters
 function M.escape(text)
   text = tostring(text)
   return string.gsub(text, "[<>&\"']", html_escape_map)
@@ -93,6 +95,7 @@ function M.code(lang, text)
 end
 
 --- Generate an HTML hyperlink.
+-- The URL is NOT escaped.
 -- @tparam string url URL
 -- @tparam string name link text
 -- @treturn string formatted hyperlink
@@ -112,7 +115,9 @@ end
 local MAX_USERNAME_LENGTH = 25
 
 --- Convert a Telegram User object to a mention link.
--- @tparam table user User object
+-- The display name is first_name, then username, then a placeholder.
+-- Returns the 'nil' string when the user is missing.
+-- @tparam ?table user User object
 -- @tparam[opt] table opts
 -- @tparam[opt=25] number opts.len display name truncation limit
 -- @tparam[opt] boolean opts.no_link return the escaped name without a link
@@ -138,7 +143,9 @@ end
 local MAX_CHAT_TITLE_LENGTH = 32
 
 --- Convert a Telegram Chat object to a mention link.
--- @tparam table Chat Chat object
+-- A chat without a username is returned as a monospaced title.
+-- Returns the 'Nil' string when the chat, its id or title is missing.
+-- @tparam ?table Chat Chat object
 -- @tparam[opt] table opts
 -- @tparam[opt=32] number opts.len title truncation limit
 -- @tparam[opt] boolean opts.no_link return the escaped title without a link

@@ -3,6 +3,13 @@ local SuccessfulPayment = require('bot.classes.SuccessfulPayment')
 local defineGetters = require('bot.libs.getter')
 local api = require('bot.api')
 
+--- Fields of the message object.
+-- @table message
+-- @tfield ?number update_id update identifier, nil for an object created with opts.direct
+-- @tfield table message raw Message object from the Telegram Bot API
+-- @tfield ?table arguments named arguments, set by processes.processCommand
+-- for commands with arguments_schema
+-- @tfield ?string __command resolved command name, set by bot.command
 local message = {}
 message.__index = message
 
@@ -44,7 +51,7 @@ end
 -- @tparam[opt] table opts
 -- @tparam[opt=' '] string opts.separator separator used to split the text
 -- @tparam[opt=10] number opts.count maximum number of arguments
--- @treturn table arguments list
+-- @treturn ?table arguments list, nil when the message has no text
 function message:getArguments(opts)
   opts = opts or {}
 
@@ -184,7 +191,8 @@ defineGetters(message, {
 })
 
 --- Check whether the message sender is a new chat member.
--- @treturn boolean true if the sender is a new chat member, false otherwise
+-- @treturn ?boolean true if the sender is a new chat member, false otherwise,
+-- nil when the message has no new_chat_members
 function message:isNewChatMember()
   if self.message and self.message.new_chat_members then
     return self.message.new_chat_members[1].id == self.message.from.id
@@ -192,7 +200,8 @@ function message:isNewChatMember()
 end
 
 --- Check whether the message sender added a new chat member.
--- @treturn boolean true if the sender added a new chat member, false otherwise
+-- @treturn ?boolean true if the sender added a new chat member, false otherwise,
+-- nil when the message has no new_chat_members
 function message:isAddNewChatMember()
   if self.message and self.message.new_chat_members then
     return self.message.new_chat_members[1].id ~= self.message.from.id
@@ -200,7 +209,8 @@ function message:isAddNewChatMember()
 end
 
 --- Check whether the message sender is a left chat member.
--- @treturn boolean true if the sender is a left chat member, false otherwise
+-- @treturn ?boolean true if the sender is a left chat member, false otherwise,
+-- nil when the message has no left_chat_member
 function message:isLeftMember()
   if self.message and self.message.left_chat_member then
     return self.message.left_chat_member.id == self.message.from.id
@@ -208,7 +218,8 @@ function message:isLeftMember()
 end
 
 --- Check whether the message sender removed a chat member.
--- @treturn boolean true if the sender removed a chat member, false otherwise
+-- @treturn ?boolean true if the sender removed a chat member, false otherwise,
+-- nil when the message has no left_chat_member
 function message:isRemoveMember()
   if self.message and self.message.left_chat_member then
     return self.message.left_chat_member.id ~= self.message.from.id
@@ -220,8 +231,9 @@ end
 --- @section end
 
 --- Strip the leading command from the message text.
--- @treturn string text without the command
--- @treturn number number of replacements made
+-- Works only after the command was resolved by bot.command.
+-- @treturn ?string text without the command, nil when there is no text or resolved command
+-- @treturn ?number number of replacements made
 function message:trimCommand()
   if self.message and self.message.text and self.__command then
     local res, count = self.message.text:gsub(self.__command..' ', '', 1)
@@ -230,6 +242,7 @@ function message:trimCommand()
 end
 
 --- Send a reply to the same chat.
+-- A passed table is modified: chat_id is set when missing.
 -- @tparam string|table fields text string or sendMessage fields
 -- @treturn[1] table response from the Telegram Bot API
 -- @treturn[2] table err
@@ -248,9 +261,13 @@ end
 
 --- Send a reply referencing this message (reply_parameters).
 -- Caller-provided fields.reply_parameters is respected (e.g. built via types.ReplyParameters).
+-- A passed table is modified: chat_id and reply_parameters are set when missing.
 -- @tparam string|table fields text string or sendMessage fields
 -- @treturn[1] table response from the Telegram Bot API
 -- @treturn[2] table err
+-- @see types.ReplyParameters
+-- @usage
+-- ctx:replyToMessage('Hello!')
 function message:replyToMessage(fields)
   if type(fields) == 'string' then
     fields = { text = fields }

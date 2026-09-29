@@ -1,4 +1,21 @@
 --- Command module loader registering commands in bot.commands.
+-- The module is callable: commandLoader(list) is a shortcut for commandLoader.loader(_, list).
+-- @pragma nostrip
+-- @usage
+-- local commandLoader = require('bot.utils.commandLoader')
+--
+-- commandLoader.setPath('src.commands')
+-- commandLoader({
+--   private = {
+--     start = {},
+--     help = {},
+--   },
+--   moderation = {
+--     -- requires src.commands.moderation.settings.cb_settings,
+--     -- then src.commands.moderation.settings
+--     settings = { callback_commands = { 'cb_settings' } },
+--   },
+-- })
 local log = require('log')
 local bot = require('bot')
 
@@ -12,6 +29,7 @@ function commandLoader.setPath(path)
   commandLoader.path = path
 end
 
+-- Module require and registration of every name from its commands field
 local function command_require(path)
   local command = require(path)
 
@@ -25,8 +43,14 @@ local function command_require(path)
 end
 
 --- Load command modules and register them in bot.commands.
+-- A module is required as path.command_type.command_name and registered
+-- under every name from its commands field.
+--
+-- params.callback_commands is an optional list of callback command modules,
+-- required before the command itself as path.command_type.command_name.callback_name.
 -- @tparam any _ unused (self when called via __call)
 -- @tparam table list { [command_type] = { [command_name] = params } }
+-- @raise if a module is not found
 function commandLoader.loader(_, list)
   for commandType, commands in pairs(list) do
     local path = string.format('%s.%s', commandLoader.path, commandType)

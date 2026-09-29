@@ -1,6 +1,14 @@
 --- Message effect ids enum.
+-- Values for the message_effect_id field of the send methods, private chats only.
+-- An effect is addressed by a name or by an emoji.
 -- See: https://gist.github.com/wiz0u/2a6d40c8f635687be363d72251a264da
+-- @usage
+-- local message_effect = require('bot.enums.message_effect')
 --
+-- ctx:reply({
+--   text = 'Congratulations!',
+--   message_effect_id = message_effect.confetti, -- or message_effect['🎉']
+-- })
 
 --- Message effects, addressable by name or by emoji.
 local message_effect = {

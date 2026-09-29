@@ -7,6 +7,17 @@
 -- @tparam string data.label portion label
 -- @tparam number data.amount price in the smallest units of the currency (integer, not float)
 -- @treturn ?table LabeledPrice, nil when required fields are missing
+-- @usage
+-- local LabeledPrice = require('bot.types.LabeledPrice')
+--
+-- bot:sendInvoice({
+--   chat_id = ctx:getChatId(),
+--   title = 'Coffee',
+--   description = 'A cup of coffee',
+--   payload = 'coffee',
+--   currency = 'XTR',
+--   prices = { LabeledPrice({ label = 'Coffee', amount = 10 }) },
+-- })
 local function LabeledPrice(data)
   if not data then
     return nil

@@ -3,7 +3,9 @@
 --
 
 --- Build a ForceReply object.
--- @tparam[opt] table data { input_field_placeholder = ..., selective = ... }
+-- @tparam[opt] table data
+-- @tparam[opt] string data.input_field_placeholder placeholder shown in the input field, 1-64 characters
+-- @tparam[opt] boolean data.selective force a reply from specific users only
 -- @treturn table ForceReply
 local function ForceReply(data)
   if not data then

@@ -3,7 +3,15 @@
 --
 
 --- Build an InputPaidMediaVideo object.
--- @tparam table data InputPaidMediaVideo fields, data.media required
+-- @tparam table data
+-- @tparam string data.media file to send: a file_id, an HTTP URL or 'attach://name' for a file uploaded under that name
+-- @tparam[opt] string|table data.thumbnail thumbnail of the file
+-- @tparam[opt] string data.cover cover for the video in the message
+-- @tparam[opt] number data.start_timestamp start timestamp for the video in the message, in seconds
+-- @tparam[opt] number data.width video width
+-- @tparam[opt] number data.height video height
+-- @tparam[opt] number data.duration video duration in seconds
+-- @tparam[opt] boolean data.supports_streaming the uploaded video is suitable for streaming
 -- @treturn ?table InputPaidMediaVideo, nil on invalid input
 local function InputPaidMediaVideo(data)
   if not data or type(data.media) ~= 'string' then

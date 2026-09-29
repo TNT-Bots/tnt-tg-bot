@@ -50,7 +50,7 @@ local kb = inlineCallbackKeyboard({
 ```
 
 Так данные кнопки и [callback-команда](commands.md) держатся синхронно: аргументы
-пишутся в порядке `arguments_schema` и разбираются обратно в `command.arguments`
+пишутся в порядке `arguments_schema` и разбираются обратно в `ctx.arguments`
 при нажатии.
 
 ## Reply-клавиатура

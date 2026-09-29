@@ -1,10 +1,12 @@
 --- SuccessfulPayment class wrapping a successful_payment message field.
+-- @pragma nostrip
 local defineGetters = require('bot.libs.getter')
 
 local SuccessfulPayment = {}
 SuccessfulPayment.__index = SuccessfulPayment
 
 --- Create a new SuccessfulPayment object.
+-- The passed table itself becomes the object: its fields stay reachable directly.
 -- @tparam table successful_payment raw successful_payment data
 -- @treturn table SuccessfulPayment object
 function SuccessfulPayment:new(successful_payment)

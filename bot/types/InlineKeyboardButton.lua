@@ -3,9 +3,38 @@
 local log = require('log')
 
 --- Build an InlineKeyboardButton and optionally attach it to a keyboard.
+-- The button is appended to the keyboard row data.row. A new row is added
+-- when data.row is omitted or the row does not exist. A callback_data longer than 64 bytes is reported to the log.
 -- @tparam ?table keyboard InlineKeyboardMarkup to attach the button to
--- @tparam table data button fields, data.row selects the keyboard row
+-- @tparam table data button fields
+-- @tparam string data.text label text on the button
+-- @tparam[opt] number data.row keyboard row to add the button to
+-- @tparam[opt] string data.callback_data data sent in a callback query when the button is pressed, 1-64 bytes
+-- @tparam[opt] string data.callback alias of callback_data
+-- @tparam[opt] string data.url HTTP or tg:// URL opened when the button is pressed
+-- @tparam[opt] string data.icon_custom_emoji_id custom emoji shown before the button text
+-- @tparam[opt] string data.style button style: 'danger' (red), 'success' (green) or 'primary' (blue)
+-- @tparam[opt] table data.web_app Web App launched when the button is pressed, see types.WebAppInfo
+-- @tparam[opt] table data.login_url LoginUrl object: an HTTPS URL used to authorize the user
+-- @tparam[opt] string data.switch_inline_query inline query inserted after the bot's username in a chat selected by the user
+-- @tparam[opt] string data.switch_inline_query_current_chat inline query inserted after the bot's username in the current chat
+-- @tparam[opt] table data.switch_inline_query_chosen_chat SwitchInlineQueryChosenChat object
+-- @tparam[opt] table data.callback_game CallbackGame object: the game launched when the button is pressed
+-- @tparam[opt] string|table data.copy_text text copied to the clipboard, or a CopyTextButton object
+-- @tparam[opt] boolean data.pay true for a Pay button
 -- @treturn ?table InlineKeyboardButton, nil on invalid input
+-- @see types.InlineKeyboardMarkup
+-- @see middlewares.inlineKeyboard
+-- @usage
+-- local InlineKeyboardMarkup = require('bot.types.InlineKeyboardMarkup')
+-- local InlineKeyboardButton = require('bot.types.InlineKeyboardButton')
+--
+-- local kb = InlineKeyboardMarkup()
+-- InlineKeyboardButton(kb, { text = 'Yes', callback_data = 'yes', row = 1 })
+-- InlineKeyboardButton(kb, { text = 'No', callback_data = 'no', row = 1 })
+-- InlineKeyboardButton(kb, { text = 'Site', url = 'https://example.com', row = 2 })
+--
+-- ctx:reply({ text = 'Choose:', reply_markup = kb })
 local function inlineKeyboardButton(keyboard, data)
   if type(data) ~= 'table' then
     return nil

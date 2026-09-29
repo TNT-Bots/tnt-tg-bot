@@ -5,7 +5,8 @@
 --- Build a KeyboardButtonPollType object.
 -- With 'quiz' the user can create only quizzes, with 'regular' only regular polls.
 -- Without data any poll type is allowed.
--- @tparam[opt] string|table data poll type string, or { type = ... }
+-- @tparam[opt] string|table data poll type string, or a table with the field below
+-- @tparam[opt] string data.type poll type: 'quiz' or 'regular'
 -- @treturn table KeyboardButtonPollType
 local function KeyboardButtonPollType(data)
   if not data then

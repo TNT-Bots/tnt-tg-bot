@@ -1,4 +1,7 @@
 --- Utility for declarative getter generation.
+--
+
+-- Value at the dot-separated path inside obj, nil when any segment is missing
 local function resolve(obj, path)
   local current = obj
   for segment in path:gmatch('[^.]+') do

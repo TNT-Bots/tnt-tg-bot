@@ -1,4 +1,5 @@
 --- Long polling transport.
+-- @pragma nostrip
 local log = require('log')
 local json = require('json')
 local fiber = require('fiber')
@@ -21,7 +22,7 @@ local DEFAULT_ALLOWED_UPDATES = {
 -- @tparam[opt=60] number opts.timeout getUpdates timeout, seconds
 -- @tparam[opt] table opts.allowed_updates list of allowed update types
 -- @tparam[opt=-1] number opts.max_connections http client connection limit
--- @tparam function switch update handler
+-- @tparam function switch update handler called with the raw update in a new fiber
 function longpolling.start(bot, opts, switch)
   opts = opts or {}
 

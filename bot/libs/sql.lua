@@ -1,4 +1,6 @@
 --- SQL helpers over box.execute (Tarantool 3.x only).
+-- The module is callable: sql(query, values) is a shortcut for sql.execute(query, values).
+-- @pragma nostrip
 local log = require('log')
 local uuid = require('uuid')
 
@@ -12,10 +14,12 @@ end
 -- TODO: switch to bound parameters via box.execute(sql, extra-parameters).
 -- Tarantool supports and recommends them directly.
 
+-- String literal with escaped single quotes
 local function escape(value)
   return string.format("'%s'", value:gsub("'", "''"))
 end
 
+-- SQL CAST expression for uuid, string and boolean values, other values as is
 local function cast(value, field_type)
   if field_type == 'uuid' then
     return string.format("CAST('%s' AS UUID)", value)
@@ -52,9 +56,10 @@ local sql = {}
 
 --- Execute an SQL query.
 -- ${name} placeholders are substituted with escaped values.
+-- Returns nil without an error when the result has no rows.
 -- @tparam string sql_query SQL string
 -- @tparam[opt] table values placeholder values
--- @treturn[1] table rows mapped to field names
+-- @treturn[1] ?table rows mapped to field names, nil for an empty result
 -- @treturn[2] table err
 -- @usage
 -- local rows = sql.execute('SELECT * FROM SEQSCAN users WHERE name = ${name}', { name = 'Alex' })
@@ -107,6 +112,7 @@ end
 -- @tparam table fields { field_name = value, ... }
 -- @treturn[1] table box.execute result
 -- @treturn[2] table err
+-- @raise if the space does not exist, fields is nil or a required field is box.NULL
 function sql.create(space, fields)
   if box.space[space] == nil then
     error(('Space: %s not found'):format(space), 1)
@@ -152,9 +158,10 @@ end
 --- Update record(s).
 -- @tparam string space space name
 -- @tparam table fields columns to update
--- @tparam table where where condition(s)
+-- @tparam table where where condition(s) { field_name = value, ... } joined by AND
 -- @treturn[1] table box.execute result
 -- @treturn[2] table err
+-- @raise if the space does not exist, fields or where is nil
 function sql.update(space, fields, where)
   if box.space[space] == nil then
     error(('Space: %s not found'):format(space), 1)
@@ -203,6 +210,8 @@ end
 -- @tparam table where full primary key { pk_field = value, ... }
 -- @treturn[1] boolean true
 -- @treturn[2] table err
+-- @raise if the space does not exist or has no primary index, fields or where is nil,
+-- where misses a primary key field
 function sql.update_nosql(space, fields, where)
   if box.space[space] == nil then
     error(('Space: %s not found'):format(space), 1)
@@ -258,6 +267,7 @@ end
 -- @tparam table update_fields fields to update if the record exists
 -- @treturn[1] boolean true
 -- @treturn[2] table err
+-- @raise if the space does not exist, default_fields or update_fields is nil
 function sql.upsert(space, default_fields, update_fields)
   if box.space[space] == nil then
     error(('Space: %s not found'):format(space), 1)
@@ -337,6 +347,7 @@ end
 -- @tparam any result first return value of sql.create/sql.execute/sql.update
 -- @tparam any err second return value (error)
 -- @treturn any result
+-- @raise err if it is not nil
 function sql.check(result, err)
   if err then
     error(err, 2)
