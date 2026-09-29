@@ -10,6 +10,7 @@
 -- @tparam[opt] boolean data.one_time_keyboard hide the keyboard as soon as it has been used
 -- @tparam[opt] string data.input_field_placeholder placeholder shown in the input field, cut to 64 characters
 -- @tparam[opt] boolean data.selective show the keyboard to specific users only
+-- @tparam[opt] boolean data.force_reply show the reply interface to the user
 -- @treturn table ReplyKeyboardMarkup
 -- @see types.KeyboardButton
 -- @usage
@@ -70,6 +71,12 @@ local function ReplyKeyboardMarkup(data)
   -- sender of the original message.
   if data.selective ~= nil then
     obj.selective = data.selective and true or false
+  end
+
+  -- Optional. Pass True if the reply interface must be shown to the user,
+  -- as if they had manually selected the bot's message and tapped 'Reply'
+  if data.force_reply ~= nil then
+    obj.force_reply = data.force_reply and true or false
   end
 
   return obj

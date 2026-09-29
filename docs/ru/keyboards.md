@@ -27,8 +27,12 @@ ctx:reply({ text = 'Choose:', reply_markup = kb })
 
 Поля кнопки (см. [`InlineKeyboardButton`](../../bot/types/InlineKeyboardButton.lua)):
 `text`, `callback_data`, `url`, `web_app`, `login_url`, `switch_inline_query`,
-`switch_inline_query_current_chat`, `copy_text`, `pay`, `style`. `callback_data`
+`switch_inline_query_current_chat`, `copy_text`, `pay`, `style`, `disabled`. `callback_data`
 должна быть ≤ 64 байт (иначе сборщик пишет error в лог).
+
+`disabled = true` делает кнопку, которая ничего не делает (Bot API 10.3). Чтобы
+вместе с клавиатурой показать интерфейс ответа, выставь `force_reply` на разметке:
+`kb.force_reply = true`.
 
 ## Callback-клавиатура (типизированная callback_data)
 
@@ -74,7 +78,9 @@ local kb = ReplyKeyboardMarkup({
 ctx:reply({ text = 'Answer:', reply_markup = kb })
 ```
 
-Reply-кнопки могут и запрашивать данные: `request_user`, `request_chat`,
+`force_reply = true` принимается и здесь (Bot API 10.3).
+
+Reply-кнопки могут и запрашивать данные: `request_users`, `request_chat`,
 `request_contact`, `request_location`, `request_poll`, `web_app` (только в личке).
 
 ## Прочие типы разметки

@@ -22,6 +22,8 @@ local log = require('log')
 -- @tparam[opt] table data.callback_game CallbackGame object: the game launched when the button is pressed
 -- @tparam[opt] string|table data.copy_text text copied to the clipboard, or a CopyTextButton object
 -- @tparam[opt] boolean data.pay true for a Pay button
+-- @tparam[opt] boolean|table data.disabled true for a disabled button that does nothing,
+-- or a DisabledButton object
 -- @treturn ?table InlineKeyboardButton, nil on invalid input
 -- @see types.InlineKeyboardMarkup
 -- @see middlewares.inlineKeyboard
@@ -132,6 +134,15 @@ local function inlineKeyboardButton(keyboard, data)
   -- Optional. Specify True, to send a Pay button
   if data.pay then
     button.pay = data.pay
+  end
+
+  -- Optional. If set, then the button is disabled and does nothing.
+  -- The API expects a DisabledButton object, which currently holds no information.
+  -- An empty table is encoded as a JSON array by default, so it is marked as a map.
+  if type(data.disabled) == 'table' and next(data.disabled) ~= nil then
+    button.disabled = data.disabled
+  elseif data.disabled then
+    button.disabled = setmetatable({}, { __serialize = 'map' })
   end
 
   if keyboard then

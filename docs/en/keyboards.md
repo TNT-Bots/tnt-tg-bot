@@ -28,7 +28,11 @@ ctx:reply({ text = 'Choose:', reply_markup = kb })
 Button fields (see [`InlineKeyboardButton`](../../bot/types/InlineKeyboardButton.lua))
 include `text`, `callback_data`, `url`, `web_app`, `login_url`,
 `switch_inline_query`, `switch_inline_query_current_chat`, `copy_text`, `pay`,
-`style`. `callback_data` must be ≤ 64 bytes (the builder logs an error otherwise).
+`style`, `disabled`. `callback_data` must be ≤ 64 bytes (the builder logs an error otherwise).
+
+`disabled = true` makes a button that does nothing (Bot API 10.3). To show the
+reply interface together with the keyboard, set `force_reply` on the markup:
+`kb.force_reply = true`.
 
 ## Callback keyboard (typed callback_data)
 
@@ -74,7 +78,9 @@ local kb = ReplyKeyboardMarkup({
 ctx:reply({ text = 'Answer:', reply_markup = kb })
 ```
 
-Reply buttons can also request data: `request_user`, `request_chat`,
+`force_reply = true` is accepted here as well (Bot API 10.3).
+
+Reply buttons can also request data: `request_users`, `request_chat`,
 `request_contact`, `request_location`, `request_poll`, `web_app` (private chats).
 
 ## Other markup types
