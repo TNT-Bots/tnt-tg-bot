@@ -9,8 +9,17 @@ local function resolve(obj, path)
 end
 
 --- Define getter methods on a class from a mapping table.
+-- LDoc cannot see the generated methods, so every mapping entry
+-- is documented with an explicit function tag (see usage).
 -- @tparam table class class table to add methods to
 -- @tparam table getters { methodName = 'dot.separated.path', ... }
+-- @usage
+-- defineGetters(message, {
+--   --- Get the chat identifier.
+--   -- @function message:getChatId
+--   -- @treturn ?number message.chat.id
+--   getChatId = 'message.chat.id',
+-- })
 local function defineGetters(class, getters)
   for name, path in pairs(getters) do
     class[name] = function(self)
